@@ -1,3 +1,4 @@
+import os
 from flask import Flask, jsonify
 from flask_cors import CORS
 from config import config
@@ -39,19 +40,79 @@ def create_app(config_name='default'):
     
     return app
 
-def init_db(app):
-    """初始化数据库"""
+def check_database_exists(app):
+    """检查数据库文件是否存在"""
+    db_uri = app.config['SQLALCHEMY_DATABASE_URI']
+    if db_uri.startswith('sqlite:///'):
+        # 处理SQLite数据库路径
+        db_path = db_uri.replace('sqlite:///', '')
+        if not os.path.isabs(db_path):  # 相对路径
+            db_path = os.path.join(app.instance_path, db_path)
+        return os.path.exists(db_path), db_path
+    else:
+        # 非SQLite数据库，无法简单检查文件
+        return False, None
+
+def init_db(app, force=False):
+    """智能初始化数据库"""
     with app.app_context():
         # 导入所有模型以确保它们被注册
         from models import MyUser, Charts, Forum, Image
-        db.create_all()
-        print("Database tables created successfully!")
+        
+        db_exists, db_path = check_database_exists(app)
+        
+        if force:
+            print("🔄 强制重新创建数据库...")
+            db.drop_all()
+            db.create_all()
+            print("✅ 数据库已重新创建!")
+        elif db_exists:
+            print(f"✅ 数据库已存在: {db_path}")
+            # 检查表是否完整，如果有新表会自动创建
+            db.create_all()
+            print("✅ 已验证所有表结构完整")
+        else:
+            print(f"🆕 创建新数据库: {db_path}")
+            # 确保instance目录存在
+            if db_path:
+                os.makedirs(os.path.dirname(db_path), exist_ok=True)
+            db.create_all()
+            print("✅ 数据库和表创建成功!")
+
+def init_db_force(app):
+    """强制重新创建数据库（危险操作，会删除所有数据）"""
+    print("⚠️  警告: 这将删除所有现有数据!")
+    confirm = input("确定要继续吗? (yes/no): ")
+    if confirm.lower() == 'yes':
+        init_db(app, force=True)
+    else:
+        print("❌ 操作已取消")
 
 if __name__ == '__main__':
+    import sys
+    
     app = create_app('development')
     
-    # 创建数据库表
-    init_db(app)
+    # 检查命令行参数
+    if '--init-db' in sys.argv:
+        print("🔧 正在初始化数据库...")
+        init_db(app)
+        print("✅ 数据库初始化完成")
+        sys.exit(0)
+    elif '--reset-db' in sys.argv:
+        print("🔧 正在重置数据库...")
+        init_db_force(app)
+        sys.exit(0)
+    
+    # 正常启动时只检查数据库是否存在，不强制创建
+    db_exists, db_path = check_database_exists(app)
+    if not db_exists:
+        print("⚠️  未找到数据库文件!")
+        print("💡 使用 'python app.py --init-db' 来初始化数据库")
+        print("🚀 继续启动服务器...")
+    else:
+        print(f"✅ 数据库文件存在: {db_path}")
     
     # 启动应用
+    print("🚀 启动 SuperSpeedCalc Server...")
     app.run(host='0.0.0.0', port=5000, debug=True) 

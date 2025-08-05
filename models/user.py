@@ -28,8 +28,8 @@ class MyUser(BaseModel):
     # 用户经验值，整数类型，默认0，用于记录用户的经验积累
     experence = db.Column(db.Integer, default=0)
     
-    # 菠萝数量，浮点数类型，默认0.0，用于记录用户的菠萝币或特殊货币
-    boluo = db.Column(db.Float, default=0.0)
+    # 菠萝数量，整数类型，默认0，用于记录用户的菠萝币或特殊货币
+    boluo = db.Column(db.Integer, default=0)
     
     # 用户状态，布尔类型，默认True，表示账户是否处于激活状态
     isActive = db.Column(db.Boolean, default=True)

@@ -30,7 +30,7 @@ def create_user():
             bio=data.get('bio'),
             score=data.get('score', 0),
             experence=data.get('experence', 0),
-            boluo=data.get('boluo', 0.0)
+            boluo=data.get('boluo', 0)
         )
         
         db.session.add(user)

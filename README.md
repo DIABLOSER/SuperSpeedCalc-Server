@@ -37,7 +37,7 @@ SuperSpeedCalc-Server/
 - `bio` (Text): 个人简介
 - `score` (Integer): 用户积分，默认0
 - `experence` (Integer): 用户经验值，默认0
-- `boluo` (Float): 菠萝币数量，默认0.0
+- `boluo` (Integer): 菠萝币数量，默认0
 - `isActive` (Boolean): 是否激活
 - `lastLogin` (DateTime): 最后登录时间
 - `createdAt` (DateTime): 创建时间
@@ -84,11 +84,38 @@ SuperSpeedCalc-Server/
 pip install -r requirements.txt
 ```
 
-### 2. 运行应用
+### 2. 数据库管理
 
+#### 首次使用 - 初始化数据库
+```bash
+# 方式1: 使用数据库管理脚本（推荐）
+python manage_db.py init
+
+# 方式2: 使用应用启动参数
+python app.py --init-db
+```
+
+#### 日常使用 - 启动应用
 ```bash
 python app.py
 ```
+
+#### 数据库管理命令
+```bash
+# 检查数据库状态
+python manage_db.py check
+
+# 备份数据库
+python manage_db.py backup
+
+# 重置数据库（删除所有数据）
+python manage_db.py reset
+
+# 查看帮助
+python manage_db.py help
+```
+
+### 3. 应用地址
 
 应用将在 `http://localhost:5000` 启动。
 
@@ -159,7 +186,7 @@ curl -X POST http://localhost:5000/api/users \
     "bio": "这是一个测试用户",
     "score": 100,
     "experence": 50,
-    "boluo": 10.5
+    "boluo": 10
   }'
 ```
 
@@ -189,7 +216,7 @@ curl -X POST http://localhost:5000/api/users/<user_id>/experence \
 curl -X POST http://localhost:5000/api/users/<user_id>/boluo \
   -H "Content-Type: application/json" \
   -d '{
-    "boluo_change": 5.5
+    "boluo_change": 5
   }'
 ```
 
@@ -307,6 +334,70 @@ curl -X POST http://localhost:5000/api/images/<image_id>/url \
 
 访问 `http://localhost:5000/health` 可以检查服务状态。
 
+## 数据库管理
+
+### 🗄️ 数据库管理工具
+
+项目提供了独立的数据库管理脚本 `manage_db.py`，用于高效管理数据库操作：
+
+```bash
+# 显示帮助信息
+python manage_db.py help
+
+# 初始化数据库（创建表结构）
+python manage_db.py init
+
+# 检查数据库状态和统计信息
+python manage_db.py check
+
+# 备份数据库文件
+python manage_db.py backup
+
+# 重置数据库（危险操作，删除所有数据）
+python manage_db.py reset
+```
+
+### 🚀 启动方式优化
+
+**优化前的问题**：
+- 每次启动都会执行数据库初始化检查
+- 启动信息不够清晰
+
+**优化后的方式**：
+```bash
+# 首次使用或需要重置数据库
+python app.py --init-db
+
+# 日常启动（推荐）
+python app.py
+
+# 强制重置数据库
+python app.py --reset-db
+```
+
+### 📊 数据库状态检查
+
+使用 `manage_db.py check` 可以查看：
+- 数据库连接状态
+- 表结构信息
+- 各表记录数统计
+- 数据库文件大小
+
+### 💾 数据备份
+
+```bash
+# 自动备份（包含时间戳）
+python manage_db.py backup
+
+# 备份文件格式: app.db.backup_YYYYMMDD_HHMMSS
+```
+
+### ⚠️ 重要说明
+
+1. **数据安全**：`db.create_all()` 不会删除现有数据，只会创建缺失的表
+2. **启动优化**：现在启动时只检查数据库文件是否存在，不执行不必要的数据库操作
+3. **环境配置**：支持通过 `--env` 参数指定不同环境的配置
+
 ## 注意事项
 
 1. 默认使用 SQLite 数据库，生产环境建议切换到 MySQL 或 PostgreSQL
@@ -316,4 +407,6 @@ curl -X POST http://localhost:5000/api/images/<image_id>/url \
 5. 新增了用户积分、经验值和菠萝币系统
 6. 用户字段支持完整的游戏化元素（积分、经验、虚拟货币）
 7. 模型采用模块化设计，每个数据表独立为一个文件，便于维护和扩展
-8. Charts表简化为排行榜功能，专注于标题和成绩值管理 
+8. Charts表简化为排行榜功能，专注于标题和成绩值管理
+9. **数据库启动优化**：避免每次启动都执行数据库初始化，提升启动速度
+10. **菠萝币类型优化**：菠萝币字段已优化为整数类型，避免浮点数精度问题 

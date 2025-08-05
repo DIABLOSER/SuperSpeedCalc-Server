@@ -89,12 +89,12 @@ def update_user_boluo(object_id):
         user = MyUser.query.get_or_404(object_id)
         data = request.get_json()
         
-        boluo_change = data.get('boluo_change', 0.0)
+        boluo_change = data.get('boluo_change', 0)
         user.boluo += boluo_change
         
         # 确保菠萝币不为负数
         if user.boluo < 0:
-            user.boluo = 0.0
+            user.boluo = 0
         
         user.updatedAt = datetime.utcnow()
         db.session.commit()

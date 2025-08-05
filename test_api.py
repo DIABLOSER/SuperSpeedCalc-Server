@@ -39,7 +39,7 @@ def test_user_apis():
         "bio": "这是一个测试用户",
         "score": 100,
         "experence": 50,
-        "boluo": 10.5
+        "boluo": 10
     }
     
     print("  Creating user...")
@@ -51,7 +51,7 @@ def test_user_apis():
         print(f"     User ID: {user_id}")
         print(f"     Score: {user.get('score', 0)}")
         print(f"     Experience: {user.get('experence', 0)}")
-        print(f"     Boluo: {user.get('boluo', 0.0)}")
+        print(f"     Boluo: {user.get('boluo', 0)}")
         
         # 获取用户
         print("  Getting user...")
@@ -97,12 +97,12 @@ def test_user_apis():
         
         # 测试菠萝币更新
         print("  Testing boluo update...")
-        boluo_data = {"boluo_change": 5.5}
+        boluo_data = {"boluo_change": 5}
         response = requests.post(f"{BASE_URL}/api/users/{user_id}/boluo", json=boluo_data)
         if response.status_code == 200:
             print("  ✅ Boluo updated successfully")
             user_updated = response.json()['data']
-            print(f"     New Boluo: {user_updated.get('boluo', 0.0)}")
+            print(f"     New Boluo: {user_updated.get('boluo', 0)}")
         
         return user_id
     else:
