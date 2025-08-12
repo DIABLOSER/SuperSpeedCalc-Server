@@ -13,9 +13,6 @@ class MyUser(BaseModel):
     # 用户密码，最大255字符，不可为空，存储加密后的密码
     password = db.Column(db.String(255), nullable=False)
     
-    # 用户昵称，最大50字符，可为空，用于显示用户友好名称
-    nickname = db.Column(db.String(50))
-    
     # 用户头像地址，最大255字符，可为空
     avatar = db.Column(db.String(255))
     
@@ -34,8 +31,14 @@ class MyUser(BaseModel):
     # 用户状态，布尔类型，默认True，表示账户是否处于激活状态
     isActive = db.Column(db.Boolean, default=True)
     
-    # 最后登录时间，可为空，记录用户最近一次登录的时间
-    lastLogin = db.Column(db.DateTime)
+    # 新增：是否管理员，布尔类型，默认False
+    admin = db.Column(db.Boolean, default=False)
+    
+    # 新增：性别，1 表示男，0 表示女，默认 1
+    sex = db.Column(db.Integer, default=1)
+    
+    # 新增：生日，日期类型，可为空（格式建议 YYYY-MM-DD）
+    birthday = db.Column(db.Date)
     
     # 关系定义：用户拥有的图表列表，级联删除（删除用户时删除其所有图表）
     charts = db.relationship('Charts', backref='user_ref', lazy=True, cascade='all, delete-orphan')

@@ -16,20 +16,6 @@ class Image(BaseModel):
     # 文件大小，整数类型，单位为字节，可为空
     fileSize = db.Column(db.Integer)
     
-    # 文件类型，最大50字符，可为空，如：image/jpeg, image/png
-    fileType = db.Column(db.String(50))
-    
-    # 图片宽度，整数类型，可为空，单位像素
-    width = db.Column(db.Integer)
-    
-    # 图片高度，整数类型，可为空，单位像素
-    height = db.Column(db.Integer)
-    
-    # 图片描述，文本类型，可为空，用于图片说明
-    description = db.Column(db.Text)
-    
-    # 外键：关联用户表的objectId，可为空，表示图片的上传者
-    user = db.Column(db.String(20), db.ForeignKey('my_user.objectId'))
-    
+
     def __repr__(self):
         return f'<Image {self.fileName}>' 

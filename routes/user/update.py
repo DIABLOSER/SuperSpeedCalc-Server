@@ -10,10 +10,20 @@ def update_user(object_id):
         data = request.get_json()
         
         # 更新允许的字段
-        allowed_fields = ['nickname', 'avatar', 'bio', 'isActive', 'score', 'experence', 'boluo']
+        allowed_fields = ['avatar', 'bio', 'isActive', 'score', 'experence', 'boluo', 'admin', 'sex']
         for field in allowed_fields:
             if field in data:
                 setattr(user, field, data[field])
+        
+        # 解析并更新生日（可选，格式 YYYY-MM-DD）
+        if 'birthday' in data:
+            if data['birthday']:
+                try:
+                    user.birthday = datetime.strptime(data['birthday'], '%Y-%m-%d').date()
+                except ValueError:
+                    return jsonify({'success': False, 'error': 'Invalid birthday format, expected YYYY-MM-DD'}), 400
+            else:
+                user.birthday = None
         
         # 特殊处理密码
         if 'password' in data:

@@ -34,7 +34,6 @@ def test_user_apis():
         "username": "testuser001",
         "email": "test001@example.com",
         "password": "password123",
-        "nickname": "测试用户001",
         "avatar": "https://example.com/avatar.jpg",
         "bio": "这是一个测试用户",
         "score": 100,
@@ -69,7 +68,6 @@ def test_user_apis():
         # 更新用户
         print("  Updating user...")
         update_data = {
-            "nickname": "更新后的昵称",
             "avatar": "https://example.com/new-avatar.jpg",
             "score": 200
         }

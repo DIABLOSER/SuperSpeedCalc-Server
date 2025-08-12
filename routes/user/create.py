@@ -1,6 +1,7 @@
 from flask import request, jsonify
 from models import db, MyUser
 from werkzeug.security import generate_password_hash
+from datetime import datetime
 
 def create_user():
     """创建新用户"""
@@ -20,17 +21,28 @@ def create_user():
         if MyUser.query.filter_by(email=data['email']).first():
             return jsonify({'success': False, 'error': 'Email already exists'}), 400
         
+        # 解析生日（可选，格式 YYYY-MM-DD）
+        birthday_value = None
+        if 'birthday' in data and data['birthday']:
+            try:
+                birthday_value = datetime.strptime(data['birthday'], '%Y-%m-%d').date()
+            except ValueError:
+                return jsonify({'success': False, 'error': 'Invalid birthday format, expected YYYY-MM-DD'}), 400
+        
         # 创建新用户
         user = MyUser(
             username=data['username'],
             email=data['email'],
             password=generate_password_hash(data['password']),
-            nickname=data.get('nickname'),
             avatar=data.get('avatar'),
             bio=data.get('bio'),
             score=data.get('score', 0),
             experence=data.get('experence', 0),
-            boluo=data.get('boluo', 0)
+            boluo=data.get('boluo', 0),
+            isActive=data.get('isActive', True),
+            admin=data.get('admin', False),
+            sex=data.get('sex', 1),
+            birthday=birthday_value
         )
         
         db.session.add(user)
@@ -49,7 +61,6 @@ def login():
     """用户登录"""
     try:
         from werkzeug.security import check_password_hash
-        from datetime import datetime
         
         data = request.get_json()
         username = data.get('username')
@@ -61,9 +72,6 @@ def login():
         user = MyUser.query.filter_by(username=username).first()
         
         if user and check_password_hash(user.password, password):
-            user.lastLogin = datetime.utcnow()
-            db.session.commit()
-            
             return jsonify({
                 'success': True,
                 'data': user.to_dict(),

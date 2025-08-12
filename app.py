@@ -8,6 +8,9 @@ def create_app(config_name='default'):
     """应用工厂函数"""
     app = Flask(__name__)
     app.config.from_object(config[config_name])
+
+    # 允许路由末尾斜杠差异，不做 308 重定向
+    app.url_map.strict_slashes = False
     
     # 初始化扩展
     db.init_app(app)
