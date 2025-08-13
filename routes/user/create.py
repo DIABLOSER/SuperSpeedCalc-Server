@@ -62,14 +62,21 @@ def login():
     try:
         from werkzeug.security import check_password_hash
         
-        data = request.get_json()
+        data = request.get_json() or {}
         username = data.get('username')
+        email = data.get('email')
         password = data.get('password')
         
-        if not username or not password:
-            return jsonify({'success': False, 'error': 'Username and password are required'}), 400
+        if not password:
+            return jsonify({'success': False, 'error': 'Password is required'}), 400
+        if not username and not email:
+            return jsonify({'success': False, 'error': 'Username or email is required'}), 400
         
-        user = MyUser.query.filter_by(username=username).first()
+        user = None
+        if username:
+            user = MyUser.query.filter_by(username=username).first()
+        elif email:
+            user = MyUser.query.filter_by(email=email).first()
         
         if user and check_password_hash(user.password, password):
             return jsonify({
