@@ -1,5 +1,5 @@
 import os
-from flask import Flask, jsonify
+from flask import Flask, jsonify, send_from_directory
 from flask_cors import CORS
 from config import config
 from models import db
@@ -23,6 +23,18 @@ def create_app(config_name='default'):
     app.register_blueprint(charts_bp, url_prefix='/api/charts')
     app.register_blueprint(forum_bp, url_prefix='/api/forum')
     app.register_blueprint(image_bp, url_prefix='/api/images')
+    
+    # 静态文件：uploads/images 与兼容的 /static/images 映射
+    uploads_dir = os.path.join(app.root_path, 'uploads', 'images')
+    os.makedirs(uploads_dir, exist_ok=True)
+
+    @app.route('/uploads/images/<path:filename>')
+    def serve_uploaded_image(filename):
+        return send_from_directory(uploads_dir, filename)
+
+    @app.route('/static/images/<path:filename>')
+    def serve_legacy_static_image(filename):
+        return send_from_directory(uploads_dir, filename)
     
     # 错误处理
     @app.errorhandler(404)

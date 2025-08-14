@@ -1,5 +1,5 @@
 from flask import Blueprint
-from .create import create_user, login
+from .create import create_user, register_user, login
 from .read import get_users, get_user, get_users_count
 from .update import update_user, update_user_score, update_user_experence, update_user_boluo
 from .delete import delete_user
@@ -9,6 +9,7 @@ user_bp = Blueprint('user', __name__)
 
 # 注册路由 - 创建操作
 user_bp.route('/', methods=['POST'])(create_user)
+user_bp.route('/register', methods=['POST'])(register_user)
 user_bp.route('/login', methods=['POST'])(login)
 
 # 注册路由 - 查询操作

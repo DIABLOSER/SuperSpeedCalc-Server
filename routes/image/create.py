@@ -40,8 +40,8 @@ def save_uploaded_file(file, upload_folder='uploads/images'):
     file_path = os.path.join(upload_folder, unique_filename)
     file.save(file_path)
     
-    # 生成URL（这里可以根据实际情况调整）
-    file_url = f"/static/images/{unique_filename}"
+    # 生成URL（与应用静态路由匹配）
+    file_url = f"/uploads/images/{unique_filename}"
     
     return {
         'fileName': unique_filename,

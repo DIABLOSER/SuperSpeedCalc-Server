@@ -17,10 +17,10 @@ SuperSpeedCalc-Server/
 ├── requirements.txt      # 项目依赖
 ├── routes/              # API 路由
 │   ├── __init__.py
-│   ├── user_routes.py   # 用户相关 API
-│   ├── charts_routes.py # 图表相关 API
-│   └── forum_routes.py  # 论坛相关 API
-├── test_api.py          # API 测试脚本
+│   ├── user/            # 用户相关 API（蓝图）
+│   ├── charts/          # 图表相关 API（蓝图）
+│   └── forum/           # 论坛相关 API（蓝图）
+├── scripts/             # 实用脚本（数据库迁移等）
 ├── start.py             # 启动脚本
 └── README.md           # 项目说明
 ```
@@ -30,7 +30,8 @@ SuperSpeedCalc-Server/
 ### MyUser 表（用户表）
 - `objectId` (String, Primary Key): 用户唯一标识 
 - `username` (String, Unique): 用户名
-- `email` (String, Unique): 邮箱
+- `email` (String, Unique, Nullable): 邮箱（可为空）
+- `mobile` (String, Unique, Nullable): 手机号（可为空）
 - `password` (String): 密码（加密存储）
 - `avatar` (String): 头像地址
 - `bio` (Text): 个人简介
@@ -116,6 +117,15 @@ python manage_db.py reset
 python manage_db.py help
 ```
 
+### 变更迁移
+- 新增了 `mobile` 字段，并将 `email` 改为可空；已有数据库请执行：
+```bash
+python scripts/migrate_add_user_fields.py
+```
+该脚本会：
+- 自动添加 `mobile` 列并创建唯一索引
+- 将 `email` 改为可空（SQLite 采用表重建方式）
+
 ### 3. 应用地址
 
 应用将在 `http://localhost:5000` 启动。
@@ -124,16 +134,51 @@ python manage_db.py help
 
 ### 用户 API (`/api/users`)
 
-- `GET /api/users` - 获取所有用户（支持排序与分页：sort_by, order, page, per_page）
+- `GET /api/users` - 获取所有用户
+  - 分页：`page`、`per_page`
+  - 排序：`sort_by`（支持 `username`、`email`、`mobile`、`score`、`experence`、`boluo`、`isActive`、`admin`、`sex`、`birthday`、`createdAt`、`updatedAt`）、`order`（`asc`/`desc`）
+  - 模糊搜索：`keyword` 或 `q`（对 `username`、`email`、`mobile` 进行不区分大小写匹配）
 - `GET /api/users/count` - 获取用户总数
 - `GET /api/users/<object_id>` - 获取单个用户
-- `POST /api/users` - 创建用户
+- `POST /api/users` - 创建用户（后台管理）
+  - 必填：`username`、`password`
+  - 二选一：`email` 或 `mobile`
+  - 可选：`avatar`、`bio`、`score`、`experence`、`boluo`、`isActive`、`admin`、`sex`、`birthday`
+- `POST /api/users/register` - 注册用户（安卓/客户端）
+  - 必填：`password`
+  - 二选一：`email` 或 `mobile`
+  - 自动：`username`（服务端按“形容词+名词+时间戳后6位”生成，并保证唯一）
+- `POST /api/users/login` - 用户登录
+  - 方式一：`email` + `password`
+  - 方式二：`mobile` + `password`
 - `PUT /api/users/<object_id>` - 更新用户
 - `DELETE /api/users/<object_id>` - 删除用户
-- `POST /api/users/login` - 用户登录
 - `POST /api/users/<object_id>/score` - 更新用户积分
 - `POST /api/users/<object_id>/experence` - 更新用户经验值
 - `POST /api/users/<object_id>/boluo` - 更新用户菠萝币
+
+#### 示例
+- 注册（邮箱）
+```json
+{ "email": "a@b.com", "password": "xxx" }
+```
+- 注册（手机号）
+```json
+{ "mobile": "13800000000", "password": "xxx" }
+```
+- 登录（邮箱）
+```json
+{ "email": "a@b.com", "password": "xxx" }
+```
+- 登录（手机号）
+```json
+{ "mobile": "13800000000", "password": "xxx" }
+```
+- 列表模糊搜索
+```
+GET /api/users?keyword=cat
+GET /api/users?q=138
+```
 
 ### 图表 API (`/api/charts`)
 

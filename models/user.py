@@ -7,8 +7,11 @@ class MyUser(BaseModel):
     # 用户名，最大50字符，唯一且不可为空，用于登录和显示
     username = db.Column(db.String(50), unique=True, nullable=False)
     
-    # 邮箱地址，最大100字符，唯一且不可为空，用于登录和通知
-    email = db.Column(db.String(100), unique=True, nullable=False)
+    # 邮箱地址，最大100字符，唯一，可为空，用于登录和通知
+    email = db.Column(db.String(100), unique=True)
+    
+    # 手机号，最大20字符，唯一且可为空
+    mobile = db.Column(db.String(20), unique=True)
     
     # 用户密码，最大255字符，不可为空，存储加密后的密码
     password = db.Column(db.String(255), nullable=False)
