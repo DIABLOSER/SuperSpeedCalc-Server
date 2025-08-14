@@ -73,7 +73,7 @@ SuperSpeedCalc-Server/
 - `objectId` (String, Primary Key): 图片唯一标识
 - `fileName` (String): 图片文件名
 - `path` (String): 图片本地路径
-- `url` (String): 图片访问URL
+- `url` (String): 图片访问URL（如：`/uploads/images/<filename>`）
 - `fileSize` (Integer): 文件大小（字节）
 - `createdAt` (DateTime): 创建时间
 - `updatedAt` (DateTime): 更新时间
@@ -125,6 +125,12 @@ python scripts/migrate_add_user_fields.py
 该脚本会：
 - 自动添加 `mobile` 列并创建唯一索引
 - 将 `email` 改为可空（SQLite 采用表重建方式）
+
+### 静态文件/上传
+- 上传文件保存到项目下 `uploads/images/`
+- 访问 URL：
+  - 新路径：`/uploads/images/<filename>`
+  - 兼容旧路径：`/static/images/<filename>`（映射到同一目录）
 
 ### 3. 应用地址
 
@@ -190,24 +196,16 @@ GET /api/users?q=138
 - `GET /api/charts/leaderboard` - 获取排行榜（按成绩值排序）
 - `POST /api/charts/<object_id>/achievement` - 更新图表成绩值
 
-### 论坛 API (`/api/forum`)
-
-- `GET /api/forum` - 获取帖子列表（支持分页和查询参数：category、user、isPinned、public）
-- `GET /api/forum/<object_id>` - 获取单个帖子
-- `POST /api/forum` - 创建帖子
-- `PUT /api/forum/<object_id>` - 更新帖子
-- `DELETE /api/forum/<object_id>` - 删除帖子
-- `POST /api/forum/<object_id>/like` - 给帖子点赞
-- `GET /api/forum/categories` - 获取所有分类
-- `GET /api/forum/popular` - 获取热门帖子
-- `GET /api/forum/public` - 获取公开帖子
-
 ### 图片 API (`/api/images`)
 
-- `GET /api/images` - 获取图片列表（支持分页）
+- `GET /api/images` - 获取图片列表
+  - 分页：`page`、`per_page`
+  - 排序：`sort_by`（支持 `fileName`、`fileSize`、`createdAt`、`updatedAt`）、`order`（`asc`/`desc`）
 - `GET /api/images/<object_id>` - 获取单个图片
+- `GET /api/images/stats` - 获取图片统计信息（总数量、总大小）
+- `GET /api/images/search` - 按文件名搜索（参数：`q`）
 - `POST /api/images` - 创建图片记录（JSON方式）
 - `PUT /api/images/<object_id>` - 更新图片信息
 - `DELETE /api/images/<object_id>` - 删除图片
-- `POST /api/images/upload` - 上传单个图片文件
-- `POST /api/images/upload/multiple`
+- `POST /api/images/upload` - 上传单个图片文件（multipart/form-data，字段名：`file`）
+- `POST /api/images/upload/multiple` - 批量上传图片文件（multipart/form-data，字段名：`files`）
