@@ -67,13 +67,78 @@ def get_chart(object_id):
         return jsonify({'success': False, 'error': str(e)}), 404
 
 def get_leaderboard():
-    """获取排行榜（按成绩值排序）"""
+    """获取排行榜（按成绩值排序，支持分页）"""
     try:
-        limit = request.args.get('limit', 10, type=int)
-        charts = Charts.query.order_by(Charts.achievement.desc()).limit(limit).all()
+        page = request.args.get('page', 1, type=int)
+        per_page = request.args.get('per_page', 10, type=int)
+        page = max(page or 1, 1)
+        per_page = min(max(per_page or 10, 1), 100)
+
+        query = Charts.query.order_by(Charts.achievement.desc())
+        total = query.count()
+        charts = query.limit(per_page).offset((page - 1) * per_page).all()
+        pages = (total + per_page - 1) // per_page if per_page else 1
+
         return jsonify({
             'success': True,
-            'data': [chart.to_dict() for chart in charts]
+            'data': [chart.to_dict() for chart in charts],
+            'pagination': {
+                'page': page,
+                'per_page': per_page,
+                'total': total,
+                'pages': pages
+            }
+        })
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500 
+
+def get_rank_by_title_achievement():
+    """根据 title 和 achievement 查询排名
+    查询参数：
+    - title (必填)
+    - achievement (必填，float)
+    - scope (可选，global|title，默认 global)
+    规则：按 achievement 降序，排名为（比该分数高的数量 + 1）。同分并列。
+    """
+    try:
+        title = (request.args.get('title') or '').strip()
+        achievement_str = (request.args.get('achievement') or '').strip()
+        scope = (request.args.get('scope') or 'global').lower()
+
+        if not title:
+            return jsonify({'success': False, 'error': 'title is required'}), 400
+        if not achievement_str:
+            return jsonify({'success': False, 'error': 'achievement is required'}), 400
+        try:
+            achievement = float(achievement_str)
+        except ValueError:
+            return jsonify({'success': False, 'error': 'achievement must be a number'}), 400
+
+        base_query = Charts.query
+        if scope == 'title':
+            base_query = base_query.filter_by(title=title)
+
+        total = base_query.count()
+        higher_count = base_query.filter(Charts.achievement > achievement).count()
+        ties_count = base_query.filter(Charts.achievement == achievement).count()
+        rank = higher_count + 1
+
+        # 可选：查找是否存在匹配 title 与 achievement 的记录（可能有多条）
+        sample = base_query.filter(Charts.title == title, Charts.achievement == achievement).first()
+        sample_data = sample.to_dict() if sample else None
+
+        return jsonify({
+            'success': True,
+            'data': {
+                'title': title,
+                'achievement': achievement,
+                'scope': scope,
+                'rank': rank,
+                'higher_count': higher_count,
+                'ties_count': ties_count,
+                'total': total,
+                'sample': sample_data
+            }
         })
     except Exception as e:
         return jsonify({'success': False, 'error': str(e)}), 500 

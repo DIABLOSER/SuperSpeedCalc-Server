@@ -138,6 +138,17 @@ python scripts/migrate_add_user_fields.py
 
 ## API 接口
 
+### 分页约定
+- 查询参数：`page`（默认 1），`per_page`（默认 10 或 20，视接口而定，最大 100 或 200）。
+- 返回结构：列表接口统一返回
+```json
+{
+  "success": true,
+  "data": [/* 列表数据 */],
+  "pagination": { "page": 1, "per_page": 20, "total": 123, "pages": 7 }
+}
+```
+
 ### 用户 API (`/api/users`)
 
 - `GET /api/users` - 获取所有用户
@@ -164,22 +175,6 @@ python scripts/migrate_add_user_fields.py
 - `POST /api/users/<object_id>/boluo` - 更新用户菠萝币
 
 #### 示例
-- 注册（邮箱）
-```json
-{ "email": "a@b.com", "password": "xxx" }
-```
-- 注册（手机号）
-```json
-{ "mobile": "13800000000", "password": "xxx" }
-```
-- 登录（邮箱）
-```json
-{ "email": "a@b.com", "password": "xxx" }
-```
-- 登录（手机号）
-```json
-{ "mobile": "13800000000", "password": "xxx" }
-```
 - 列表模糊搜索
 ```
 GET /api/users?keyword=cat
@@ -188,13 +183,41 @@ GET /api/users?q=138
 
 ### 图表 API (`/api/charts`)
 
-- `GET /api/charts` - 获取图表列表（支持查询参数：user）
+- `GET /api/charts` - 获取图表列表
+  - 分页：`page`、`per_page`
+  - 过滤：`user`
+  - 排序：`sort_by`（`objectId`、`title`、`achievement`、`user`、`createdAt`、`updatedAt`），`order`（`asc`/`desc`）
 - `GET /api/charts/<object_id>` - 获取单个图表
 - `POST /api/charts` - 创建图表
 - `PUT /api/charts/<object_id>` - 更新图表
 - `DELETE /api/charts/<object_id>` - 删除图表
-- `GET /api/charts/leaderboard` - 获取排行榜（按成绩值排序）
+- `GET /api/charts/leaderboard` - 获取排行榜（按成绩值降序，支持分页）
+  - 分页：`page`、`per_page`
+- `GET /api/charts/rank` - 根据 `title` 与 `achievement` 查询排名
+  - 必填：`title`、`achievement`
+  - 可选：`scope=global|title`（默认 `global`）
+  - 说明：按 `achievement` 降序，排名 = 比该分数更高的数量 + 1（同分并列）
+  - 示例：`/api/charts/rank?title=Speed%20Run&achievement=123.45&scope=title`
 - `POST /api/charts/<object_id>/achievement` - 更新图表成绩值
+
+### 论坛 API (`/api/forum`)
+
+- `GET /api/forum` - 获取帖子列表
+  - 分页：`page`、`per_page`
+  - 过滤：`category`、`user`、`isPinned`（`true|false`）、`public`（`true|false`）
+  - 排序：置顶优先（`isPinned` 降序），其后按 `createdAt` 降序
+- `GET /api/forum/<object_id>` - 获取单个帖子
+- `GET /api/forum/categories` - 获取所有帖子分类（支持分页）
+  - 分页：`page`、`per_page`
+- `GET /api/forum/popular` - 获取热门帖子（支持分页）
+  - 分页：`page`、`per_page`
+  - 排序：`sort_by=viewCount|likeCount`
+- `GET /api/forum/public` - 获取公开帖子（支持分页）
+  - 分页：`page`、`per_page`
+- `POST /api/forum` - 创建帖子
+- `PUT /api/forum/<object_id>` - 更新帖子
+- `POST /api/forum/<object_id>/like` - 点赞
+- `DELETE /api/forum/<object_id>` - 删除帖子
 
 ### 图片 API (`/api/images`)
 
@@ -203,7 +226,9 @@ GET /api/users?q=138
   - 排序：`sort_by`（支持 `fileName`、`fileSize`、`createdAt`、`updatedAt`）、`order`（`asc`/`desc`）
 - `GET /api/images/<object_id>` - 获取单个图片
 - `GET /api/images/stats` - 获取图片统计信息（总数量、总大小）
-- `GET /api/images/search` - 按文件名搜索（参数：`q`）
+- `GET /api/images/search` - 按文件名搜索
+  - 参数：`q`
+  - 分页：`page`、`per_page`
 - `POST /api/images` - 创建图片记录（JSON方式）
 - `PUT /api/images/<object_id>` - 更新图片信息
 - `DELETE /api/images/<object_id>` - 删除图片

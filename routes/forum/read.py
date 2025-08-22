@@ -59,45 +59,92 @@ def get_forum_post(object_id):
         return jsonify({'success': False, 'error': str(e)}), 404
 
 def get_categories():
-    """获取所有帖子分类"""
+    """获取所有帖子分类（支持分页）"""
     try:
-        # 获取所有不为空的分类
-        categories = db.session.query(Forum.category).filter(Forum.category.isnot(None)).distinct().all()
-        categories = [cat[0] for cat in categories if cat[0]]
-        
+        page = request.args.get('page', 1, type=int)
+        per_page = request.args.get('per_page', 50, type=int)
+        page = max(page or 1, 1)
+        per_page = min(max(per_page or 50, 1), 200)
+
+        base_query = db.session.query(Forum.category).filter(Forum.category.isnot(None)).distinct()
+        # 排序：按分类名称升序，确保分页稳定
+        base_query = base_query.order_by(Forum.category.asc())
+
+        # 统计总数（去重后的分类数）
+        total = db.session.query(db.func.count(db.func.distinct(Forum.category))).scalar() or 0
+        items = base_query.limit(per_page).offset((page - 1) * per_page).all()
+        categories = [cat[0] for cat in items if cat[0]]
+
+        pages = (total + per_page - 1) // per_page if per_page else 1
+
         return jsonify({
             'success': True,
-            'data': categories
+            'data': categories,
+            'pagination': {
+                'page': page,
+                'per_page': per_page,
+                'total': total,
+                'pages': pages
+            }
         })
     except Exception as e:
         return jsonify({'success': False, 'error': str(e)}), 500
 
 def get_popular_posts():
-    """获取热门帖子（按浏览次数或点赞数排序）"""
+    """获取热门帖子（按浏览次数或点赞数排序，支持分页）"""
     try:
-        limit = request.args.get('limit', 10, type=int)
+        page = request.args.get('page', 1, type=int)
+        per_page = request.args.get('per_page', 10, type=int)
+        page = max(page or 1, 1)
+        per_page = min(max(per_page or 10, 1), 100)
+
         sort_by = request.args.get('sort_by', 'viewCount')  # viewCount 或 likeCount
-        
+
+        query = Forum.query
         if sort_by == 'likeCount':
-            posts = Forum.query.order_by(Forum.likeCount.desc()).limit(limit).all()
+            query = query.order_by(Forum.likeCount.desc())
         else:
-            posts = Forum.query.order_by(Forum.viewCount.desc()).limit(limit).all()
-        
+            query = query.order_by(Forum.viewCount.desc())
+
+        total = query.count()
+        posts = query.limit(per_page).offset((page - 1) * per_page).all()
+        pages = (total + per_page - 1) // per_page if per_page else 1
+
         return jsonify({
             'success': True,
-            'data': [post.to_dict() for post in posts]
+            'data': [post.to_dict() for post in posts],
+            'pagination': {
+                'page': page,
+                'per_page': per_page,
+                'total': total,
+                'pages': pages
+            }
         })
     except Exception as e:
         return jsonify({'success': False, 'error': str(e)}), 500
 
 def get_public_posts():
-    """获取所有公开的社区帖子"""
+    """获取所有公开的社区帖子（支持分页）"""
     try:
-        limit = request.args.get('limit', 20, type=int)
-        posts = Forum.query.filter_by(public=True).order_by(Forum.createdAt.desc()).limit(limit).all()
+        page = request.args.get('page', 1, type=int)
+        per_page = request.args.get('per_page', 20, type=int)
+        page = max(page or 1, 1)
+        per_page = min(max(per_page or 20, 1), 100)
+
+        query = Forum.query.filter_by(public=True).order_by(Forum.createdAt.desc())
+        total = query.count()
+        posts = query.limit(per_page).offset((page - 1) * per_page).all()
+        pages = (total + per_page - 1) // per_page if per_page else 1
+
         return jsonify({
             'success': True,
-            'data': [post.to_dict() for post in posts]
+            'data': [post.to_dict() for post in posts],
+            'pagination': {
+                'page': page,
+                'per_page': per_page,
+                'total': total,
+                'pages': pages
+            }
         })
     except Exception as e:
         return jsonify({'success': False, 'error': str(e)}), 500 
