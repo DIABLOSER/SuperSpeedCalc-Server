@@ -32,7 +32,7 @@ def create_forum_post():
         
         return jsonify({
             'success': True,
-            'data': post.to_dict()
+            'data': post.to_dict(include_user=True)
         }), 201
         
     except Exception as e:

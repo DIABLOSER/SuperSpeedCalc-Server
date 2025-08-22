@@ -31,7 +31,7 @@ def get_forum_posts():
         
         return jsonify({
             'success': True,
-            'data': [post.to_dict() for post in posts.items],
+            'data': [post.to_dict(include_user=True) for post in posts.items],
             'pagination': {
                 'page': page,
                 'per_page': per_page,
@@ -53,7 +53,7 @@ def get_forum_post(object_id):
         
         return jsonify({
             'success': True,
-            'data': post.to_dict()
+            'data': post.to_dict(include_user=True)
         })
     except Exception as e:
         return jsonify({'success': False, 'error': str(e)}), 404
@@ -112,7 +112,7 @@ def get_popular_posts():
 
         return jsonify({
             'success': True,
-            'data': [post.to_dict() for post in posts],
+            'data': [post.to_dict(include_user=True) for post in posts],
             'pagination': {
                 'page': page,
                 'per_page': per_page,
@@ -138,7 +138,7 @@ def get_public_posts():
 
         return jsonify({
             'success': True,
-            'data': [post.to_dict() for post in posts],
+            'data': [post.to_dict(include_user=True) for post in posts],
             'pagination': {
                 'page': page,
                 'per_page': per_page,

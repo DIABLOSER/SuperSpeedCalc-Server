@@ -19,7 +19,7 @@ def update_chart(object_id):
         
         return jsonify({
             'success': True,
-            'data': chart.to_dict()
+            'data': chart.to_dict(include_user=True)
         })
         
     except Exception as e:
@@ -32,20 +32,22 @@ def update_achievement(object_id):
         chart = Charts.query.get_or_404(object_id)
         data = request.get_json()
         
-        achievement_change = data.get('achievement_change', 0.0)
-        chart.achievement += achievement_change
+        if 'achievement' not in data:
+            return jsonify({'success': False, 'error': 'achievement is required'}), 400
         
-        # 确保成绩值不为负数
-        if chart.achievement < 0:
-            chart.achievement = 0.0
+        try:
+            achievement = float(data['achievement'])
+        except (ValueError, TypeError):
+            return jsonify({'success': False, 'error': 'achievement must be a number'}), 400
         
+        chart.achievement = achievement
         chart.updatedAt = datetime.utcnow()
         db.session.commit()
         
         return jsonify({
             'success': True,
-            'data': chart.to_dict(),
-            'message': f'Achievement updated by {achievement_change}'
+            'data': chart.to_dict(include_user=True),
+            'message': 'Achievement updated successfully'
         })
         
     except Exception as e:

@@ -29,7 +29,7 @@ def create_chart():
         
         return jsonify({
             'success': True,
-            'data': chart.to_dict()
+            'data': chart.to_dict(include_user=True)
         }), 201
         
     except Exception as e:

@@ -43,7 +43,7 @@ def get_charts():
         
         return jsonify({
             'success': True,
-            'data': [chart.to_dict() for chart in items],
+            'data': [chart.to_dict(include_user=True) for chart in items],
             'pagination': {
                 'page': page,
                 'per_page': per_page,
@@ -61,7 +61,7 @@ def get_chart(object_id):
         
         return jsonify({
             'success': True,
-            'data': chart.to_dict()
+            'data': chart.to_dict(include_user=True)
         })
     except Exception as e:
         return jsonify({'success': False, 'error': str(e)}), 404
@@ -81,7 +81,7 @@ def get_leaderboard():
 
         return jsonify({
             'success': True,
-            'data': [chart.to_dict() for chart in charts],
+            'data': [chart.to_dict(include_user=True) for chart in charts],
             'pagination': {
                 'page': page,
                 'per_page': per_page,
@@ -90,7 +90,7 @@ def get_leaderboard():
             }
         })
     except Exception as e:
-        return jsonify({'success': False, 'error': str(e)}), 500 
+        return jsonify({'success': False, 'error': str(e)}), 500
 
 def get_rank_by_title_achievement():
     """根据 title 和 achievement 查询排名
@@ -125,7 +125,7 @@ def get_rank_by_title_achievement():
 
         # 可选：查找是否存在匹配 title 与 achievement 的记录（可能有多条）
         sample = base_query.filter(Charts.title == title, Charts.achievement == achievement).first()
-        sample_data = sample.to_dict() if sample else None
+        sample_data = sample.to_dict(include_user=True) if sample else None
 
         return jsonify({
             'success': True,

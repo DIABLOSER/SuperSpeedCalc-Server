@@ -19,7 +19,7 @@ def update_forum_post(object_id):
         
         return jsonify({
             'success': True,
-            'data': post.to_dict()
+            'data': post.to_dict(include_user=True)
         })
         
     except Exception as e:
@@ -30,13 +30,15 @@ def like_forum_post(object_id):
     """给社区帖子点赞"""
     try:
         post = Forum.query.get_or_404(object_id)
+        
+        # 增加点赞数
         post.likeCount += 1
         post.updatedAt = datetime.utcnow()
         db.session.commit()
         
         return jsonify({
             'success': True,
-            'data': post.to_dict(),
+            'data': post.to_dict(include_user=True),
             'message': 'Post liked successfully'
         })
         
