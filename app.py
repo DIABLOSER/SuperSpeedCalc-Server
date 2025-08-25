@@ -130,4 +130,4 @@ if __name__ == '__main__':
     
     # 启动应用
     print("🚀 启动 SuperSpeedCalc Server...")
-    app.run(host='0.0.0.0', port=5000, debug=True) 
+    app.run(host='0.0.0.0', port=5003, debug=True) 
