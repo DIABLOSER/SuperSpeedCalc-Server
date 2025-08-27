@@ -37,7 +37,7 @@ def test_user_apis():
         "avatar": "https://example.com/avatar.jpg",
         "bio": "这是一个测试用户",
         "score": 100,
-        "experence": 50,
+        "experience": 50,
         "boluo": 10
     }
     
@@ -49,7 +49,7 @@ def test_user_apis():
         user_id = user['objectId']
         print(f"     User ID: {user_id}")
         print(f"     Score: {user.get('score', 0)}")
-        print(f"     Experience: {user.get('experence', 0)}")
+        print(f"     Experience: {user.get('experience', 0)}")
         print(f"     Boluo: {user.get('boluo', 0)}")
         
         # 获取用户
@@ -87,11 +87,11 @@ def test_user_apis():
         # 测试经验值更新
         print("  Testing experience update...")
         exp_data = {"exp_change": 25}
-        response = requests.post(f"{BASE_URL}/api/users/{user_id}/experence", json=exp_data)
+        response = requests.post(f"{BASE_URL}/api/users/{user_id}/experience", json=exp_data)
         if response.status_code == 200:
             print("  ✅ Experience updated successfully")
             user_updated = response.json()['data']
-            print(f"     New Experience: {user_updated.get('experence', 0)}")
+            print(f"     New Experience: {user_updated.get('experience', 0)}")
         
         # 测试菠萝币更新
         print("  Testing boluo update...")

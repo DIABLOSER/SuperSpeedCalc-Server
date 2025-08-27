@@ -40,7 +40,7 @@ SuperSpeedCalc-Server/
 - `avatar` (String): 头像地址
 - `bio` (Text): 个人简介
 - `score` (Integer): 用户积分，默认0
-- `experence` (Integer): 用户经验值，默认0
+- `experience` (Integer): 用户经验值，默认0
 - `boluo` (Integer): 菠萝币数量，默认0
 - `isActive` (Boolean): 是否激活
 - `admin` (Boolean): 是否管理员，默认False
@@ -169,6 +169,11 @@ python scripts/migrate_rename_user_id_to_user.py
 python scripts/migrate_rename_scope_to_score.py
 ```
 
+- 将 `my_user` 表中的 `experence` 字段重命名为 `experience`，已有数据库请执行：
+```bash
+python scripts/migrate_rename_experence_to_experience.py
+```
+
 ### 静态文件/上传
 - 上传文件保存到项目下 `uploads/images/`
 - 访问 URL：
@@ -222,14 +227,14 @@ python check_history_data.py
 
 - `GET /api/users` - 获取所有用户
   - 分页：`page`、`per_page`
-  - 排序：`sort_by`（支持 `username`、`email`、`mobile`、`score`、`experence`、`boluo`、`isActive`、`admin`、`sex`、`birthday`、`createdAt`、`updatedAt`）、`order`（`asc`/`desc`）
+  - 排序：`sort_by`（支持 `username`、`email`、`mobile`、`score`、`experience`、`boluo`、`isActive`、`admin`、`sex`、`birthday`、`createdAt`、`updatedAt`）、`order`（`asc`/`desc`）
   - 模糊搜索：`keyword` 或 `q`（对 `username`、`email`、`mobile` 进行不区分大小写匹配）
 - `GET /api/users/count` - 获取用户总数
 - `GET /api/users/<object_id>` - 获取单个用户
 - `POST /api/users` - 创建用户（后台管理）
   - 必填：`username`、`password`
   - 二选一：`email` 或 `mobile`
-  - 可选：`avatar`、`bio`、`score`、`experence`、`boluo`、`isActive`、`admin`、`sex`、`birthday`
+  - 可选：`avatar`、`bio`、`score`、`experience`、`boluo`、`isActive`、`admin`、`sex`、`birthday`
 - `POST /api/users/register` - 注册用户（安卓/客户端）
   - 必填：`password`
   - 二选一：`email` 或 `mobile`
@@ -240,7 +245,7 @@ python check_history_data.py
 - `PUT /api/users/<object_id>` - 更新用户
 - `DELETE /api/users/<object_id>` - 删除用户
 - `POST /api/users/<object_id>/score` - 更新用户积分
-- `POST /api/users/<object_id>/experence` - 更新用户经验值
+- `POST /api/users/<object_id>/experience` - 更新用户经验值
 - `POST /api/users/<object_id>/boluo` - 更新用户菠萝币
 
 #### 示例
@@ -436,7 +441,7 @@ curl "http://localhost:5003/api/history/?user=user123"
         "username": "玩家1",
         "avatar": "avatar.jpg",
         "score": 5000,
-        "experence": 100,
+        "experience": 100,
         "boluo": 50
       }
     }

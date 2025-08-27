@@ -25,7 +25,7 @@ class Charts(BaseModel):
                 'avatar': self.user_ref.avatar,
                 'bio': self.user_ref.bio,
                 'score': self.user_ref.score,
-                'experence': self.user_ref.experence,
+                'experience': self.user_ref.experience,
                 'boluo': self.user_ref.boluo,
                 'isActive': self.user_ref.isActive,
                 'admin': self.user_ref.admin,

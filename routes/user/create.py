@@ -10,7 +10,7 @@ class UserInfo:
     avatar = "https://example.com/avatar.jpg"
     bio = "这个人很懒，什么都没留下"
     score = 0
-    experence = 0
+    experience = 0
     boluo = 0
     isActive = True
     admin = False
@@ -88,7 +88,7 @@ def create_user():
             avatar=data.get('avatar'),
             bio=data.get('bio'),
             score=data.get('score', 0),
-            experence=data.get('experence', 0),
+            experience=data.get('experience', 0),
             boluo=data.get('boluo', 0),
             isActive=data.get('isActive', True),
             admin=data.get('admin', False),
@@ -149,7 +149,7 @@ def register_user():
             avatar=UserInfo.avatar,
             bio=UserInfo.bio,
             score=UserInfo.score,
-            experence=UserInfo.experence,
+            experience=UserInfo.experience,
             boluo=UserInfo.boluo,
             isActive=UserInfo.isActive,
             admin=UserInfo.admin,

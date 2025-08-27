@@ -25,7 +25,7 @@ def get_users():
             'email': MyUser.email,
             'mobile': MyUser.mobile,
             'score': MyUser.score,
-            'experence': MyUser.experence,
+            'experience': MyUser.experience,
             'boluo': MyUser.boluo,
             'isActive': MyUser.isActive,
             'admin': MyUser.admin,

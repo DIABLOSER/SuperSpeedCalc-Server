@@ -26,7 +26,7 @@ class MyUser(BaseModel):
     score = db.Column(db.Integer, default=0)
     
     # 用户经验值，整数类型，默认0，用于记录用户的经验积累
-    experence = db.Column(db.Integer, default=0)
+    experience = db.Column(db.Integer, default=0)
     
     # 菠萝数量，整数类型，默认0，用于记录用户的菠萝币或特殊货币
     boluo = db.Column(db.Integer, default=0)
