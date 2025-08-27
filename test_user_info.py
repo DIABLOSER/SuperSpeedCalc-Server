@@ -39,7 +39,7 @@ def test_user_info():
     print("\n2. 创建历史记录...")
     history_data = {
         'title': '测试用户信息',
-        'scope': 100,
+        'score': 100,
         'user': user_id
     }
     

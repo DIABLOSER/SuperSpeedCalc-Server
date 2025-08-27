@@ -110,7 +110,7 @@ def get_score_leaderboard():
             MyUser.birthday,
             MyUser.createdAt,
             MyUser.updatedAt,
-            func.sum(History.scope).label('total_score'),
+            func.sum(History.score).label('total_score'),
             func.count(History.objectId).label('history_count')
         ).join(History, MyUser.objectId == History.user)
         
@@ -209,7 +209,7 @@ def get_user_score_stats():
         # 今日统计
         today_start = now.replace(hour=0, minute=0, second=0, microsecond=0)
         today_stats = db.session.query(
-            func.sum(History.scope).label('total_score'),
+            func.sum(History.score).label('total_score'),
             func.count(History.objectId).label('count')
         ).filter(
             and_(History.user == user_id, History.createdAt >= today_start)
@@ -218,7 +218,7 @@ def get_user_score_stats():
         # 本月统计
         month_start = now.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
         month_stats = db.session.query(
-            func.sum(History.scope).label('total_score'),
+            func.sum(History.score).label('total_score'),
             func.count(History.objectId).label('count')
         ).filter(
             and_(History.user == user_id, History.createdAt >= month_start)
@@ -227,7 +227,7 @@ def get_user_score_stats():
         # 今年统计
         year_start = now.replace(month=1, day=1, hour=0, minute=0, second=0, microsecond=0)
         year_stats = db.session.query(
-            func.sum(History.scope).label('total_score'),
+            func.sum(History.score).label('total_score'),
             func.count(History.objectId).label('count')
         ).filter(
             and_(History.user == user_id, History.createdAt >= year_start)
@@ -235,7 +235,7 @@ def get_user_score_stats():
         
         # 总统计
         total_stats = db.session.query(
-            func.sum(History.scope).label('total_score'),
+            func.sum(History.score).label('total_score'),
             func.count(History.objectId).label('count')
         ).filter(History.user == user_id).first()
         

@@ -41,7 +41,7 @@ def test_leaderboard_api():
     for i in range(3):
         history_data = {
             'title': f'用户1测试记录{i+1}',
-            'scope': 100 + i * 50,  # 100, 150, 200
+            'score': 100 + i * 50,  # 100, 150, 200
             'user': test_users[0]['objectId']
         }
         
@@ -55,7 +55,7 @@ def test_leaderboard_api():
             if response.status_code == 201:
                 created_history = response.json().get('data')
                 history_ids.append(created_history['objectId'])
-                print(f"✅ 为用户1创建记录: {created_history['title']} (score: {created_history['scope']})")
+                print(f"✅ 为用户1创建记录: {created_history['title']} (score: {created_history['score']})")
             else:
                 print(f"❌ 创建历史记录失败: {response.status_code}")
                 return
@@ -67,7 +67,7 @@ def test_leaderboard_api():
     for i in range(2):
         history_data = {
             'title': f'用户2测试记录{i+1}',
-            'scope': 80 + i * 30,  # 80, 110
+            'score': 80 + i * 30,  # 80, 110
             'user': test_users[1]['objectId']
         }
         
@@ -81,7 +81,7 @@ def test_leaderboard_api():
             if response.status_code == 201:
                 created_history = response.json().get('data')
                 history_ids.append(created_history['objectId'])
-                print(f"✅ 为用户2创建记录: {created_history['title']} (score: {created_history['scope']})")
+                print(f"✅ 为用户2创建记录: {created_history['title']} (score: {created_history['score']})")
             else:
                 print(f"❌ 创建历史记录失败: {response.status_code}")
                 return

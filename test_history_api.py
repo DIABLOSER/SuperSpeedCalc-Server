@@ -38,7 +38,7 @@ def test_history_api():
     print("\n2. 创建历史记录...")
     history_data = {
         'title': '测试历史记录',
-        'scope': 100,
+        'score': 100,
         'user': user_id
     }
     
@@ -88,7 +88,7 @@ def test_history_api():
     print("\n5. 更新历史记录...")
     update_data = {
         'title': '更新后的历史记录',
-        'scope': 200
+        'score': 200
     }
     
     try:
@@ -100,7 +100,7 @@ def test_history_api():
         
         if response.status_code == 200:
             updated_history = response.json().get('data')
-            print(f"✅ 历史记录更新成功: {updated_history['title']} (scope: {updated_history['scope']})")
+            print(f"✅ 历史记录更新成功: {updated_history['title']} (score: {updated_history['score']})")
         else:
             print(f"❌ 更新历史记录失败: {response.status_code}")
     except Exception as e:

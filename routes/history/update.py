@@ -20,12 +20,12 @@ def update_history(object_id):
                 return jsonify({'error': '标题不能为空'}), 400
             history.title = data['title']
         
-        if 'scope' in data:
+        if 'score' in data:
             try:
-                scope = int(data['scope'])
-                history.scope = scope
+                score = int(data['score'])
+                history.score = score
             except (ValueError, TypeError):
-                return jsonify({'error': '数值范围必须是整数'}), 400
+                return jsonify({'error': '分数必须是整数'}), 400
         
         if 'user' in data:
             if not data['user']:

@@ -7,8 +7,8 @@ class History(BaseModel):
     # 标题，最大200字符，不可为空，用于描述历史记录的内容
     title = db.Column(db.String(200), nullable=False)
     
-    # 数值范围，整数类型，可以为正数或负数，不可为空，用于记录相关的数值
-    scope = db.Column(db.Integer, nullable=False)
+    # 分数，整数类型，可以为正数或负数，不可为空，用于记录用户的得分
+    score = db.Column(db.Integer, nullable=False)
     
     # 外键：关联用户表的objectId，不可为空，表示历史记录的所有者
     user = db.Column(db.String(20), db.ForeignKey('my_user.objectId'), nullable=False)
