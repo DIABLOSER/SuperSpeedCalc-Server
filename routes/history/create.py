@@ -13,7 +13,7 @@ def create_history():
         
         title = data.get('title')
         scope = data.get('scope')
-        user_id = data.get('user_id')
+        user = data.get('user')
         
         if not title:
             return jsonify({'error': '标题不能为空'}), 400
@@ -21,12 +21,12 @@ def create_history():
         if scope is None:
             return jsonify({'error': '数值范围不能为空'}), 400
         
-        if not user_id:
+        if not user:
             return jsonify({'error': '用户ID不能为空'}), 400
         
         # 验证用户是否存在
-        user = MyUser.query.get(user_id)
-        if not user:
+        user_obj = MyUser.query.get(user)
+        if not user_obj:
             return jsonify({'error': '用户不存在'}), 404
         
         # 验证scope是否为整数
@@ -39,7 +39,7 @@ def create_history():
         history = History(
             title=title,
             scope=scope,
-            user_id=user_id
+            user=user
         )
         
         db.session.add(history)

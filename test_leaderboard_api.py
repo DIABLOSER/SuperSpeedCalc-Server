@@ -42,7 +42,7 @@ def test_leaderboard_api():
         history_data = {
             'title': f'用户1测试记录{i+1}',
             'scope': 100 + i * 50,  # 100, 150, 200
-            'user_id': test_users[0]['objectId']
+            'user': test_users[0]['objectId']
         }
         
         try:
@@ -68,7 +68,7 @@ def test_leaderboard_api():
         history_data = {
             'title': f'用户2测试记录{i+1}',
             'scope': 80 + i * 30,  # 80, 110
-            'user_id': test_users[1]['objectId']
+            'user': test_users[1]['objectId']
         }
         
         try:
@@ -151,7 +151,7 @@ def test_leaderboard_api():
     # 7. 测试用户统计
     print("\n7. 测试用户统计...")
     try:
-        response = requests.get(f'{BASE_URL}/history/stats?user_id={test_users[0]["objectId"]}')
+        response = requests.get(f'{BASE_URL}/history/stats?user={test_users[0]["objectId"]}')
         if response.status_code == 200:
             stats = response.json().get('data', {})
             print(f"✅ 用户统计获取成功: {stats['user']['username']}")

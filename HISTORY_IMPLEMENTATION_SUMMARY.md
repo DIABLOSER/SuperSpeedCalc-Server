@@ -14,7 +14,7 @@
 - `objectId`: 主键，自动生成的10位随机字符串
 - `title`: 标题，最大200字符，不可为空
 - `scope`: 数值范围，整数类型，支持正负数，不可为空
-- `user_id`: 用户ID，外键关联到my_user表
+- `user`: 用户ID，外键关联到my_user表
 - `createdAt`: 创建时间，自动设置
 - `updatedAt`: 更新时间，自动更新
 
@@ -32,13 +32,26 @@
 - `DELETE /api/history/<object_id>` - 删除历史记录
 - `GET /api/history/count` - 获取历史记录总数
 
+**参数说明**:
+- 创建和更新时使用`user`字段（参考charts表设计）
+- 查询时使用`user`参数进行用户过滤
+
 **排行榜功能**:
 - `GET /api/history/leaderboard` - 获取用户score得分排行榜
   - 支持时间段筛选：`all`（总榜）、`daily`（日榜）、`monthly`（月榜）、`yearly`（年榜）
   - 支持分页查询
-  - 返回用户排名、总分、历史记录数量
+  - 返回用户排名、总分、历史记录数量，包含完整的用户信息
 - `GET /api/history/stats` - 获取用户score统计信息
-  - 返回今日、本月、今年、总计的分数和记录数量
+  - 参数：`user`（用户ID）
+  - 返回今日、本月、今年、总计的分数和记录数量，包含完整的用户信息
+
+**用户信息返回**:
+所有查询接口都会返回完整的用户信息，包括：
+- 基本信息：用户名、头像、简介
+- 游戏数据：积分、经验、菠萝币
+- 账户状态：是否激活、是否管理员
+- 个人信息：性别、生日
+- 时间信息：创建时间、更新时间
 
 ### 3. 数据库迁移
 
@@ -53,11 +66,13 @@
 **文件**:
 - `test_history_api.py` - 测试基础CRUD功能
 - `test_leaderboard_api.py` - 测试排行榜功能
+- `test_user_info.py` - 测试用户信息返回
 
 **测试覆盖**:
 - 历史记录的创建、读取、更新、删除
 - 日榜、月榜、年榜、总榜的查询
 - 用户统计信息的获取
+- 用户信息的完整性和准确性
 - 数据清理和错误处理
 
 ## 技术特点
@@ -118,7 +133,7 @@ curl -X POST "http://localhost:5003/api/history/" \
   -d '{
     "title": "游戏得分",
     "scope": 100,
-    "user_id": "user123"
+    "user": "user123"
   }'
 ```
 
@@ -129,7 +144,7 @@ curl "http://localhost:5003/api/history/leaderboard?period=daily"
 
 ### 获取用户统计
 ```bash
-curl "http://localhost:5003/api/history/stats?user_id=user123"
+curl "http://localhost:5003/api/history/stats?user=user123"
 ```
 
 ## 部署说明
@@ -165,8 +180,9 @@ History功能已完整实现，包括：
 - ✅ 基础的CRUD API接口
 - ✅ 强大的排行榜系统（日榜、月榜、年榜、总榜）
 - ✅ 用户统计功能
+- ✅ 完整的用户信息返回（参考charts表实现）
 - ✅ 完整的测试覆盖
 - ✅ 详细的文档和示例
 - ✅ 数据库迁移脚本
 
-该功能可以很好地支持游戏排行榜、用户积分统计、历史记录管理等应用场景。
+该功能可以很好地支持游戏排行榜、用户积分统计、历史记录管理等应用场景，并且与现有系统保持一致的API设计风格。

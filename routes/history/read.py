@@ -9,14 +9,14 @@ def get_histories():
         # 获取查询参数
         page = request.args.get('page', 1, type=int)
         per_page = request.args.get('per_page', 10, type=int)
-        user_id = request.args.get('user_id')
+        user = request.args.get('user')
         
         # 构建查询
         query = History.query
         
         # 如果指定了用户ID，则只查询该用户的历史记录
-        if user_id:
-            query = query.filter(History.user_id == user_id)
+        if user:
+            query = query.filter(History.user == user)
         
         # 按创建时间倒序排列
         query = query.order_by(desc(History.createdAt))
@@ -31,17 +31,7 @@ def get_histories():
         histories = pagination.items
         
         # 转换为字典列表
-        history_list = []
-        for history in histories:
-            history_dict = history.to_dict()
-            # 添加用户信息
-            if history.user:
-                history_dict['user'] = {
-                    'objectId': history.user.objectId,
-                    'username': history.user.username,
-                    'avatar': history.user.avatar
-                }
-            history_list.append(history_dict)
+        history_list = [history.to_dict(include_user=True) for history in histories]
         
         return jsonify({
             'message': '获取历史记录列表成功',
@@ -67,15 +57,7 @@ def get_history(object_id):
         if not history:
             return jsonify({'error': '历史记录不存在'}), 404
         
-        history_dict = history.to_dict()
-        
-        # 添加用户信息
-        if history.user:
-            history_dict['user'] = {
-                'objectId': history.user.objectId,
-                'username': history.user.username,
-                'avatar': history.user.avatar
-            }
+        history_dict = history.to_dict(include_user=True)
         
         return jsonify({
             'message': '获取历史记录成功',
@@ -88,12 +70,12 @@ def get_history(object_id):
 def get_histories_count():
     """获取历史记录总数"""
     try:
-        user_id = request.args.get('user_id')
+        user = request.args.get('user')
         
         query = History.query
         
-        if user_id:
-            count = query.filter(History.user_id == user_id).count()
+        if user:
+            count = query.filter(History.user == user).count()
         else:
             count = query.count()
         
@@ -118,9 +100,19 @@ def get_score_leaderboard():
             MyUser.objectId,
             MyUser.username,
             MyUser.avatar,
+            MyUser.bio,
+            MyUser.score,
+            MyUser.experence,
+            MyUser.boluo,
+            MyUser.isActive,
+            MyUser.admin,
+            MyUser.sex,
+            MyUser.birthday,
+            MyUser.createdAt,
+            MyUser.updatedAt,
             func.sum(History.scope).label('total_score'),
             func.count(History.objectId).label('history_count')
-        ).join(History, MyUser.objectId == History.user_id)
+        ).join(History, MyUser.objectId == History.user)
         
         # 根据时间段过滤
         now = datetime.utcnow()
@@ -139,8 +131,11 @@ def get_score_leaderboard():
         # period == 'all' 时不添加时间过滤
         
         # 分组并排序
-        query = query.group_by(MyUser.objectId, MyUser.username, MyUser.avatar)\
-                    .order_by(desc('total_score'))
+        query = query.group_by(
+            MyUser.objectId, MyUser.username, MyUser.avatar, MyUser.bio,
+            MyUser.score, MyUser.experence, MyUser.boluo, MyUser.isActive,
+            MyUser.admin, MyUser.sex, MyUser.birthday, MyUser.createdAt, MyUser.updatedAt
+        ).order_by(desc('total_score'))
         
         # 分页
         offset = (page - 1) * per_page
@@ -154,14 +149,24 @@ def get_score_leaderboard():
         
         # 转换为字典列表
         leaderboard_list = []
-        for i, (user_id, username, avatar, total_score, history_count) in enumerate(leaderboard_data, 1):
+        for i, (user_id, username, avatar, bio, score, experence, boluo, isActive, admin, sex, birthday, createdAt, updatedAt, total_score, history_count) in enumerate(leaderboard_data, 1):
             rank = offset + i
             leaderboard_list.append({
                 'rank': rank,
                 'user': {
                     'objectId': user_id,
                     'username': username,
-                    'avatar': avatar
+                    'avatar': avatar,
+                    'bio': bio,
+                    'score': score or 0,
+                    'experence': experence or 0,
+                    'boluo': boluo or 0,
+                    'isActive': isActive,
+                    'admin': admin,
+                    'sex': sex or 1,
+                    'birthday': birthday.isoformat() if birthday else None,
+                    'createdAt': createdAt.isoformat() if createdAt else None,
+                    'updatedAt': updatedAt.isoformat() if updatedAt else None
                 },
                 'total_score': total_score or 0,
                 'history_count': history_count or 0
@@ -190,7 +195,7 @@ def get_score_leaderboard():
 def get_user_score_stats():
     """获取用户score统计信息"""
     try:
-        user_id = request.args.get('user_id')
+        user_id = request.args.get('user')
         if not user_id:
             return jsonify({'error': '用户ID不能为空'}), 400
         
@@ -207,7 +212,7 @@ def get_user_score_stats():
             func.sum(History.scope).label('total_score'),
             func.count(History.objectId).label('count')
         ).filter(
-            and_(History.user_id == user_id, History.createdAt >= today_start)
+            and_(History.user == user_id, History.createdAt >= today_start)
         ).first()
         
         # 本月统计
@@ -216,7 +221,7 @@ def get_user_score_stats():
             func.sum(History.scope).label('total_score'),
             func.count(History.objectId).label('count')
         ).filter(
-            and_(History.user_id == user_id, History.createdAt >= month_start)
+            and_(History.user == user_id, History.createdAt >= month_start)
         ).first()
         
         # 今年统计
@@ -225,14 +230,14 @@ def get_user_score_stats():
             func.sum(History.scope).label('total_score'),
             func.count(History.objectId).label('count')
         ).filter(
-            and_(History.user_id == user_id, History.createdAt >= year_start)
+            and_(History.user == user_id, History.createdAt >= year_start)
         ).first()
         
         # 总统计
         total_stats = db.session.query(
             func.sum(History.scope).label('total_score'),
             func.count(History.objectId).label('count')
-        ).filter(History.user_id == user_id).first()
+        ).filter(History.user == user_id).first()
         
         return jsonify({
             'message': '获取用户score统计成功',
@@ -240,7 +245,17 @@ def get_user_score_stats():
                 'user': {
                     'objectId': user.objectId,
                     'username': user.username,
-                    'avatar': user.avatar
+                    'avatar': user.avatar,
+                    'bio': user.bio,
+                    'score': user.score,
+                    'experence': user.experence,
+                    'boluo': user.boluo,
+                    'isActive': user.isActive,
+                    'admin': user.admin,
+                    'sex': user.sex,
+                    'birthday': user.birthday.isoformat() if user.birthday else None,
+                    'createdAt': user.createdAt.isoformat(),
+                    'updatedAt': user.updatedAt.isoformat()
                 },
                 'stats': {
                     'today': {

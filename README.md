@@ -86,7 +86,7 @@ SuperSpeedCalc-Server/
 - `objectId` (String, Primary Key): 历史记录唯一标识
 - `title` (String): 标题，最大200字符
 - `scope` (Integer): 数值范围，可以为正数或负数
-- `user_id` (String, Foreign Key): 用户ID，关联到my_user表
+- `user` (String, Foreign Key): 用户ID，关联到my_user表
 - `createdAt` (DateTime): 创建时间
 - `updatedAt` (DateTime): 更新时间
 
@@ -137,6 +137,16 @@ python scripts/migrate_add_user_fields.py
 该脚本会：
 - 自动添加 `mobile` 列并创建唯一索引
 - 将 `email` 改为可空（SQLite 采用表重建方式）
+
+- 新增了 `history` 表，已有数据库请执行：
+```bash
+python scripts/migrate_add_history_table.py
+```
+
+- 将 `history` 表中的 `user_id` 字段重命名为 `user`（参考charts表设计），已有数据库请执行：
+```bash
+python scripts/migrate_rename_user_id_to_user.py
+```
 
 ### 静态文件/上传
 - 上传文件保存到项目下 `uploads/images/`
@@ -251,21 +261,23 @@ GET /api/users?q=138
 
 - `GET /api/history` - 获取历史记录列表
   - 分页：`page`、`per_page`
-  - 过滤：`user_id`（按用户ID过滤）
+  - 过滤：`user`（按用户ID过滤）
   - 排序：按创建时间倒序
+  - 返回：包含完整的用户信息（用户名、头像、积分、经验等）
 - `GET /api/history/count` - 获取历史记录总数
-  - 可选：`user_id`（按用户ID统计）
+  - 可选：`user`（按用户ID统计）
 - `GET /api/history/<object_id>` - 获取单个历史记录
+  - 返回：包含完整的用户信息
 - `POST /api/history` - 创建历史记录
-  - 必填：`title`、`scope`、`user_id`
+  - 必填：`title`、`scope`、`user`
   - 说明：`scope` 必须为整数，可以为正数或负数
 - `PUT /api/history/<object_id>` - 更新历史记录
-  - 可选：`title`、`scope`、`user_id`
+  - 可选：`title`、`scope`、`user`
 - `DELETE /api/history/<object_id>` - 删除历史记录
 - `GET /api/history/leaderboard` - 获取用户score得分排行榜
   - 分页：`page`、`per_page`
   - 时间段：`period`（`all`=总榜，`daily`=日榜，`monthly`=月榜，`yearly`=年榜）
-  - 返回：用户排名、总分、历史记录数量
+  - 返回：用户排名、总分、历史记录数量，包含完整的用户信息
 - `GET /api/history/stats` - 获取用户score统计信息
-  - 必填：`user_id`
-  - 返回：今日、本月、今年、总计的分数和记录数量
+  - 必填：`user`
+  - 返回：今日、本月、今年、总计的分数和记录数量，包含完整的用户信息

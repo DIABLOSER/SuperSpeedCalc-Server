@@ -44,7 +44,17 @@ curl "http://localhost:5003/api/history/leaderboard?period=yearly"
       "user": {
         "objectId": "abc123",
         "username": "张三",
-        "avatar": "/uploads/avatar1.jpg"
+        "avatar": "/uploads/avatar1.jpg",
+        "bio": "游戏高手",
+        "score": 1000,
+        "experence": 500,
+        "boluo": 50,
+        "isActive": true,
+        "admin": false,
+        "sex": 1,
+        "birthday": "1990-01-01",
+        "createdAt": "2025-08-12T09:13:41.727175",
+        "updatedAt": "2025-08-12T09:47:45.348441"
       },
       "total_score": 450,
       "history_count": 3
@@ -54,7 +64,17 @@ curl "http://localhost:5003/api/history/leaderboard?period=yearly"
       "user": {
         "objectId": "def456",
         "username": "李四",
-        "avatar": "/uploads/avatar2.jpg"
+        "avatar": "/uploads/avatar2.jpg",
+        "bio": "新手玩家",
+        "score": 500,
+        "experence": 200,
+        "boluo": 20,
+        "isActive": true,
+        "admin": false,
+        "sex": 1,
+        "birthday": null,
+        "createdAt": "2025-08-12T10:13:41.727175",
+        "updatedAt": "2025-08-12T10:47:45.348441"
       },
       "total_score": 190,
       "history_count": 2
@@ -77,11 +97,11 @@ curl "http://localhost:5003/api/history/leaderboard?period=yearly"
 **端点**: `GET /api/history/stats`
 
 **参数**:
-- `user_id` (必需): 用户ID
+- `user` (必需): 用户ID
 
 **示例请求**:
 ```bash
-curl "http://localhost:5003/api/history/stats?user_id=abc123"
+curl "http://localhost:5003/api/history/stats?user=abc123"
 ```
 
 **响应示例**:
@@ -92,7 +112,17 @@ curl "http://localhost:5003/api/history/stats?user_id=abc123"
     "user": {
       "objectId": "abc123",
       "username": "张三",
-      "avatar": "/uploads/avatar1.jpg"
+      "avatar": "/uploads/avatar1.jpg",
+      "bio": "游戏高手",
+      "score": 1000,
+      "experence": 500,
+      "boluo": 50,
+      "isActive": true,
+      "admin": false,
+      "sex": 1,
+      "birthday": "1990-01-01",
+      "createdAt": "2025-08-12T09:13:41.727175",
+      "updatedAt": "2025-08-12T09:47:45.348441"
     },
     "stats": {
       "today": {
@@ -131,7 +161,7 @@ fetch('/api/history/leaderboard?period=daily')
 ### 2. 用户个人统计
 ```javascript
 // 获取用户个人统计
-fetch(`/api/history/stats?user_id=${userId}`)
+fetch(`/api/history/stats?user=${userId}`)
   .then(response => response.json())
   .then(data => {
     const stats = data.data.stats;

@@ -27,10 +27,10 @@ def update_history(object_id):
             except (ValueError, TypeError):
                 return jsonify({'error': '数值范围必须是整数'}), 400
         
-        if 'user_id' in data:
-            if not data['user_id']:
+        if 'user' in data:
+            if not data['user']:
                 return jsonify({'error': '用户ID不能为空'}), 400
-            history.user_id = data['user_id']
+            history.user = data['user']
         
         db.session.commit()
         

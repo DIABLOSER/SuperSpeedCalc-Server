@@ -39,7 +39,7 @@ def test_history_api():
     history_data = {
         'title': '测试历史记录',
         'scope': 100,
-        'user_id': user_id
+        'user': user_id
     }
     
     try:
