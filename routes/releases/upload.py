@@ -2,7 +2,6 @@ from flask import request, jsonify
 from werkzeug.utils import secure_filename
 from models import db, AppRelease
 import os
-import uuid
 from datetime import datetime
 
 
@@ -15,7 +14,9 @@ def allowed_apk(filename):
 
 def generate_unique_filename(original_filename):
     ext = original_filename.rsplit('.', 1)[1].lower() if '.' in original_filename else ''
-    unique_name = f"{datetime.now().strftime('%Y%m%d_%H%M%S')}_{uuid.uuid4().hex[:8]}"
+    # 使用 Unix 毫秒时间戳作为完整文件名，确保唯一且可排序
+    timestamp_ms = int(datetime.now().timestamp() * 1000)
+    unique_name = str(timestamp_ms)
     return f"{unique_name}.{ext}" if ext else unique_name
 
 
