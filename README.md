@@ -13,13 +13,17 @@ SuperSpeedCalc-Server/
 │   ├── base.py          # 基础模型和数据库实例
 │   ├── user.py          # 用户模型
 │   ├── chart.py         # 图表模型
-│   └── forum.py         # 论坛模型
+│   ├── forum.py         # 论坛模型
+│   ├── image.py         # 图片模型
+│   └── history.py       # 历史记录模型
 ├── requirements.txt      # 项目依赖
 ├── routes/              # API 路由
 │   ├── __init__.py
 │   ├── user/            # 用户相关 API（蓝图）
 │   ├── charts/          # 图表相关 API（蓝图）
-│   └── forum/           # 论坛相关 API（蓝图）
+│   ├── forum/           # 论坛相关 API（蓝图）
+│   ├── image/           # 图片相关 API（蓝图）
+│   └── history/         # 历史记录相关 API（蓝图）
 ├── scripts/             # 实用脚本（数据库迁移等）
 ├── start.py             # 启动脚本
 └── README.md           # 项目说明
@@ -75,6 +79,14 @@ SuperSpeedCalc-Server/
 - `path` (String): 图片本地路径
 - `url` (String): 图片访问URL（如：`/uploads/images/<filename>`）
 - `fileSize` (Integer): 文件大小（字节）
+- `createdAt` (DateTime): 创建时间
+- `updatedAt` (DateTime): 更新时间
+
+### History 表（历史记录表）
+- `objectId` (String, Primary Key): 历史记录唯一标识
+- `title` (String): 标题，最大200字符
+- `scope` (Integer): 数值范围，可以为正数或负数
+- `user_id` (String, Foreign Key): 用户ID，关联到my_user表
 - `createdAt` (DateTime): 创建时间
 - `updatedAt` (DateTime): 更新时间
 
@@ -134,7 +146,7 @@ python scripts/migrate_add_user_fields.py
 
 ### 3. 应用地址
 
-应用将在 `http://localhost:5000` 启动。
+应用将在 `http://localhost:5003` 启动。
 
 ## API 接口
 
@@ -234,3 +246,26 @@ GET /api/users?q=138
 - `DELETE /api/images/<object_id>` - 删除图片
 - `POST /api/images/upload` - 上传单个图片文件（multipart/form-data，字段名：`file`）
 - `POST /api/images/upload/multiple` - 批量上传图片文件（multipart/form-data，字段名：`files`）
+
+### 历史记录 API (`/api/history`)
+
+- `GET /api/history` - 获取历史记录列表
+  - 分页：`page`、`per_page`
+  - 过滤：`user_id`（按用户ID过滤）
+  - 排序：按创建时间倒序
+- `GET /api/history/count` - 获取历史记录总数
+  - 可选：`user_id`（按用户ID统计）
+- `GET /api/history/<object_id>` - 获取单个历史记录
+- `POST /api/history` - 创建历史记录
+  - 必填：`title`、`scope`、`user_id`
+  - 说明：`scope` 必须为整数，可以为正数或负数
+- `PUT /api/history/<object_id>` - 更新历史记录
+  - 可选：`title`、`scope`、`user_id`
+- `DELETE /api/history/<object_id>` - 删除历史记录
+- `GET /api/history/leaderboard` - 获取用户score得分排行榜
+  - 分页：`page`、`per_page`
+  - 时间段：`period`（`all`=总榜，`daily`=日榜，`monthly`=月榜，`yearly`=年榜）
+  - 返回：用户排名、总分、历史记录数量
+- `GET /api/history/stats` - 获取用户score统计信息
+  - 必填：`user_id`
+  - 返回：今日、本月、今年、总计的分数和记录数量
