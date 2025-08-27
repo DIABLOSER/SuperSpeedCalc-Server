@@ -238,6 +238,46 @@ def get_user_score_stats():
             func.sum(History.score).label('total_score'),
             func.count(History.objectId).label('count')
         ).filter(History.user == user_id).first()
+
+        # 计算用户在不同周期的排名
+        def compute_rank(start_dt=None):
+            # 聚合每个用户的总分（按周期过滤）
+            base_query = db.session.query(
+                History.user.label('user_id'),
+                func.sum(History.score).label('total_score')
+            )
+            if start_dt is not None:
+                base_query = base_query.filter(History.createdAt >= start_dt)
+            total_per_user_sq = base_query.group_by(History.user).subquery()
+
+            # 当前用户在该周期内的总分与记录数
+            user_agg_query = db.session.query(
+                func.sum(History.score).label('total_score'),
+                func.count(History.objectId).label('count')
+            ).filter(History.user == user_id)
+            if start_dt is not None:
+                user_agg_query = user_agg_query.filter(History.createdAt >= start_dt)
+            user_agg = user_agg_query.first()
+
+            # 若该周期无记录，则不参与排名
+            if not user_agg or (user_agg.count or 0) == 0:
+                return None
+
+            user_total = user_agg.total_score or 0
+
+            # 比当前用户分数高的用户数量 + 1 即为名次（并列采用竞赛排名法）
+            higher_count = db.session.query(func.count()).select_from(total_per_user_sq).filter(
+                total_per_user_sq.c.total_score > user_total
+            ).scalar() or 0
+
+            return higher_count + 1
+
+        ranks = {
+            'today': compute_rank(today_start),
+            'month': compute_rank(month_start),
+            'year': compute_rank(year_start),
+            'total': compute_rank(None)
+        }
         
         return jsonify({
             'message': '获取用户score统计成功',
@@ -260,19 +300,23 @@ def get_user_score_stats():
                 'stats': {
                     'today': {
                         'total_score': today_stats.total_score or 0,
-                        'count': today_stats.count or 0
+                        'count': today_stats.count or 0,
+                        'rank': ranks['today']
                     },
                     'month': {
                         'total_score': month_stats.total_score or 0,
-                        'count': month_stats.count or 0
+                        'count': month_stats.count or 0,
+                        'rank': ranks['month']
                     },
                     'year': {
                         'total_score': year_stats.total_score or 0,
-                        'count': year_stats.count or 0
+                        'count': year_stats.count or 0,
+                        'rank': ranks['year']
                     },
                     'total': {
                         'total_score': total_stats.total_score or 0,
-                        'count': total_stats.count or 0
+                        'count': total_stats.count or 0,
+                        'rank': ranks['total']
                     }
                 }
             }
