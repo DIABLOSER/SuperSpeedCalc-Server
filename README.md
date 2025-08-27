@@ -213,11 +213,11 @@ python check_history_data.py
 ## API 接口
 
 ### 分页约定
-- 查询参数：`page`（默认 1），`per_page`（默认 10 或 20，视接口而定，最大 100 或 200）。
-- 返回结构：列表接口统一返回
+- **查询参数**：`page`（默认 1），`per_page`（默认 10 或 20，视接口而定，最大 100 或 200）。
+- **返回结构**：列表接口返回如下结构（不同接口会携带额外字段，如 `message`、`period` 等）：
 ```json
 {
-  "success": true,
+  "message": "获取列表成功",
   "data": [/* 列表数据 */],
   "pagination": { "page": 1, "per_page": 20, "total": 123, "pages": 7 }
 }
@@ -338,7 +338,8 @@ GET /api/users?q=138
 #### 用户统计
 - `GET /api/history/stats` - 获取用户score统计信息
   - 必填：`user`
-  - 返回：今日、本月、今年、总计的分数和记录数量，包含完整的用户信息
+  - 返回：今日、本月、今年、总计的分数、记录数量与对应榜单排名（`rank`），包含完整的用户信息。
+  - 说明：当某周期用户无任何记录时，该周期的 `rank` 返回 `null`。
   - 时间计算：基于UTC时间，日榜从当天00:00:00开始，月榜从当月1号开始，年榜从当年1月1日开始
 
 #### 使用示例
@@ -413,7 +414,7 @@ curl "http://localhost:5003/api/history/?user=user123"
     "username": "玩家1",
     "avatar": "avatar.jpg",
     "score": 5000,
-    "experence": 100,
+    "experience": 100,
     "boluo": 50,
     "isActive": true,
     "admin": false,
@@ -430,12 +431,12 @@ curl "http://localhost:5003/api/history/?user=user123"
 #### 排行榜结构
 ```json
 {
-  "success": true,
+  "message": "获取all排行榜成功",
   "data": [
     {
       "rank": 1,
       "total_score": 5000,
-      "record_count": 5,
+      "history_count": 5,
       "user": {
         "objectId": "user123",
         "username": "玩家1",
@@ -450,29 +451,30 @@ curl "http://localhost:5003/api/history/?user=user123"
     "page": 1,
     "per_page": 20,
     "total": 10,
-    "pages": 1
-  }
+    "pages": 1,
+    "has_next": false,
+    "has_prev": false
+  },
+  "period": "all"
 }
 ```
 
 #### 用户统计结构
 ```json
 {
-  "success": true,
+  "message": "获取用户score统计成功",
   "data": {
     "user": {
       "objectId": "user123",
       "username": "玩家1",
       "avatar": "avatar.jpg"
     },
-    "today_score": 1000,
-    "today_count": 2,
-    "monthly_score": 3000,
-    "monthly_count": 8,
-    "yearly_score": 5000,
-    "yearly_count": 15,
-    "total_score": 5000,
-    "total_count": 15
+    "stats": {
+      "today": { "total_score": 1000, "count": 2, "rank": 3 },
+      "month": { "total_score": 3000, "count": 8, "rank": 5 },
+      "year": { "total_score": 5000, "count": 15, "rank": 7 },
+      "total": { "total_score": 5000, "count": 15, "rank": 9 }
+    }
   }
 }
 ```
