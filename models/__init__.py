@@ -4,6 +4,7 @@ from .chart import Charts
 from .forum import Forum
 from .image import Image
 from .history import History
+from .releases import AppRelease
 
 # 导出所有模型，方便其他文件导入
-__all__ = ['db', 'BaseModel', 'MyUser', 'Charts', 'Forum', 'Image', 'History'] 
+__all__ = ['db', 'BaseModel', 'MyUser', 'Charts', 'Forum', 'Image', 'History', 'AppRelease']

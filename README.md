@@ -15,7 +15,8 @@ SuperSpeedCalc-Server/
 │   ├── chart.py         # 图表模型
 │   ├── forum.py         # 论坛模型
 │   ├── image.py         # 图片模型
-│   └── history.py       # 历史记录模型
+│   ├── history.py       # 历史记录模型
+│   └── releases.py      # 发布版本模型（AppRelease）
 ├── requirements.txt      # 项目依赖
 ├── routes/              # API 路由
 │   ├── __init__.py
@@ -23,7 +24,8 @@ SuperSpeedCalc-Server/
 │   ├── charts/          # 图表相关 API（蓝图）
 │   ├── forum/           # 论坛相关 API（蓝图）
 │   ├── image/           # 图片相关 API（蓝图）
-│   └── history/         # 历史记录相关 API（蓝图）
+│   ├── history/         # 历史记录相关 API（蓝图）
+│   └── releases/        # 发布版本相关 API（蓝图）
 ├── scripts/             # 实用脚本（数据库迁移等）
 ├── start.py             # 启动脚本
 └── README.md           # 项目说明
@@ -90,6 +92,20 @@ SuperSpeedCalc-Server/
 - `createdAt` (DateTime): 创建时间
 - `updatedAt` (DateTime): 更新时间
 
+### AppRelease 表（发布版本表）
+- `objectId` (String, Primary Key): 发布记录唯一标识
+- `app_name` (String): 应用名称
+- `version_name` (String): 版本号（如 1.2.3）
+- `version_code` (Integer): 版本代码（整数）
+- `changelog` (Text): 更新内容
+- `download_url` (String): 下载链接（如：`/uploads/apk/<filename>`）
+- `environment` (String): 发布环境（development/production/staging...），默认 `production`
+- `status` (String): 发布状态（如 `draft`/`published`/`deprecated`），默认 `published`
+- `is_update` (Boolean): 是否更新（用于客户端提示更新），默认 False
+- `force_update` (Boolean): 是否强制更新，默认 False
+- `createdAt` (DateTime): 创建时间
+- `updatedAt` (DateTime): 更新时间
+
 ## 功能特性
 
 ### 🎯 核心功能
@@ -98,6 +114,8 @@ SuperSpeedCalc-Server/
 - **论坛社区**: 帖子发布、互动、分类管理
 - **图片管理**: 文件上传、存储、访问
 - **历史记录**: 用户游戏历史、排行榜、统计分析
+- **发布管理**: 发布版本记录（Releases），字段丰富、支持筛选
+- **APK 上传**: 支持 APK 文件上传与静态访问，自动生成下载 URL
 
 ### 🏆 History功能亮点
 - **智能排行榜**: 支持日榜、月榜、年榜、总榜
@@ -159,6 +177,11 @@ python scripts/migrate_add_user_fields.py
 python scripts/migrate_add_history_table.py
 ```
 
+- 新增了 `app_releases` 表，已有数据库请执行：
+```bash
+python scripts/migrate_add_releases_table.py
+```
+
 - 将 `history` 表中的 `user_id` 字段重命名为 `user`（参考charts表设计），已有数据库请执行：
 ```bash
 python scripts/migrate_rename_user_id_to_user.py
@@ -175,10 +198,14 @@ python scripts/migrate_rename_experence_to_experience.py
 ```
 
 ### 静态文件/上传
-- 上传文件保存到项目下 `uploads/images/`
-- 访问 URL：
-  - 新路径：`/uploads/images/<filename>`
-  - 兼容旧路径：`/static/images/<filename>`（映射到同一目录）
+- 图片：
+  - 目录：`uploads/images/`
+  - 访问：
+    - 新路径：`/uploads/images/<filename>`
+    - 兼容旧路径：`/static/images/<filename>`（映射到同一目录）
+- APK：
+  - 目录：`uploads/apk/`
+  - 访问：`/uploads/apk/<filename>`
 
 ### 3. 应用地址
 
@@ -308,6 +335,45 @@ GET /api/users?q=138
 - `DELETE /api/images/<object_id>` - 删除图片
 - `POST /api/images/upload` - 上传单个图片文件（multipart/form-data，字段名：`file`）
 - `POST /api/images/upload/multiple` - 批量上传图片文件（multipart/form-data，字段名：`files`）
+
+### 发布版本 API (`/api/releases`)
+
+- `GET /api/releases` - 获取发布记录列表
+  - 分页：`page`、`per_page`
+  - 过滤：`app_name`、`environment`、`status`
+  - 排序：按创建时间倒序
+- `GET /api/releases/count` - 获取发布记录数量（支持同样的过滤）
+- `GET /api/releases/<object_id>` - 获取单个发布记录
+- `POST /api/releases` - 创建发布记录
+  - 必填：`app_name`、`version_name`、`version_code`
+  - 可选：`changelog`、`download_url`、`environment`（默认 `production`）、`status`（默认 `published`）、`is_update`、`force_update`
+- `PUT /api/releases/<object_id>` - 更新发布记录
+- `DELETE /api/releases/<object_id>` - 删除发布记录
+- `POST /api/releases/upload-apk` - 上传 APK 文件（multipart/form-data）
+  - 字段：`file`（必填，.apk）、`release_id`（可选；若提供，将自动回写该记录的 `download_url`）
+
+#### 发布版本示例
+```bash
+# 创建发布记录
+curl -X POST "http://localhost:5003/api/releases/" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "app_name": "SuperSpeedCalc",
+    "version_name": "1.0.0",
+    "version_code": 100,
+    "changelog": "初始化发布",
+    "is_update": true,
+    "force_update": false
+  }'
+
+# 上传 APK 并绑定到发布记录（release_id 为创建返回的 objectId）
+curl -X POST "http://localhost:5003/api/releases/upload-apk?release_id=<objectId>" \
+  -F "file=@/path/to/app-release.apk"
+
+# 仅上传 APK，不绑定记录（可得到文件 URL，之后手动写入）
+curl -X POST "http://localhost:5003/api/releases/upload-apk" \
+  -F "file=@/path/to/app-release.apk"
+```
 
 ### 历史记录 API (`/api/history`)
 

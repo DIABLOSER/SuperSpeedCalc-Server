@@ -17,17 +17,20 @@ def create_app(config_name='default'):
     CORS(app)
     
     # 注册蓝图 - 使用新的模块化结构
-    from routes import user_bp, charts_bp, forum_bp, image_bp, history_bp
+    from routes import user_bp, charts_bp, forum_bp, image_bp, history_bp, releases_bp
     
     app.register_blueprint(user_bp, url_prefix='/api/users')
     app.register_blueprint(charts_bp, url_prefix='/api/charts')
     app.register_blueprint(forum_bp, url_prefix='/api/forum')
     app.register_blueprint(image_bp, url_prefix='/api/images')
     app.register_blueprint(history_bp, url_prefix='/api/history')
+    app.register_blueprint(releases_bp, url_prefix='/api/releases')
     
-    # 静态文件：uploads/images 与兼容的 /static/images 映射
+    # 静态文件：uploads/images 与 /uploads/apk
     uploads_dir = os.path.join(app.root_path, 'uploads', 'images')
     os.makedirs(uploads_dir, exist_ok=True)
+    uploads_apk_dir = os.path.join(app.root_path, 'uploads', 'apk')
+    os.makedirs(uploads_apk_dir, exist_ok=True)
 
     @app.route('/uploads/images/<path:filename>')
     def serve_uploaded_image(filename):
@@ -36,6 +39,10 @@ def create_app(config_name='default'):
     @app.route('/static/images/<path:filename>')
     def serve_legacy_static_image(filename):
         return send_from_directory(uploads_dir, filename)
+
+    @app.route('/uploads/apk/<path:filename>')
+    def serve_uploaded_apk(filename):
+        return send_from_directory(uploads_apk_dir, filename)
     
     # 错误处理
     @app.errorhandler(404)
@@ -73,7 +80,7 @@ def init_db(app, force=False):
     """智能初始化数据库"""
     with app.app_context():
         # 导入所有模型以确保它们被注册
-        from models import MyUser, Charts, Forum, Image, History
+        from models import MyUser, Charts, Forum, Image, History, AppRelease
         
         db_exists, db_path = check_database_exists(app)
         
