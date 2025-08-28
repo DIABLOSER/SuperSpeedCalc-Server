@@ -1,6 +1,6 @@
 # SuperSpeedCalc Server
 
-基于 Flask 框架的后端服务，包含用户管理、图表管理和论坛功能。
+基于 Flask 框架的超级速算后端服务，提供完整的用户管理、排行榜、论坛社区、图片管理、历史记录统计、应用版本发布等功能。支持多种排行榜查询（日榜、月榜、年榜、总榜）和完善的用户统计分析。
 
 ## 项目结构
 
@@ -108,13 +108,13 @@ SuperSpeedCalc-Server/
 ## 功能特性
 
 ### 🎯 核心功能
-- **用户管理**: 完整的用户注册、登录、信息管理
-- **图表系统**: 排行榜和成绩记录
-- **论坛社区**: 帖子发布、互动、分类管理
-- **图片管理**: 文件上传、存储、访问
-- **历史记录**: 用户游戏历史、排行榜、统计分析
-- **发布管理**: 发布版本记录（Releases），字段丰富、支持筛选
-- **APK 上传**: 支持 APK 文件上传与静态访问，自动生成下载 URL
+- **用户管理**: 支持邮箱/手机号注册登录、用户信息管理、经验值和菠萝币系统
+- **图表系统**: 成绩记录、排行榜查询、用户排名统计
+- **论坛社区**: 帖子发布、分类管理、点赞互动、置顶/关闭控制
+- **图片管理**: 单个/批量图片上传、文件存储、静态资源访问
+- **历史记录**: 用户游戏历史记录、多维度排行榜（日/月/年/总榜）、统计分析
+- **发布管理**: APK版本发布管理、文件上传、版本控制、更新提示
+- **数据统计**: 用户得分统计、排名查询、时间段过滤、分页查询
 
 ### 🏆 History功能亮点
 - **智能排行榜**: 支持日榜、月榜、年榜、总榜
@@ -123,11 +123,28 @@ SuperSpeedCalc-Server/
 - **时间精确统计**: 基于UTC时间的精确时间段统计
 - **高性能查询**: 使用SQL聚合函数，支持分页和排序
 
+## 环境要求
+
+- **Python**: 3.7+ (推荐使用 Python 3.8+)
+- **操作系统**: Windows、macOS、Linux
+- **内存**: 最低 512MB（生产环境推荐 1GB+）
+- **磁盘**: 100MB+（用于数据库和上传文件存储）
+
 ## 安装和运行
 
 ### 1. 安装依赖
 
 ```bash
+# 推荐使用国内镜像源加速安装
+pip install -r requirements.txt -i https://mirrors.aliyun.com/pypi/simple/
+
+# 或者使用默认源
+pip install -r requirements.txt
+
+# 如果使用虚拟环境（推荐）
+python -m venv venv
+source venv/bin/activate  # Linux/macOS
+# 或者 venv\Scripts\activate  # Windows
 pip install -r requirements.txt -i https://mirrors.aliyun.com/pypi/simple/
 ```
 
@@ -144,6 +161,10 @@ python app.py --init-db
 
 #### 日常使用 - 启动应用
 ```bash
+# 推荐：使用启动脚本（自动检查依赖和初始化数据库）
+python start.py
+
+# 或者直接启动应用（需要手动初始化数据库）
 python app.py
 ```
 
@@ -213,7 +234,12 @@ python scripts/migrate_rename_experence_to_experience.py
 
 ### 3. 应用地址
 
-应用将在 `http://localhost:5003` 启动。
+根据不同的启动方式：
+- **推荐方式**：使用 `python start.py` 启动，应用将在 `http://localhost:5000` 运行
+- **开发方式**：使用 `python app.py` 启动，应用将在 `http://localhost:8000` 运行
+- **健康检查端点**：`http://localhost:5000/health` 或 `http://localhost:8000/health`
+
+> 注意：如果5000端口被占用（如被AirPlay Receiver占用），建议使用8000端口或者在系统偏好设置->共享中关闭AirPlay接收器服务。
 
 ### 4. 测试脚本
 
@@ -358,7 +384,7 @@ GET /api/users?q=138
 #### 发布版本示例
 ```bash
 # 创建发布记录
-curl -X POST "http://localhost:5003/api/releases/" \
+curl -X POST "http://localhost:5000/api/releases/" \
   -H "Content-Type: application/json" \
   -d '{
     "app_name": "SuperSpeedCalc",
@@ -370,11 +396,11 @@ curl -X POST "http://localhost:5003/api/releases/" \
   }'
 
 # 上传 APK 并绑定到发布记录（release_id 为创建返回的 objectId）
-curl -X POST "http://localhost:5003/api/releases/upload-apk?release_id=<objectId>" \
+curl -X POST "http://localhost:5000/api/releases/upload-apk?release_id=<objectId>" \
   -F "file=@/path/to/app-release.apk"
 
 # 仅上传 APK，不绑定记录（可得到文件 URL，之后手动写入）
-curl -X POST "http://localhost:5003/api/releases/upload-apk" \
+curl -X POST "http://localhost:5000/api/releases/upload-apk" \
   -F "file=@/path/to/app-release.apk"
 ```
 
@@ -414,7 +440,7 @@ curl -X POST "http://localhost:5003/api/releases/upload-apk" \
 #### 使用示例
 ```bash
 # 创建历史记录
-curl -X POST "http://localhost:5003/api/history/" \
+curl -X POST "http://localhost:5000/api/history/" \
   -H "Content-Type: application/json" \
   -d '{
     "title": "超级速度计算挑战",
@@ -423,16 +449,16 @@ curl -X POST "http://localhost:5003/api/history/" \
   }'
 
 # 获取总排行榜
-curl "http://localhost:5003/api/history/leaderboard?period=all"
+curl "http://localhost:5000/api/history/leaderboard?period=all"
 
 # 获取日榜
-curl "http://localhost:5003/api/history/leaderboard?period=daily"
+curl "http://localhost:5000/api/history/leaderboard?period=daily"
 
 # 获取用户统计
-curl "http://localhost:5003/api/history/stats?user=user123"
+curl "http://localhost:5000/api/history/stats?user=user123"
 
 # 获取用户历史记录
-curl "http://localhost:5003/api/history/?user=user123"
+curl "http://localhost:5000/api/history/?user=user123"
 ```
 
 ## History功能使用指南
@@ -441,7 +467,7 @@ curl "http://localhost:5003/api/history/?user=user123"
 
 1. **创建历史记录**
    ```bash
-   curl -X POST "http://localhost:5003/api/history/" \
+   curl -X POST "http://localhost:5000/api/history/" \
      -H "Content-Type: application/json" \
      -d '{
        "title": "游戏挑战",
@@ -453,21 +479,21 @@ curl "http://localhost:5003/api/history/?user=user123"
 2. **查看排行榜**
    ```bash
    # 总排行榜
-   curl "http://localhost:5003/api/history/leaderboard?period=all"
+   curl "http://localhost:5000/api/history/leaderboard?period=all"
    
    # 日榜
-   curl "http://localhost:5003/api/history/leaderboard?period=daily"
+   curl "http://localhost:5000/api/history/leaderboard?period=daily"
    
    # 月榜
-   curl "http://localhost:5003/api/history/leaderboard?period=monthly"
+   curl "http://localhost:5000/api/history/leaderboard?period=monthly"
    
    # 年榜
-   curl "http://localhost:5003/api/history/leaderboard?period=yearly"
+   curl "http://localhost:5000/api/history/leaderboard?period=yearly"
    ```
 
 3. **获取用户统计**
    ```bash
-   curl "http://localhost:5003/api/history/stats?user=user123"
+   curl "http://localhost:5000/api/history/stats?user=user123"
    ```
 
 ### 📊 数据格式说明
@@ -551,19 +577,19 @@ curl "http://localhost:5003/api/history/?user=user123"
 #### 分页查询
 ```bash
 # 获取第2页，每页10条记录
-curl "http://localhost:5003/api/history/?page=2&per_page=10"
+curl "http://localhost:5000/api/history/?page=2&per_page=10"
 
 # 获取排行榜第1页，每页5条记录
-curl "http://localhost:5003/api/history/leaderboard?period=all&page=1&per_page=5"
+curl "http://localhost:5000/api/history/leaderboard?period=all&page=1&per_page=5"
 ```
 
 #### 用户过滤
 ```bash
 # 获取特定用户的历史记录
-curl "http://localhost:5003/api/history/?user=user123"
+curl "http://localhost:5000/api/history/?user=user123"
 
 # 获取特定用户的历史记录数量
-curl "http://localhost:5003/api/history/count?user=user123"
+curl "http://localhost:5000/api/history/count?user=user123"
 ```
 
 ### 🎮 应用场景
@@ -584,31 +610,39 @@ curl "http://localhost:5003/api/history/count?user=user123"
 ## 项目总结
 
 ### 🎯 项目特点
-- **模块化设计**: 清晰的目录结构和代码组织
-- **RESTful API**: 标准的REST API设计，易于集成
-- **完整功能**: 涵盖用户、图表、论坛、图片、历史记录等核心功能
-- **数据完整性**: 支持外键关系、级联删除等数据库特性
-- **扩展性强**: 易于添加新功能和模块
+- **模块化设计**: 蓝图模块化架构，清晰的目录结构和代码组织
+- **RESTful API**: 标准的REST API设计，完整的CRUD操作
+- **智能用户系统**: 自动生成用户名、双重登录方式（邮箱/手机号）
+- **完整功能覆盖**: 用户管理、排行榜、社区、文件上传、版本发布一应俱全
+- **数据完整性**: 外键关联、级联删除、数据校验等数据库最佳实践
+- **高性能查询**: SQL聚合查询、分页支持、索引优化
+- **扩展性强**: 支持数据库迁移、环境配置、一键部署
 
 ### 🚀 技术栈
-- **后端框架**: Flask + Flask-SQLAlchemy
-- **数据库**: SQLite（支持迁移到其他数据库）
-- **API设计**: RESTful风格
-- **数据格式**: JSON
-- **文件处理**: 支持图片上传和存储
+- **后端框架**: Flask 2.3.3 + Flask-SQLAlchemy 3.0.5
+- **跨域支持**: Flask-CORS 4.0.0
+- **数据库**: SQLite（默认），支持 MySQL（使用 PyMySQL）
+- **密码加密**: Werkzeug 安全模块
+- **API设计**: RESTful风格，蓝图模块化架构
+- **数据格式**: JSON，完整的分页和错误处理
+- **文件处理**: 支持图片（PNG/JPG）和APK文件上传存储
+- **配置管理**: 支持环境变量配置和多环境部署
 
-### 📊 数据统计
-- **用户表**: 支持用户注册、登录、信息管理
-- **图表表**: 支持排行榜和成绩记录
-- **论坛表**: 支持帖子发布、分类、互动
-- **图片表**: 支持文件上传、存储、访问
-- **历史记录表**: 支持游戏历史、排行榜、统计分析
+### 📊 数据模型
+- **用户模型 (MyUser)**: 完整的用户信息管理，支持经验值、菠萝币、权限控制
+- **图表模型 (Charts)**: 成绩记录和排行榜系统
+- **论坛模型 (Forum)**: 社区帖子管理，支持分类、标签、互动统计
+- **图片模型 (Image)**: 文件上传管理，自动生成访问URL
+- **历史记录模型 (History)**: 用户游戏历史，支持多维度统计分析
+- **发布模型 (AppRelease)**: 应用版本发布管理，支持更新控制
 
 ### 🔧 开发工具
-- **测试脚本**: 完整的API测试覆盖
-- **数据迁移**: 支持数据库结构变更
-- **文档完善**: 详细的API文档和使用指南
-- **示例代码**: 丰富的使用示例和最佳实践
+- **测试脚本**: 完整的API测试覆盖（`test_*.py`）
+- **数据迁移**: 多个迁移脚本支持数据库结构平滑升级（`scripts/migrate_*.py`）
+- **数据库管理**: 专用的数据库管理工具（`manage_db.py`）
+- **启动脚本**: 智能启动脚本，自动检查依赖和初始化（`start.py`）
+- **数据填充**: 测试数据生成和统计工具（`add_history_data.py`、`check_history_data.py`）
+- **文档完善**: 详细的API文档和使用指南，包含完整的curl示例
 
 ### 🎮 应用场景
 - **游戏平台**: 用户管理、排行榜、成就系统
@@ -616,9 +650,31 @@ curl "http://localhost:5003/api/history/count?user=user123"
 - **数据分析**: 用户行为分析、统计报表
 - **竞赛系统**: 多维度排行榜、实时统计
 
-### 📈 未来规划
-- **缓存优化**: 添加Redis缓存提升性能
-- **实时通知**: 集成WebSocket推送功能
-- **权限系统**: 细粒度的权限控制
-- **API版本**: 支持API版本管理
-- **监控日志**: 完善的日志和监控系统
+### 📈 项目优势
+- **生产就绪**: 完整的错误处理、健康检查端点、配置管理
+- **性能优化**: SQL聚合查询、分页机制、索引设计
+- **安全特性**: 密码哈希存储、数据校验、SQL注入防护
+- **易于部署**: 支持Docker部署、环境变量配置、一键启动
+- **维护友好**: 详细的日志输出、清晰的代码结构、完善的文档
+- **可扩展性**: 模块化设计支持轻松添加新功能和API端点
+
+---
+
+## 🎉 项目总结
+
+SuperSpeedCalc Server 是一个功能完整、架构清晰的后端服务项目。通过 Flask + SQLAlchemy 构建，提供了用户管理、排行榜、社区论坛、文件上传、历史记录统计等核心功能。项目采用蓝图模块化设计，支持多种数据库，具有良好的扩展性和维护性。
+
+### 🌟 核心亮点
+- **完整的用户体系**：支持邮箱/手机号注册登录，自动生成用户名，经验值和积分系统
+- **强大的统计功能**：多维度排行榜（日/月/年/总榜），实时用户统计分析
+- **全面的内容管理**：论坛社区、图片上传、版本发布一应俱全
+- **开发友好**：完整的测试脚本、数据迁移工具、详细的API文档
+
+### 📞 技术支持
+如果您在使用过程中遇到问题，请参考：
+1. **API文档**：详细的接口说明和示例
+2. **测试脚本**：`test_*.py` 文件提供完整的功能验证
+3. **数据库管理**：`manage_db.py` 提供数据库操作工具
+4. **启动脚本**：`start.py` 提供智能启动和依赖检查
+
+项目持续更新维护中，欢迎使用！ 🚀
