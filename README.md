@@ -41,7 +41,6 @@ SuperSpeedCalc-Server/
 - `password` (String): 密码（加密存储）
 - `avatar` (String): 头像地址
 - `bio` (Text): 个人简介
-- `score` (Integer): 用户积分，默认0
 - `experience` (Integer): 用户经验值，默认0
 - `boluo` (Integer): 菠萝币数量，默认0
 - `isActive` (Boolean): 是否激活
@@ -119,7 +118,7 @@ SuperSpeedCalc-Server/
 
 ### 🏆 History功能亮点
 - **智能排行榜**: 支持日榜、月榜、年榜、总榜
-- **完整用户信息**: 所有查询都返回用户的完整信息（头像、积分、经验等）
+- **完整用户信息**: 所有查询都返回用户的完整信息（头像、经验等）
 - **灵活分数系统**: 支持正负数计算，适应各种游戏场景
 - **时间精确统计**: 基于UTC时间的精确时间段统计
 - **高性能查询**: 使用SQL聚合函数，支持分页和排序
@@ -129,7 +128,7 @@ SuperSpeedCalc-Server/
 ### 1. 安装依赖
 
 ```bash
-pip install -r requirements.txt
+pip install -r requirements.txt -i https://mirrors.aliyun.com/pypi/simple/
 ```
 
 ### 2. 数据库管理
@@ -190,6 +189,11 @@ python scripts/migrate_rename_user_id_to_user.py
 - 将 `history` 表中的 `scope` 字段重命名为 `score`，已有数据库请执行：
 ```bash
 python scripts/migrate_rename_scope_to_score.py
+```
+
+- 从 `my_user` 表中移除了 `score` 字段，已有数据库请执行：
+```bash
+python scripts/migrate_drop_user_score.py
 ```
 
 - 将 `my_user` 表中的 `experence` 字段重命名为 `experience`，已有数据库请执行：
@@ -254,14 +258,14 @@ python check_history_data.py
 
 - `GET /api/users` - 获取所有用户
   - 分页：`page`、`per_page`
-  - 排序：`sort_by`（支持 `username`、`email`、`mobile`、`score`、`experience`、`boluo`、`isActive`、`admin`、`sex`、`birthday`、`createdAt`、`updatedAt`）、`order`（`asc`/`desc`）
+  - 排序：`sort_by`（支持 `username`、`email`、`mobile`、`experience`、`boluo`、`isActive`、`admin`、`sex`、`birthday`、`createdAt`、`updatedAt`）、`order`（`asc`/`desc`）
   - 模糊搜索：`keyword` 或 `q`（对 `username`、`email`、`mobile` 进行不区分大小写匹配）
 - `GET /api/users/count` - 获取用户总数
 - `GET /api/users/<object_id>` - 获取单个用户
 - `POST /api/users` - 创建用户（后台管理）
   - 必填：`username`、`password`
   - 二选一：`email` 或 `mobile`
-  - 可选：`avatar`、`bio`、`score`、`experience`、`boluo`、`isActive`、`admin`、`sex`、`birthday`
+  - 可选：`avatar`、`bio`、`experience`、`boluo`、`isActive`、`admin`、`sex`、`birthday`
 - `POST /api/users/register` - 注册用户（安卓/客户端）
   - 必填：`password`
   - 二选一：`email` 或 `mobile`
@@ -271,7 +275,6 @@ python check_history_data.py
   - 方式二：`mobile` + `password`
 - `PUT /api/users/<object_id>` - 更新用户
 - `DELETE /api/users/<object_id>` - 删除用户
-- `POST /api/users/<object_id>/score` - 更新用户积分
 - `POST /api/users/<object_id>/experience` - 更新用户经验值
 - `POST /api/users/<object_id>/boluo` - 更新用户菠萝币
 
@@ -382,7 +385,7 @@ curl -X POST "http://localhost:5003/api/releases/upload-apk" \
   - 分页：`page`、`per_page`
   - 过滤：`user`（按用户ID过滤）
   - 排序：按创建时间倒序
-  - 返回：包含完整的用户信息（用户名、头像、积分、经验等）
+  - 返回：包含完整的用户信息（用户名、头像、经验等）
 - `GET /api/history/count` - 获取历史记录总数
   - 可选：`user`（按用户ID统计）
 - `GET /api/history/<object_id>` - 获取单个历史记录
@@ -395,14 +398,14 @@ curl -X POST "http://localhost:5003/api/releases/upload-apk" \
 - `DELETE /api/history/<object_id>` - 删除历史记录
 
 #### 排行榜功能
-- `GET /api/history/leaderboard` - 获取用户score得分排行榜
+- `GET /api/history/leaderboard` - 获取用户得分排行榜（基于历史记录分数总和）
   - 分页：`page`、`per_page`
   - 时间段：`period`（`all`=总榜，`daily`=日榜，`monthly`=月榜，`yearly`=年榜）
   - 返回：用户排名、总分、历史记录数量，包含完整的用户信息
-  - 算法：基于score字段的总和进行排序，支持正负数计算
+  - 算法：基于历史记录 `score` 字段的总和进行排序，支持正负数计算
 
 #### 用户统计
-- `GET /api/history/stats` - 获取用户score统计信息
+- `GET /api/history/stats` - 获取用户历史分数统计信息
   - 必填：`user`
   - 返回：今日、本月、今年、总计的分数、记录数量与对应榜单排名（`rank`），包含完整的用户信息。
   - 说明：当某周期用户无任何记录时，该周期的 `rank` 返回 `null`。
@@ -479,7 +482,6 @@ curl "http://localhost:5003/api/history/?user=user123"
     "objectId": "user123",
     "username": "玩家1",
     "avatar": "avatar.jpg",
-    "score": 5000,
     "experience": 100,
     "boluo": 50,
     "isActive": true,
@@ -507,7 +509,6 @@ curl "http://localhost:5003/api/history/?user=user123"
         "objectId": "user123",
         "username": "玩家1",
         "avatar": "avatar.jpg",
-        "score": 5000,
         "experience": 100,
         "boluo": 50
       }
@@ -528,7 +529,7 @@ curl "http://localhost:5003/api/history/?user=user123"
 #### 用户统计结构
 ```json
 {
-  "message": "获取用户score统计成功",
+  "message": "获取用户历史分数统计成功",
   "data": {
     "user": {
       "objectId": "user123",

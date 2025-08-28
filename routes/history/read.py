@@ -101,7 +101,6 @@ def get_score_leaderboard():
             MyUser.username,
             MyUser.avatar,
             MyUser.bio,
-            MyUser.score,
             MyUser.experience,
             MyUser.boluo,
             MyUser.isActive,
@@ -133,7 +132,7 @@ def get_score_leaderboard():
         # 分组并排序
         query = query.group_by(
             MyUser.objectId, MyUser.username, MyUser.avatar, MyUser.bio,
-            MyUser.score, MyUser.experience, MyUser.boluo, MyUser.isActive,
+            MyUser.experience, MyUser.boluo, MyUser.isActive,
             MyUser.admin, MyUser.sex, MyUser.birthday, MyUser.createdAt, MyUser.updatedAt
         ).order_by(desc('total_score'))
         
@@ -149,7 +148,7 @@ def get_score_leaderboard():
         
         # 转换为字典列表
         leaderboard_list = []
-        for i, (user_id, username, avatar, bio, score, experience, boluo, isActive, admin, sex, birthday, createdAt, updatedAt, total_score, history_count) in enumerate(leaderboard_data, 1):
+        for i, (user_id, username, avatar, bio, experience, boluo, isActive, admin, sex, birthday, createdAt, updatedAt, total_score, history_count) in enumerate(leaderboard_data, 1):
             rank = offset + i
             leaderboard_list.append({
                 'rank': rank,
@@ -158,7 +157,8 @@ def get_score_leaderboard():
                     'username': username,
                     'avatar': avatar,
                     'bio': bio,
-                    'score': score or 0,
+                    # 用户表已移除score，使用0占位
+                    'score': 0,
                     'experience': experience or 0,
                     'boluo': boluo or 0,
                     'isActive': isActive,
@@ -287,7 +287,8 @@ def get_user_score_stats():
                     'username': user.username,
                     'avatar': user.avatar,
                     'bio': user.bio,
-                    'score': user.score,
+                    # 用户表已移除score，返回0
+                    'score': 0,
                     'experience': user.experience,
                     'boluo': user.boluo,
                     'isActive': user.isActive,

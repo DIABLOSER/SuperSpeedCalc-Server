@@ -22,8 +22,7 @@ class MyUser(BaseModel):
     # 用户个人简介，文本类型，可为空，用于个人资料展示
     bio = db.Column(db.Text)
     
-    # 用户积分，整数类型，默认0，用于记录用户的积分数量
-    score = db.Column(db.Integer, default=0)
+    
     
     # 用户经验值，整数类型，默认0，用于记录用户的经验积累
     experience = db.Column(db.Integer, default=0)

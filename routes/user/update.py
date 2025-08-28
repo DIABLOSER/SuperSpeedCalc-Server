@@ -9,8 +9,8 @@ def update_user(object_id):
         user = MyUser.query.get_or_404(object_id)
         data = request.get_json()
         
-        # 更新允许的字段
-        allowed_fields = ['avatar', 'bio', 'isActive', 'score', 'experience', 'boluo', 'admin', 'sex', 'mobile', 'email', 'username']
+        # 更新允许的字段（已移除 score）
+        allowed_fields = ['avatar', 'bio', 'isActive', 'experience', 'boluo', 'admin', 'sex', 'mobile', 'email', 'username']
         for field in allowed_fields:
             if field in data:
                 if field == 'mobile':
@@ -68,31 +68,6 @@ def update_user(object_id):
         db.session.rollback()
         return jsonify({'success': False, 'error': str(e)}), 500
 
-def update_user_score(object_id):
-    """更新用户积分"""
-    try:
-        user = MyUser.query.get_or_404(object_id)
-        data = request.get_json()
-        
-        score_change = data.get('score_change', 0)
-        user.score += score_change
-        
-        # 确保积分不为负数
-        if user.score < 0:
-            user.score = 0
-        
-        user.updatedAt = datetime.utcnow()
-        db.session.commit()
-        
-        return jsonify({
-            'success': True,
-            'data': user.to_dict(),
-            'message': f'Score updated by {score_change}'
-        })
-        
-    except Exception as e:
-        db.session.rollback()
-        return jsonify({'success': False, 'error': str(e)}), 500
 
 def update_user_experience(object_id):
     """更新用户经验值"""

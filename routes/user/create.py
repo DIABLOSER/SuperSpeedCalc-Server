@@ -9,7 +9,6 @@ class UserInfo:
     #在这里配置默认值
     avatar = "https://example.com/avatar.jpg"
     bio = "这个人很懒，什么都没留下"
-    score = 0
     experience = 0
     boluo = 0
     isActive = True
@@ -87,7 +86,6 @@ def create_user():
             password=generate_password_hash(data['password']),
             avatar=data.get('avatar'),
             bio=data.get('bio'),
-            score=data.get('score', 0),
             experience=data.get('experience', 0),
             boluo=data.get('boluo', 0),
             isActive=data.get('isActive', True),
@@ -148,7 +146,6 @@ def register_user():
             password=generate_password_hash(password),
             avatar=UserInfo.avatar,
             bio=UserInfo.bio,
-            score=UserInfo.score,
             experience=UserInfo.experience,
             boluo=UserInfo.boluo,
             isActive=UserInfo.isActive,

@@ -24,7 +24,6 @@ class History(BaseModel):
                 'username': self.user_ref.username,
                 'avatar': self.user_ref.avatar,
                 'bio': self.user_ref.bio,
-                'score': self.user_ref.score,
                 'experience': self.user_ref.experience,
                 'boluo': self.user_ref.boluo,
                 'isActive': self.user_ref.isActive,
