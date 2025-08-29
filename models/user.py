@@ -8,7 +8,7 @@ class MyUser(BaseModel):
     username = db.Column(db.String(50), unique=True, nullable=False)
     
     # 邮箱地址，最大100字符，唯一，可为空，用于登录和通知
-    email = db.Column(db.String(100), unique=True)
+    email = db.Column(db.String(100), unique=True, nullable=True)
     
     # 手机号，最大20字符，唯一且可为空
     mobile = db.Column(db.String(20), unique=True)

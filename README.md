@@ -280,111 +280,111 @@ python check_history_data.py
 }
 ```
 
-### 用户 API (`/api/users`)
+### 用户 API (`/users`)
 
-- `GET /api/users` - 获取所有用户
+- `GET /users` - 获取所有用户
   - 分页：`page`、`per_page`
   - 排序：`sort_by`（支持 `username`、`email`、`mobile`、`experience`、`boluo`、`isActive`、`admin`、`sex`、`birthday`、`createdAt`、`updatedAt`）、`order`（`asc`/`desc`）
   - 模糊搜索：`keyword` 或 `q`（对 `username`、`email`、`mobile` 进行不区分大小写匹配）
-- `GET /api/users/count` - 获取用户总数
-- `GET /api/users/<object_id>` - 获取单个用户
-- `POST /api/users` - 创建用户（后台管理）
+- `GET /users/count` - 获取用户总数
+- `GET /users/<object_id>` - 获取单个用户
+- `POST /users` - 创建用户（后台管理）
   - 必填：`username`、`password`
   - 二选一：`email` 或 `mobile`
   - 可选：`avatar`、`bio`、`experience`、`boluo`、`isActive`、`admin`、`sex`、`birthday`
-- `POST /api/users/register` - 注册用户（安卓/客户端）
+- `POST /users/register` - 注册用户（安卓/客户端）
   - 必填：`password`
   - 二选一：`email` 或 `mobile`
   - 自动：`username`（服务端按“形容词+名词+时间戳后6位”生成，并保证唯一）
-- `POST /api/users/login` - 用户登录
+- `POST /users/login` - 用户登录
   - 方式一：`email` + `password`
   - 方式二：`mobile` + `password`
-- `PUT /api/users/<object_id>` - 更新用户
-- `DELETE /api/users/<object_id>` - 删除用户
-- `POST /api/users/<object_id>/experience` - 更新用户经验值
-- `POST /api/users/<object_id>/boluo` - 更新用户菠萝币
+- `PUT /users/<object_id>` - 更新用户
+- `DELETE /users/<object_id>` - 删除用户
+- `POST /users/<object_id>/experience` - 更新用户经验值
+- `POST /users/<object_id>/boluo` - 更新用户菠萝币
 
 #### 示例
 - 列表模糊搜索
 ```
-GET /api/users?keyword=cat
-GET /api/users?q=138
+GET /users?keyword=cat
+GET /users?q=138
 ```
 
-### 图表 API (`/api/charts`)
+### 图表 API (`/charts`)
 
-- `GET /api/charts` - 获取图表列表
+- `GET /charts` - 获取图表列表
   - 分页：`page`、`per_page`
   - 过滤：`user`
   - 排序：`sort_by`（`objectId`、`title`、`achievement`、`user`、`createdAt`、`updatedAt`），`order`（`asc`/`desc`）
-- `GET /api/charts/<object_id>` - 获取单个图表
-- `POST /api/charts` - 创建图表
-- `PUT /api/charts/<object_id>` - 更新图表
-- `DELETE /api/charts/<object_id>` - 删除图表
-- `GET /api/charts/leaderboard` - 获取排行榜（按成绩值降序，支持分页）
+- `GET /charts/<object_id>` - 获取单个图表
+- `POST /charts` - 创建图表
+- `PUT /charts/<object_id>` - 更新图表
+- `DELETE /charts/<object_id>` - 删除图表
+- `GET /charts/leaderboard` - 获取排行榜（按成绩值降序，支持分页）
   - 分页：`page`、`per_page`
-- `GET /api/charts/rank` - 根据 `title` 与 `achievement` 查询排名
+- `GET /charts/rank` - 根据 `title` 与 `achievement` 查询排名
   - 必填：`title`、`achievement`
   - 可选：`scope=global|title`（默认 `global`）
   - 说明：按 `achievement` 降序，排名 = 比该分数更高的数量 + 1（同分并列）
-  - 示例：`/api/charts/rank?title=Speed%20Run&achievement=123.45&scope=title`
-- `POST /api/charts/<object_id>/achievement` - 更新图表成绩值
+  - 示例：`/charts/rank?title=Speed%20Run&achievement=123.45&scope=title`
+- `POST /charts/<object_id>/achievement` - 更新图表成绩值
 
-### 论坛 API (`/api/forum`)
+### 论坛 API (`/forum`)
 
-- `GET /api/forum` - 获取帖子列表
+- `GET /forum` - 获取帖子列表
   - 分页：`page`、`per_page`
   - 过滤：`category`、`user`、`isPinned`（`true|false`）、`public`（`true|false`）
   - 排序：置顶优先（`isPinned` 降序），其后按 `createdAt` 降序
-- `GET /api/forum/<object_id>` - 获取单个帖子
-- `GET /api/forum/categories` - 获取所有帖子分类（支持分页）
+- `GET /forum/<object_id>` - 获取单个帖子
+- `GET /forum/categories` - 获取所有帖子分类（支持分页）
   - 分页：`page`、`per_page`
-- `GET /api/forum/popular` - 获取热门帖子（支持分页）
+- `GET /forum/popular` - 获取热门帖子（支持分页）
   - 分页：`page`、`per_page`
   - 排序：`sort_by=viewCount|likeCount`
-- `GET /api/forum/public` - 获取公开帖子（支持分页）
+- `GET /forum/public` - 获取公开帖子（支持分页）
   - 分页：`page`、`per_page`
-- `POST /api/forum` - 创建帖子
-- `PUT /api/forum/<object_id>` - 更新帖子
-- `POST /api/forum/<object_id>/like` - 点赞
-- `DELETE /api/forum/<object_id>` - 删除帖子
+- `POST /forum` - 创建帖子
+- `PUT /forum/<object_id>` - 更新帖子
+- `POST /forum/<object_id>/like` - 点赞
+- `DELETE /forum/<object_id>` - 删除帖子
 
-### 图片 API (`/api/images`)
+### 图片 API (`/images`)
 
-- `GET /api/images` - 获取图片列表
+- `GET /images` - 获取图片列表
   - 分页：`page`、`per_page`
   - 排序：`sort_by`（支持 `fileName`、`fileSize`、`createdAt`、`updatedAt`）、`order`（`asc`/`desc`）
-- `GET /api/images/<object_id>` - 获取单个图片
-- `GET /api/images/stats` - 获取图片统计信息（总数量、总大小）
-- `GET /api/images/search` - 按文件名搜索
+- `GET /images/<object_id>` - 获取单个图片
+- `GET /images/stats` - 获取图片统计信息（总数量、总大小）
+- `GET /images/search` - 按文件名搜索
   - 参数：`q`
   - 分页：`page`、`per_page`
-- `POST /api/images` - 创建图片记录（JSON方式）
-- `PUT /api/images/<object_id>` - 更新图片信息
-- `DELETE /api/images/<object_id>` - 删除图片
-- `POST /api/images/upload` - 上传单个图片文件（multipart/form-data，字段名：`file`）
-- `POST /api/images/upload/multiple` - 批量上传图片文件（multipart/form-data，字段名：`files`）
+- `POST /images` - 创建图片记录（JSON方式）
+- `PUT /images/<object_id>` - 更新图片信息
+- `DELETE /images/<object_id>` - 删除图片
+- `POST /images/upload` - 上传单个图片文件（multipart/form-data，字段名：`file`）
+- `POST /images/upload/multiple` - 批量上传图片文件（multipart/form档），字段名：`files`
 
-### 发布版本 API (`/api/releases`)
+### 发布版本 API (`/releases`)
 
-- `GET /api/releases` - 获取发布记录列表
+- `GET /releases` - 获取发布记录列表
   - 分页：`page`、`per_page`
   - 过滤：`app_name`、`environment`、`status`
   - 排序：按创建时间倒序
-- `GET /api/releases/count` - 获取发布记录数量（支持同样的过滤）
-- `GET /api/releases/<object_id>` - 获取单个发布记录
-- `POST /api/releases` - 创建发布记录
+- `GET /releases/count` - 获取发布记录数量（支持同样的过滤）
+- `GET /releases/<object_id>` - 获取单个发布记录
+- `POST /releases` - 创建发布记录
   - 必填：`app_name`、`version_name`、`version_code`
   - 可选：`changelog`、`download_url`、`environment`（默认 `production`）、`status`（默认 `published`）、`is_update`、`force_update`
-- `PUT /api/releases/<object_id>` - 更新发布记录
-- `DELETE /api/releases/<object_id>` - 删除发布记录
-- `POST /api/releases/upload-apk` - 上传 APK 文件（multipart/form-data）
+- `PUT /releases/<object_id>` - 更新发布记录
+- `DELETE /releases/<object_id>` - 删除发布记录
+- `POST /releases/upload-apk` - 上传 APK 文件（multipart/form-data）
   - 字段：`file`（必填，.apk）、`release_id`（可选；若提供，将自动回写该记录的 `download_url`）
 
 #### 发布版本示例
 ```bash
 # 创建发布记录
-curl -X POST "http://localhost:5000/api/releases/" \
+curl -X POST "http://localhost:5000/releases/" \
   -H "Content-Type: application/json" \
   -d '{
     "app_name": "SuperSpeedCalc",
@@ -396,42 +396,42 @@ curl -X POST "http://localhost:5000/api/releases/" \
   }'
 
 # 上传 APK 并绑定到发布记录（release_id 为创建返回的 objectId）
-curl -X POST "http://localhost:5000/api/releases/upload-apk?release_id=<objectId>" \
+curl -X POST "http://localhost:5000/releases/upload-apk?release_id=<objectId>" \
   -F "file=@/path/to/app-release.apk"
 
 # 仅上传 APK，不绑定记录（可得到文件 URL，之后手动写入）
-curl -X POST "http://localhost:5000/api/releases/upload-apk" \
+curl -X POST "http://localhost:5000/releases/upload-apk" \
   -F "file=@/path/to/app-release.apk"
 ```
 
-### 历史记录 API (`/api/history`)
+### 历史记录 API (`/history`)
 
 #### 基础操作
-- `GET /api/history` - 获取历史记录列表
+- `GET /history` - 获取历史记录列表
   - 分页：`page`、`per_page`
   - 过滤：`user`（按用户ID过滤）
   - 排序：按创建时间倒序
   - 返回：包含完整的用户信息（用户名、头像、经验等）
-- `GET /api/history/count` - 获取历史记录总数
+- `GET /history/count` - 获取历史记录总数
   - 可选：`user`（按用户ID统计）
-- `GET /api/history/<object_id>` - 获取单个历史记录
+- `GET /history/<object_id>` - 获取单个历史记录
   - 返回：包含完整的用户信息
-- `POST /api/history` - 创建历史记录
+- `POST /history` - 创建历史记录
   - 必填：`title`、`score`、`user`
   - 说明：`score` 必须为整数，可以为正数或负数
-- `PUT /api/history/<object_id>` - 更新历史记录
+- `PUT /history/<object_id>` - 更新历史记录
   - 可选：`title`、`score`、`user`
-- `DELETE /api/history/<object_id>` - 删除历史记录
+- `DELETE /history/<object_id>` - 删除历史记录
 
 #### 排行榜功能
-- `GET /api/history/leaderboard` - 获取用户得分排行榜（基于历史记录分数总和）
+- `GET /history/leaderboard` - 获取用户得分排行榜（基于历史记录分数总和）
   - 分页：`page`、`per_page`
   - 时间段：`period`（`all`=总榜，`daily`=日榜，`monthly`=月榜，`yearly`=年榜）
   - 返回：用户排名、总分、历史记录数量，包含完整的用户信息
   - 算法：基于历史记录 `score` 字段的总和进行排序，支持正负数计算
 
 #### 用户统计
-- `GET /api/history/stats` - 获取用户历史分数统计信息
+- `GET /history/stats` - 获取用户历史分数统计信息
   - 必填：`user`
   - 返回：今日、本月、今年、总计的分数、记录数量与对应榜单排名（`rank`），包含完整的用户信息。
   - 说明：当某周期用户无任何记录时，该周期的 `rank` 返回 `null`。
@@ -440,7 +440,7 @@ curl -X POST "http://localhost:5000/api/releases/upload-apk" \
 #### 使用示例
 ```bash
 # 创建历史记录
-curl -X POST "http://localhost:5000/api/history/" \
+curl -X POST "http://localhost:5000/history/" \
   -H "Content-Type: application/json" \
   -d '{
     "title": "超级速度计算挑战",
@@ -449,16 +449,16 @@ curl -X POST "http://localhost:5000/api/history/" \
   }'
 
 # 获取总排行榜
-curl "http://localhost:5000/api/history/leaderboard?period=all"
+curl "http://localhost:5000/history/leaderboard?period=all"
 
 # 获取日榜
-curl "http://localhost:5000/api/history/leaderboard?period=daily"
+curl "http://localhost:5000/history/leaderboard?period=daily"
 
 # 获取用户统计
-curl "http://localhost:5000/api/history/stats?user=user123"
+curl "http://localhost:5000/history/stats?user=user123"
 
 # 获取用户历史记录
-curl "http://localhost:5000/api/history/?user=user123"
+curl "http://localhost:5000/history/?user=user123"
 ```
 
 ## History功能使用指南
@@ -467,7 +467,7 @@ curl "http://localhost:5000/api/history/?user=user123"
 
 1. **创建历史记录**
    ```bash
-   curl -X POST "http://localhost:5000/api/history/" \
+   curl -X POST "http://localhost:5000/history/" \
      -H "Content-Type: application/json" \
      -d '{
        "title": "游戏挑战",
@@ -479,21 +479,21 @@ curl "http://localhost:5000/api/history/?user=user123"
 2. **查看排行榜**
    ```bash
    # 总排行榜
-   curl "http://localhost:5000/api/history/leaderboard?period=all"
+   curl "http://localhost:5000/history/leaderboard?period=all"
    
    # 日榜
-   curl "http://localhost:5000/api/history/leaderboard?period=daily"
+   curl "http://localhost:5000/history/leaderboard?period=daily"
    
    # 月榜
-   curl "http://localhost:5000/api/history/leaderboard?period=monthly"
+   curl "http://localhost:5000/history/leaderboard?period=monthly"
    
    # 年榜
-   curl "http://localhost:5000/api/history/leaderboard?period=yearly"
+   curl "http://localhost:5000/history/leaderboard?period=yearly"
    ```
 
 3. **获取用户统计**
    ```bash
-   curl "http://localhost:5000/api/history/stats?user=user123"
+   curl "http://localhost:5000/history/stats?user=user123"
    ```
 
 ### 📊 数据格式说明
@@ -577,19 +577,19 @@ curl "http://localhost:5000/api/history/?user=user123"
 #### 分页查询
 ```bash
 # 获取第2页，每页10条记录
-curl "http://localhost:5000/api/history/?page=2&per_page=10"
+curl "http://localhost:5000/history/?page=2&per_page=10"
 
 # 获取排行榜第1页，每页5条记录
-curl "http://localhost:5000/api/history/leaderboard?period=all&page=1&per_page=5"
+curl "http://localhost:5000/history/leaderboard?period=all&page=1&per_page=5"
 ```
 
 #### 用户过滤
 ```bash
 # 获取特定用户的历史记录
-curl "http://localhost:5000/api/history/?user=user123"
+curl "http://localhost:5000/history/?user=user123"
 
 # 获取特定用户的历史记录数量
-curl "http://localhost:5000/api/history/count?user=user123"
+curl "http://localhost:5000/history/count?user=user123"
 ```
 
 ### 🎮 应用场景

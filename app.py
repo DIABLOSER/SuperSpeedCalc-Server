@@ -19,12 +19,12 @@ def create_app(config_name='default'):
     # 注册蓝图 - 使用新的模块化结构
     from routes import user_bp, charts_bp, forum_bp, image_bp, history_bp, releases_bp
     
-    app.register_blueprint(user_bp, url_prefix='/api/users')
-    app.register_blueprint(charts_bp, url_prefix='/api/charts')
-    app.register_blueprint(forum_bp, url_prefix='/api/forum')
-    app.register_blueprint(image_bp, url_prefix='/api/images')
-    app.register_blueprint(history_bp, url_prefix='/api/history')
-    app.register_blueprint(releases_bp, url_prefix='/api/releases')
+    app.register_blueprint(user_bp, url_prefix='/users')
+    app.register_blueprint(charts_bp, url_prefix='/charts')
+    app.register_blueprint(forum_bp, url_prefix='/forum')
+    app.register_blueprint(image_bp, url_prefix='/images')
+    app.register_blueprint(history_bp, url_prefix='/history')
+    app.register_blueprint(releases_bp, url_prefix='/releases')
     
     # 静态文件：uploads/images 与 /uploads/apk
     uploads_dir = os.path.join(app.root_path, 'uploads', 'images')
