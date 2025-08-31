@@ -15,7 +15,7 @@ def create_app(config_name='default'):
     # 初始化扩展
     db.init_app(app)
     #部署到服务器需要注释这行
-   # CORS(app)
+    CORS(app)
     
     # 注册蓝图 - 使用新的模块化结构
     from routes import user_bp, charts_bp, forum_bp, image_bp, history_bp, releases_bp
