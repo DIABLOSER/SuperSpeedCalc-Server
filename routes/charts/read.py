@@ -67,14 +67,27 @@ def get_chart(object_id):
         return jsonify({'success': False, 'error': str(e)}), 404
 
 def get_leaderboard():
-    """获取排行榜（按成绩值排序，支持分页）"""
+    """获取排行榜（按成绩值升序排序，支持分页）
+    查询参数：
+    - title (可选)：筛选特定标题的排行榜
+    - page (可选，默认1)：页码
+    - per_page (可选，默认10)：每页数量
+    """
     try:
+        # 获取查询参数
+        title = request.args.get('title')
         page = request.args.get('page', 1, type=int)
         per_page = request.args.get('per_page', 10, type=int)
         page = max(page or 1, 1)
         per_page = min(max(per_page or 10, 1), 100)
 
-        query = Charts.query.order_by(Charts.achievement.desc())
+        query = Charts.query
+        
+        # 如果提供了 title 参数，则过滤特定标题
+        if title:
+            query = query.filter_by(title=title)
+            
+        query = query.order_by(Charts.achievement.asc())
         total = query.count()
         charts = query.limit(per_page).offset((page - 1) * per_page).all()
         pages = (total + per_page - 1) // per_page if per_page else 1
@@ -98,7 +111,7 @@ def get_rank_by_title_achievement():
     - title (必填)
     - achievement (必填，float)
     - scope (可选，global|title，默认 global)
-    规则：按 achievement 降序，排名为（比该分数高的数量 + 1）。同分并列。
+    规则：按 achievement 升序，排名为（比该分数低的数量 + 1）。同分并列。
     """
     try:
         title = (request.args.get('title') or '').strip()
@@ -119,9 +132,9 @@ def get_rank_by_title_achievement():
             base_query = base_query.filter_by(title=title)
 
         total = base_query.count()
-        higher_count = base_query.filter(Charts.achievement > achievement).count()
+        lower_count = base_query.filter(Charts.achievement < achievement).count()
         ties_count = base_query.filter(Charts.achievement == achievement).count()
-        rank = higher_count + 1
+        rank = lower_count + 1
 
         # 可选：查找是否存在匹配 title 与 achievement 的记录（可能有多条）
         sample = base_query.filter(Charts.title == title, Charts.achievement == achievement).first()
@@ -134,7 +147,7 @@ def get_rank_by_title_achievement():
                 'achievement': achievement,
                 'scope': scope,
                 'rank': rank,
-                'higher_count': higher_count,
+                'lower_count': lower_count,
                 'ties_count': ties_count,
                 'total': total,
                 'sample': sample_data
