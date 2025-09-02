@@ -222,6 +222,11 @@ python scripts/migrate_drop_user_score.py
 python scripts/migrate_rename_experence_to_experience.py
 ```
 
+### 最新更新（2024年版本）
+- **排行榜优化**: Charts API 排行榜现在按成绩升序排列（分数越低排名越高）
+- **过滤增强**: 排行榜支持按 `title` 参数过滤特定标题的成绩记录
+- **排名算法**: 更新排名计算逻辑，适配升序排序规则
+
 ### 静态文件/上传
 - 图片：
   - 目录：`uploads/images/`
@@ -321,14 +326,30 @@ GET /users?q=138
 - `POST /charts` - 创建图表
 - `PUT /charts/<object_id>` - 更新图表
 - `DELETE /charts/<object_id>` - 删除图表
-- `GET /charts/leaderboard` - 获取排行榜（按成绩值降序，支持分页）
+- `GET /charts/leaderboard` - 获取排行榜（按成绩值升序排序，支持分页）
   - 分页：`page`、`per_page`
+  - 过滤：`title`（可选）：筛选特定标题的排行榜
 - `GET /charts/rank` - 根据 `title` 与 `achievement` 查询排名
   - 必填：`title`、`achievement`
   - 可选：`scope=global|title`（默认 `global`）
-  - 说明：按 `achievement` 降序，排名 = 比该分数更高的数量 + 1（同分并列）
+  - 说明：按 `achievement` 升序，排名 = 比该分数更低的数量 + 1（同分并列）
   - 示例：`/charts/rank?title=Speed%20Run&achievement=123.45&scope=title`
 - `POST /charts/<object_id>/achievement` - 更新图表成绩值
+
+#### Charts API 使用示例
+```bash
+# 获取全局排行榜（所有标题，按成绩升序）
+curl "http://localhost:5000/charts/leaderboard?page=1&per_page=10"
+
+# 获取特定标题的排行榜
+curl "http://localhost:5000/charts/leaderboard?title=数学计算&page=1&per_page=5"
+
+# 查询用户在特定标题中的排名
+curl "http://localhost:5000/charts/rank?title=数学计算&achievement=85.5&scope=title"
+
+# 查询用户在全局排行榜中的排名
+curl "http://localhost:5000/charts/rank?title=数学计算&achievement=85.5&scope=global"
+```
 
 ### 论坛 API (`/forum`)
 
@@ -602,10 +623,12 @@ curl "http://localhost:5000/history/count?user=user123"
 
 ### 📈 性能优化
 
-- 使用SQL聚合函数进行高效统计
-- 支持分页查询，避免大量数据传输
-- 合理的数据库索引设计
-- 缓存友好的API设计
+- **SQL聚合查询**: 使用数据库层面的GROUP BY和SUM进行高效统计
+- **分页机制**: 支持灵活的分页查询，避免大量数据传输
+- **索引优化**: 为外键字段和查询频繁字段建立合理索引
+- **缓存友好**: API设计考虑缓存策略，支持条件查询减少数据量
+- **排序优化**: 排行榜查询使用数据库原生排序，性能优异
+- **并发处理**: Flask多线程支持，适合中等并发场景
 
 ## 项目总结
 
@@ -614,6 +637,8 @@ curl "http://localhost:5000/history/count?user=user123"
 - **RESTful API**: 标准的REST API设计，完整的CRUD操作
 - **智能用户系统**: 自动生成用户名、双重登录方式（邮箱/手机号）
 - **完整功能覆盖**: 用户管理、排行榜、社区、文件上传、版本发布一应俱全
+- **灵活排行榜系统**: 支持升序排序、多标题过滤、精确排名计算
+- **多维度统计**: 日/月/年/总榜多时间维度，实时统计分析
 - **数据完整性**: 外键关联、级联删除、数据校验等数据库最佳实践
 - **高性能查询**: SQL聚合查询、分页支持、索引优化
 - **扩展性强**: 支持数据库迁移、环境配置、一键部署
@@ -676,5 +701,36 @@ SuperSpeedCalc Server 是一个功能完整、架构清晰的后端服务项目�
 2. **测试脚本**：`test_*.py` 文件提供完整的功能验证
 3. **数据库管理**：`manage_db.py` 提供数据库操作工具
 4. **启动脚本**：`start.py` 提供智能启动和依赖检查
+
+### 🚀 生产环境部署建议
+
+#### 基本部署配置
+```bash
+# 1. 安装依赖
+pip install -r requirements.txt
+
+# 2. 设置环境变量
+export FLASK_ENV=production
+export SECRET_KEY=your_secret_key_here
+
+# 3. 初始化数据库
+python manage_db.py init
+
+# 4. 启动服务
+python start.py
+```
+
+#### 性能优化建议
+- **Web服务器**: 生产环境建议使用 Gunicorn + Nginx
+- **数据库**: 大数据量场景建议使用 MySQL 替代 SQLite
+- **静态文件**: 配置 Nginx 直接服务静态文件，减轻应用服务器负担
+- **缓存策略**: 可集成 Redis 进行排行榜和热门内容缓存
+- **监控日志**: 集成日志系统，监控API性能和错误
+
+#### 安全配置
+- 生产环境需注释掉 `app.py` 第18行的 `CORS(app)` 
+- 配置合适的CORS策略和安全头
+- 使用HTTPS协议保护数据传输
+- 定期更新依赖包版本
 
 项目持续更新维护中，欢迎使用！ 🚀
