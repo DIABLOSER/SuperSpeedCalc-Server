@@ -334,6 +334,10 @@ GET /users?q=138
   - 可选：`scope=global|title`（默认 `global`）
   - 说明：按 `achievement` 升序，排名 = 比该分数更低的数量 + 1（同分并列）
   - 示例：`/charts/rank?title=Speed%20Run&achievement=123.45&scope=title`
+- `GET /charts/user-rank` - 根据用户ID和标题查询用户成绩和排名
+  - 必填：`user`（用户ID）、`title`（标题）
+  - 返回：用户完整信息、成绩、排名、同分数量、总记录数
+  - 说明：按 `achievement` 升序排序，分数越低排名越高
 - `POST /charts/<object_id>/achievement` - 更新图表成绩值
 
 #### Charts API 使用示例
@@ -349,6 +353,45 @@ curl "http://localhost:5000/charts/rank?title=数学计算&achievement=85.5&scop
 
 # 查询用户在全局排行榜中的排名
 curl "http://localhost:5000/charts/rank?title=数学计算&achievement=85.5&scope=global"
+
+# 查询特定用户在指定标题下的成绩和排名
+curl "http://localhost:5000/charts/user-rank?user=user123&title=数学计算"
+```
+
+#### 用户排名查询响应格式
+```json
+{
+  "success": true,
+  "data": {
+    "user_info": {
+      "objectId": "user123",
+      "username": "玩家张三",
+      "avatar": "avatar.jpg",
+      "bio": "我是游戏爱好者",
+      "experience": 1500,
+      "boluo": 200,
+      "isActive": true,
+      "admin": false,
+      "sex": 1,
+      "birthday": "1995-06-15",
+      "createdAt": "2024-01-01T00:00:00",
+      "updatedAt": "2024-01-15T12:30:00"
+    },
+    "achievement": 85.5,
+    "rank": 3,
+    "title": "数学计算",
+    "total_records": 50,
+    "ties_count": 2,
+    "record": {
+      "objectId": "chart456",
+      "title": "数学计算",
+      "achievement": 85.5,
+      "user": { /* 同上user_info */ },
+      "createdAt": "2024-01-10T14:20:00",
+      "updatedAt": "2024-01-10T14:20:00"
+    }
+  }
+}
 ```
 
 ### 论坛 API (`/forum`)

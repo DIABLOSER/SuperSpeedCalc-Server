@@ -1,6 +1,6 @@
 from flask import Blueprint
 from .create import create_chart
-from .read import get_charts, get_chart, get_leaderboard, get_rank_by_title_achievement
+from .read import get_charts, get_chart, get_leaderboard, get_rank_by_title_achievement, get_user_rank_by_title
 from .update import update_chart, update_achievement
 from .delete import delete_chart
 
@@ -15,6 +15,7 @@ charts_bp.route('/', methods=['GET'])(get_charts)
 charts_bp.route('/<string:object_id>', methods=['GET'])(get_chart)
 charts_bp.route('/leaderboard', methods=['GET'])(get_leaderboard)
 charts_bp.route('/rank', methods=['GET'])(get_rank_by_title_achievement)
+charts_bp.route('/user-rank', methods=['GET'])(get_user_rank_by_title)
 
 # 注册路由 - 更新操作
 charts_bp.route('/<string:object_id>', methods=['PUT'])(update_chart)

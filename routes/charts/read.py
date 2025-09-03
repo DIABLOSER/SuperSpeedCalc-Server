@@ -154,4 +154,54 @@ def get_rank_by_title_achievement():
             }
         })
     except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+def get_user_rank_by_title():
+    """根据用户ID和title查询用户成绩和排名
+    查询参数：
+    - user (必填)：用户ID
+    - title (必填)：标题
+    规则：按 achievement 升序，排名为（比该用户分数低的数量 + 1）。
+    """
+    try:
+        user_id = (request.args.get('user') or '').strip()
+        title = (request.args.get('title') or '').strip()
+
+        if not user_id:
+            return jsonify({'success': False, 'error': 'user is required'}), 400
+        if not title:
+            return jsonify({'success': False, 'error': 'title is required'}), 400
+
+        # 查询用户在指定title下的成绩记录
+        user_chart = Charts.query.filter_by(user=user_id, title=title).first()
+        
+        if not user_chart:
+            return jsonify({'success': False, 'error': 'No record found for this user and title'}), 404
+
+        # 获取用户的成绩
+        user_achievement = user_chart.achievement
+        
+        # 计算排名：比该用户分数更低的记录数量 + 1
+        base_query = Charts.query.filter_by(title=title)
+        total_records = base_query.count()
+        lower_count = base_query.filter(Charts.achievement < user_achievement).count()
+        ties_count = base_query.filter(Charts.achievement == user_achievement).count()
+        rank = lower_count + 1
+
+        # 获取用户完整信息的记录
+        user_chart_data = user_chart.to_dict(include_user=True)
+
+        return jsonify({
+            'success': True,
+            'data': {
+                'user_info': user_chart_data['user'],
+                'achievement': user_achievement,
+                'rank': rank,
+                'title': title,
+                'total_records': total_records,
+                'ties_count': ties_count,
+                'record': user_chart_data
+            }
+        })
+    except Exception as e:
         return jsonify({'success': False, 'error': str(e)}), 500 
