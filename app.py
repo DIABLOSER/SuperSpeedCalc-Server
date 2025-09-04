@@ -18,7 +18,7 @@ def create_app(config_name='default'):
     CORS(app)
     
     # 注册蓝图 - 使用新的模块化结构
-    from routes import user_bp, charts_bp, forum_bp, image_bp, history_bp, releases_bp
+    from routes import user_bp, charts_bp, forum_bp, image_bp, history_bp, releases_bp, relationship_bp, posts_bp, replies_bp, banners_bp
     
     app.register_blueprint(user_bp, url_prefix='/users')
     app.register_blueprint(charts_bp, url_prefix='/charts')
@@ -26,6 +26,10 @@ def create_app(config_name='default'):
     app.register_blueprint(image_bp, url_prefix='/images')
     app.register_blueprint(history_bp, url_prefix='/history')
     app.register_blueprint(releases_bp, url_prefix='/releases')
+    app.register_blueprint(relationship_bp, url_prefix='/users')
+    app.register_blueprint(posts_bp, url_prefix='/posts')
+    app.register_blueprint(replies_bp, url_prefix='/replies')
+    app.register_blueprint(banners_bp, url_prefix='/banners')
     
     # 静态文件：uploads/images 与 /uploads/apk
     uploads_dir = os.path.join(app.root_path, 'uploads', 'images')
@@ -81,7 +85,7 @@ def init_db(app, force=False):
     """智能初始化数据库"""
     with app.app_context():
         # 导入所有模型以确保它们被注册
-        from models import MyUser, Charts, Forum, Image, History, AppRelease
+        from models import MyUser, Charts, Forum, Image, History, AppRelease, UserRelationship, Posts, Likes, Reply, Banner
         
         db_exists, db_path = check_database_exists(app)
         

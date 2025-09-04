@@ -1,6 +1,6 @@
 from flask import request, jsonify
 from models import db, MyUser
-from werkzeug.security import generate_password_hash
+from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime
 
 def update_user(object_id):
@@ -119,4 +119,55 @@ def update_user_boluo(object_id):
         
     except Exception as e:
         db.session.rollback()
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+def update_user_password(object_id):
+    """根据用户ID和旧密码更新密码"""
+    try:
+        user = MyUser.query.get_or_404(object_id)
+        data = request.get_json()
+        
+        # 检查必需的参数
+        old_password = data.get('old_password')
+        new_password = data.get('new_password')
+        
+        if not old_password or not new_password:
+            return jsonify({
+                'success': False, 
+                'error': 'Both old_password and new_password are required'
+            }), 400
+        
+        # 验证旧密码是否正确
+        if not check_password_hash(user.password, old_password):
+            return jsonify({
+                'success': False, 
+                'error': 'Old password is incorrect'
+            }), 400
+        
+        # 验证新密码长度（可选的安全检查）
+        if len(new_password) < 6:
+            return jsonify({
+                'success': False, 
+                'error': 'New password must be at least 6 characters long'
+            }), 400
+        
+        # 更新为新密码
+        user.password = generate_password_hash(new_password)
+        user.updatedAt = datetime.utcnow()
+        
+        db.session.commit()
+        
+        return jsonify({
+            'success': True,
+            'message': 'Password updated successfully',
+            'data': {
+                'id': user.id,
+                'username': user.username,
+                'updatedAt': user.updatedAt.isoformat()
+            }
+        })
+        
+    except Exception as e:
+        db.session.rollback()
         return jsonify({'success': False, 'error': str(e)}), 500 
+        

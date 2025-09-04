@@ -5,6 +5,10 @@ from .forum import forum_bp
 from .image import image_bp
 from .history import history_bp
 from .releases import releases_bp
+from .relationship import relationship_bp
+from .posts import posts_bp
+from .replies import replies_bp
+from .banners import banners_bp
 
 # 导出所有蓝图
-__all__ = ['user_bp', 'charts_bp', 'forum_bp', 'image_bp', 'history_bp', 'releases_bp']
+__all__ = ['user_bp', 'charts_bp', 'forum_bp', 'image_bp', 'history_bp', 'releases_bp', 'relationship_bp', 'posts_bp', 'replies_bp', 'banners_bp']

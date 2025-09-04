@@ -1,7 +1,7 @@
 from flask import Blueprint
 from .create import create_user, register_user, login
 from .read import get_users, get_user, get_users_count
-from .update import update_user, update_user_experience, update_user_boluo
+from .update import update_user, update_user_experience, update_user_boluo, update_user_password
 from .delete import delete_user
 
 # 创建用户蓝图
@@ -21,6 +21,7 @@ user_bp.route('/<string:object_id>', methods=['GET'])(get_user)
 user_bp.route('/<string:object_id>', methods=['PUT'])(update_user)
 user_bp.route('/<string:object_id>/experience', methods=['POST'])(update_user_experience)
 user_bp.route('/<string:object_id>/boluo', methods=['POST'])(update_user_boluo)
+user_bp.route('/<string:object_id>/password', methods=['POST'])(update_user_password)
 
 # 注册路由 - 删除操作
 user_bp.route('/<string:object_id>', methods=['DELETE'])(delete_user) 

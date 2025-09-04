@@ -51,5 +51,51 @@ class MyUser(BaseModel):
     # 关系定义：用户的历史记录列表，级联删除（删除用户时删除其所有历史记录）
     histories = db.relationship('History', backref='user_ref', lazy=True, cascade='all, delete-orphan')
     
+    def get_followers(self):
+        """获取关注此用户的用户列表"""
+        from .relationship import UserRelationship
+        return db.session.query(MyUser).join(
+            UserRelationship, MyUser.objectId == UserRelationship.follower
+        ).filter(UserRelationship.followed == self.objectId).all()
+    
+    def get_following(self):
+        """获取此用户关注的用户列表"""
+        from .relationship import UserRelationship
+        return db.session.query(MyUser).join(
+            UserRelationship, MyUser.objectId == UserRelationship.followed
+        ).filter(UserRelationship.follower == self.objectId).all()
+    
+    def is_following(self, user_id):
+        """检查是否关注某个用户"""
+        from .relationship import UserRelationship
+        return UserRelationship.query.filter_by(
+            follower=self.objectId,
+            followed=user_id
+        ).first() is not None
+    
+    def get_followers_count(self):
+        """获取粉丝数量"""
+        from .relationship import UserRelationship
+        return UserRelationship.query.filter_by(followed=self.objectId).count()
+    
+    def get_following_count(self):
+        """获取关注数量"""
+        from .relationship import UserRelationship
+        return UserRelationship.query.filter_by(follower=self.objectId).count()
+    
+    def to_dict(self, include_stats=False):
+        """重写to_dict方法，可选择包含关注统计信息"""
+        result = super().to_dict()
+        # 移除敏感信息
+        if 'password' in result:
+            del result['password']
+        
+        # 如果需要包含统计信息
+        if include_stats:
+            result['followers_count'] = self.get_followers_count()
+            result['following_count'] = self.get_following_count()
+        
+        return result
+    
     def __repr__(self):
         return f'<MyUser {self.username}>' 
