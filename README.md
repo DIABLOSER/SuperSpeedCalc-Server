@@ -14,6 +14,7 @@
 - 📱 **横幅广告**：轮播图管理、广告投放、排序控制
 - 📊 **数据统计**：用户行为分析、内容统计、排名算法
 - 🚀 **版本发布**：APK管理、更新控制、发布管理
+- 📱 **短信服务**：Bmob短信验证码发送和验证功能
 
 ## 📁 项目结构
 
@@ -70,7 +71,10 @@ SuperSpeedCalc-Server/
 │   ├── forum/           # 论坛相关 API
 │   ├── image/           # 图片相关 API
 │   ├── history/         # 历史记录相关 API
-│   └── releases/        # 发布版本相关 API
+│   ├── releases/        # 发布版本相关 API
+│   └── sms/             # 短信服务 API ✨新增
+│       ├── sendsms.py   # 发送短信验证码
+│       └── verifysms.py # 验证短信验证码
 ├── scripts/             # 数据库迁移脚本
 ├── examples/            # 使用示例和文档
 ├── uploads/             # 文件上传目录
@@ -320,6 +324,7 @@ erDiagram
 - **论坛社区**: 帖子发布、分类管理、点赞互动、置顶/关闭控制
 - **图片管理**: 单个/批量图片上传、文件存储、静态资源访问
 - **发布管理**: APK版本发布管理、文件上传、版本控制、更新提示
+- **短信服务**: Bmob短信验证码发送和验证，支持手机号注册验证
 
 ### 🏆 History功能亮点
 - **智能排行榜**: 支持日榜、月榜、年榜、总榜
@@ -395,6 +400,19 @@ curl -X POST "http://localhost:5000/banners/" \
 curl "http://localhost:5000/banners/active"
 ```
 
+#### 4️⃣ 短信验证码体验
+```bash
+# 发送短信验证码
+curl -X POST "http://localhost:8000/sms/send" \
+  -H "Content-Type: application/json" \
+  -d '{"phone": "13800138000"}'
+
+# 验证短信验证码
+curl -X POST "http://localhost:8000/sms/verify" \
+  -H "Content-Type: application/json" \
+  -d '{"phone": "13800138000", "code": "123456"}'
+```
+
 ## 🔧 环境要求
 
 - **Python**: 3.7+ (推荐使用 Python 3.8+)
@@ -420,7 +438,20 @@ source venv/bin/activate  # Linux/macOS
 pip install -r requirements.txt -i https://mirrors.aliyun.com/pypi/simple/
 ```
 
-### 2. 数据库管理
+### 2. 配置Bmob短信服务（可选）
+
+如果需要使用短信验证码功能，需要配置Bmob服务：
+
+```bash
+# 创建.env文件（推荐）
+echo "BMOB_APPLICATION_ID=你的Application_ID" >> .env
+echo "BMOB_REST_API_KEY=你的REST_API_Key" >> .env
+echo "BMOB_MASTER_KEY=你的Master_Key" >> .env
+```
+
+或者在 `config.py` 中直接修改配置值。
+
+### 3. 数据库管理
 
 #### 首次使用 - 初始化数据库
 ```bash
@@ -509,16 +540,26 @@ python scripts/migrate_rename_experence_to_experience.py
   - 目录：`uploads/apk/`
   - 访问：`/uploads/apk/<filename>`
 
-### 3. 应用地址
+### 4. 应用地址
 
 根据不同的启动方式：
 - **推荐方式**：使用 `python start.py` 启动，应用将在 `http://localhost:5000` 运行
 - **开发方式**：使用 `python app.py` 启动，应用将在 `http://localhost:8000` 运行
 - **健康检查端点**：`http://localhost:5000/health` 或 `http://localhost:8000/health`
 
+### 5. 短信服务测试
+
+```bash
+# 测试短信API功能
+python test_sms_api.py
+
+# 运行短信服务使用示例
+python examples/sms_usage_example.py
+```
+
 > 注意：如果5000端口被占用（如被AirPlay Receiver占用），建议使用8000端口或者在系统偏好设置->共享中关闭AirPlay接收器服务。
 
-### 4. 测试脚本
+### 6. 测试脚本
 
 项目提供了完整的测试脚本来验证功能：
 
@@ -547,6 +588,47 @@ python check_history_data.py
 ## 🚀 API 接口
 
 ### 新增功能 API ✨
+
+#### 短信服务 API (`/sms`) 📱
+
+**基础操作**
+- `POST /sms/send` - 发送短信验证码
+  - 必填：`phone`（手机号，11位数字）
+  - 返回：发送结果和手机号
+- `POST /sms/verify` - 验证短信验证码
+  - 必填：`phone`（手机号）、`code`（6位验证码）
+  - 返回：验证结果和用户信息
+
+**使用示例**
+```bash
+# 发送短信验证码
+curl -X POST "http://localhost:8000/sms/send" \
+  -H "Content-Type: application/json" \
+  -d '{"phone": "13800138000"}'
+
+# 验证短信验证码
+curl -X POST "http://localhost:8000/sms/verify" \
+  -H "Content-Type: application/json" \
+  -d '{"phone": "13800138000", "code": "123456"}'
+```
+
+**响应格式**
+```json
+// 发送成功
+{
+  "success": true,
+  "message": "短信验证码发送成功",
+  "phone": "13800138000"
+}
+
+// 验证成功
+{
+  "success": true,
+  "message": "短信验证码验证成功",
+  "phone": "13800138000",
+  "verified": true
+}
+```
 
 #### 帖子系统 API (`/posts`)
 
@@ -1255,6 +1337,7 @@ curl "http://localhost:5000/history/count?user=user123"
 - **跨域支持**: Flask-CORS 4.0.0
 - **数据库**: SQLite（默认），支持 MySQL（使用 PyMySQL）
 - **密码加密**: Werkzeug 安全模块
+- **短信服务**: Bmob短信服务（bmobpy 1.10.1）
 - **API设计**: RESTful风格，蓝图模块化架构
 - **数据格式**: JSON，完整的分页和错误处理
 - **文件处理**: 支持图片（PNG/JPG）和APK文件上传存储
@@ -1279,6 +1362,8 @@ curl "http://localhost:5000/history/count?user=user123"
 - **数据库管理**: 专用的数据库管理工具（`manage_db.py`）
 - **启动脚本**: 智能启动脚本，自动检查依赖和初始化（`start.py`）
 - **数据填充**: 测试数据生成和统计工具（`add_history_data.py`、`check_history_data.py`）
+- **短信测试**: SMS API测试脚本和使用示例（`test_sms_api.py`、`examples/sms_usage_example.py`）
+- **配置指南**: 详细的SMS配置指南（`SMS_SETUP_GUIDE.md`）
 - **文档完善**: 详细的API文档和使用指南，包含完整的curl示例
 
 ### 🎮 应用场景
@@ -1288,6 +1373,7 @@ curl "http://localhost:5000/history/count?user=user123"
 - **社区应用**: 论坛、图片分享、用户互动、社交功能
 - **数据分析**: 用户行为分析、统计报表、关注关系分析
 - **竞赛系统**: 多维度排行榜、实时统计、用户排名
+- **用户验证**: 手机号注册验证、短信验证码登录、安全验证 ✨
 
 ### 📈 项目优势
 - **生产就绪**: 完整的错误处理、健康检查端点、配置管理
@@ -1308,6 +1394,7 @@ SuperSpeedCalc Server 是一个功能完整、架构清晰的现代化后端服�
 - **完整的用户体系**：支持邮箱/手机号注册登录，密码安全管理，经验值和积分系统
 - **强大的统计功能**：多维度排行榜（日/月/年/总榜），实时用户统计分析
 - **智能内容管理**：帖子审核、横幅管理、图片上传、版本发布一应俱全
+- **短信验证服务**：集成Bmob短信服务，支持手机号验证码发送和验证 ✨
 - **数据关联完整**：所有API返回完整的关联对象信息，减少客户端请求次数 ✨
 - **开发友好**：完整的测试脚本、数据迁移工具、详细的API文档
 

@@ -16,6 +16,11 @@ class Config:
     
     # JWT 配置
     JWT_ACCESS_TOKEN_EXPIRES = timedelta(days=7)
+    
+    # Bmob 配置
+    BMOB_APPLICATION_ID = os.environ.get('BMOB_APPLICATION_ID') or '97fc7a013c292b2c90ca9bddcd639bfb'
+    BMOB_REST_API_KEY = os.environ.get('BMOB_REST_API_KEY') or '7cc42e8133868d61ff2a70f415ca0b39'
+    BMOB_MASTER_KEY = os.environ.get('BMOB_MASTER_KEY') or '2a2107dc1cc9e847f9d57563635961c8'
 
 class DevelopmentConfig(Config):
     """开发环境配置"""
