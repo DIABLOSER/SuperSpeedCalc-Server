@@ -169,5 +169,63 @@ def update_user_password(object_id):
         
     except Exception as e:
         db.session.rollback()
-        return jsonify({'success': False, 'error': str(e)}), 500 
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+def update_password_by_mobile():
+    """根据手机号更新密码（客户端已验证短信验证码）"""
+    try:
+        data = request.get_json()
+        
+        # 检查必需的参数
+        mobile = data.get('mobile')
+        new_password = data.get('new_password')
+        
+        if not mobile or not new_password:
+            return jsonify({
+                'success': False, 
+                'error': '手机号和新密码都是必需的'
+            }), 400
+        
+        # 验证手机号格式
+        if not mobile.isdigit() or len(mobile) != 11:
+            return jsonify({
+                'success': False, 
+                'error': '手机号格式不正确'
+            }), 400
+        
+        # 验证新密码长度
+        if len(new_password) < 6:
+            return jsonify({
+                'success': False, 
+                'error': '新密码至少需要6个字符'
+            }), 400
+        
+        # 查找用户
+        user = MyUser.query.filter_by(mobile=mobile).first()
+        if not user:
+            return jsonify({
+                'success': False, 
+                'error': '该手机号未注册'
+            }), 404
+        
+        # 更新密码
+        user.password = generate_password_hash(new_password)
+        user.updatedAt = datetime.utcnow()
+        
+        db.session.commit()
+        
+        return jsonify({
+            'success': True,
+            'message': '密码更新成功',
+            'data': {
+                'id': user.id,
+                'username': user.username,
+                'mobile': user.mobile,
+                'updatedAt': user.updatedAt.isoformat()
+            }
+        })
+        
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'success': False, 'error': str(e)}), 500
         

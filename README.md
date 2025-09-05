@@ -4,7 +4,7 @@
 
 ## 🌟 核心特性
 
-- 🔐 **完整用户系统**：注册登录、密码更新、用户信息管理
+- 🔐 **完整用户系统**：注册登录、密码更新、手机号密码重置、用户信息管理
 - 📝 **帖子系统**：发布帖子、图片上传、内容管理、审核机制
 - 💬 **评论系统**：两级评论（评论+回复）、@用户功能
 - 👍 **点赞系统**：帖子点赞、防重复点赞、点赞统计
@@ -14,7 +14,7 @@
 - 📱 **横幅广告**：轮播图管理、广告投放、排序控制
 - 📊 **数据统计**：用户行为分析、内容统计、排名算法
 - 🚀 **版本发布**：APK管理、更新控制、发布管理
-- 📱 **短信服务**：Bmob短信验证码发送和验证功能
+- 📱 **短信服务**：Bmob短信验证码发送和验证功能，支持手机号密码重置
 
 ## 📁 项目结构
 
@@ -25,7 +25,8 @@ SuperSpeedCalc-Server/
 ├── start.py              # 启动脚本
 ├── manage_db.py          # 数据库管理工具
 ├── requirements.txt      # 项目依赖
-├── README.md            # 项目说明文档
+├── README.md                        # 项目说明文档
+├── MOBILE_PASSWORD_RESET_SUMMARY.md # 手机号密码重置功能总结 ✨新增
 ├── models/              # 数据库模型目录 
 │   ├── __init__.py      # 模型包初始化
 │   ├── base.py          # 基础模型和数据库实例
@@ -45,7 +46,7 @@ SuperSpeedCalc-Server/
 │   ├── user/            # 用户相关 API
 │   │   ├── create.py    # 用户创建、注册、登录
 │   │   ├── read.py      # 用户查询
-│   │   ├── update.py    # 用户更新、密码更新 ✨优化
+│   │   ├── update.py    # 用户更新、密码更新、手机号密码重置 ✨优化
 │   │   └── delete.py    # 用户删除
 │   ├── posts/           # 帖子相关 API ✨新增
 │   │   ├── create.py    # 帖子创建
@@ -77,6 +78,8 @@ SuperSpeedCalc-Server/
 │       └── verifysms.py # 验证短信验证码
 ├── scripts/             # 数据库迁移脚本
 ├── examples/            # 使用示例和文档
+│   ├── sms_usage_example.py              # 短信服务使用示例
+│   └── mobile_password_reset_example.py  # 手机号密码重置示例 ✨新增
 ├── uploads/             # 文件上传目录
 │   ├── images/          # 图片文件存储
 │   └── apk/             # APK文件存储
@@ -312,7 +315,7 @@ erDiagram
 
 ### 🔐 用户管理系统
 - **用户管理**: 支持邮箱/手机号注册登录、用户信息管理、经验值和菠萝币系统
-- **密码安全**: 密码加密存储、旧密码验证更新、安全策略
+- **密码安全**: 密码加密存储、旧密码验证更新、手机号密码重置、安全策略
 - **权限控制**: 管理员权限、内容审核、操作授权
 
 ### 🏆 数据统计系统
@@ -324,7 +327,7 @@ erDiagram
 - **论坛社区**: 帖子发布、分类管理、点赞互动、置顶/关闭控制
 - **图片管理**: 单个/批量图片上传、文件存储、静态资源访问
 - **发布管理**: APK版本发布管理、文件上传、版本控制、更新提示
-- **短信服务**: Bmob短信验证码发送和验证，支持手机号注册验证
+- **短信服务**: Bmob短信验证码发送和验证，支持手机号注册验证和密码重置
 
 ### 🏆 History功能亮点
 - **智能排行榜**: 支持日榜、月榜、年榜、总榜
@@ -411,6 +414,14 @@ curl -X POST "http://localhost:8000/sms/send" \
 curl -X POST "http://localhost:8000/sms/verify" \
   -H "Content-Type: application/json" \
   -d '{"phone": "13800138000", "code": "123456"}'
+
+# 根据手机号重置密码
+curl -X POST "http://localhost:8000/users/reset-password" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "mobile": "13800138000",
+    "new_password": "newpass123"
+  }'
 ```
 
 ## 🔧 环境要求
@@ -555,6 +566,9 @@ python test_sms_api.py
 
 # 运行短信服务使用示例
 python examples/sms_usage_example.py
+
+# 运行手机号密码重置示例
+python examples/mobile_password_reset_example.py
 ```
 
 > 注意：如果5000端口被占用（如被AirPlay Receiver占用），建议使用8000端口或者在系统偏好设置->共享中关闭AirPlay接收器服务。
@@ -599,6 +613,14 @@ python check_history_data.py
   - 必填：`phone`（手机号）、`code`（6位验证码）
   - 返回：验证结果和用户信息
 
+#### 用户密码重置 API (`/users`) 🔐
+
+**密码重置**
+- `POST /users/reset-password` - 根据手机号重置密码
+  - 必填：`mobile`（手机号，11位数字）、`new_password`（新密码，至少6个字符）
+  - 验证：短信验证码验证由客户端处理
+  - 返回：重置结果和用户信息
+
 **使用示例**
 ```bash
 # 发送短信验证码
@@ -610,6 +632,14 @@ curl -X POST "http://localhost:8000/sms/send" \
 curl -X POST "http://localhost:8000/sms/verify" \
   -H "Content-Type: application/json" \
   -d '{"phone": "13800138000", "code": "123456"}'
+
+# 根据手机号重置密码（客户端已验证短信验证码）
+curl -X POST "http://localhost:8000/users/reset-password" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "mobile": "13800138000",
+    "new_password": "newpass123"
+  }'
 ```
 
 **响应格式**
@@ -627,6 +657,18 @@ curl -X POST "http://localhost:8000/sms/verify" \
   "message": "短信验证码验证成功",
   "phone": "13800138000",
   "verified": true
+}
+
+// 密码重置成功
+{
+  "success": true,
+  "message": "密码更新成功",
+  "data": {
+    "id": "user123",
+    "username": "用户名",
+    "mobile": "13800138000",
+    "updatedAt": "2024-01-15T12:30:00"
+  }
 }
 ```
 
@@ -716,6 +758,9 @@ curl -X POST "http://localhost:8000/sms/verify" \
 - `POST /users/{user_id}/password` - 更新密码
   - 必填：`old_password`（旧密码）、`new_password`（新密码，至少6个字符）
   - 安全验证：必须提供正确的旧密码才能更新
+- `POST /users/reset-password` - 根据手机号重置密码
+  - 必填：`mobile`（手机号）、`new_password`（新密码）
+  - 安全验证：短信验证码验证由客户端处理
 
 ### 分页约定
 - **查询参数**：`page`（默认 1），`per_page`（默认 10 或 20，视接口而定，最大 100 或 200）。
@@ -900,6 +945,14 @@ curl -X POST "http://localhost:5000/users/user123/password" \
   -H "Content-Type: application/json" \
   -d '{
     "old_password": "old_password_123",
+    "new_password": "new_secure_password_456"
+  }'
+
+# 根据手机号重置密码（忘记密码时使用）
+curl -X POST "http://localhost:8000/users/reset-password" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "mobile": "13800138000",
     "new_password": "new_secure_password_456"
   }'
 ```
@@ -1323,7 +1376,7 @@ curl "http://localhost:5000/history/count?user=user123"
 - **模块化设计**: 蓝图模块化架构，清晰的目录结构和代码组织
 - **RESTful API**: 标准的REST API设计，完整的CRUD操作
 - **完整社交功能**: 帖子发布、评论互动、点赞系统、用户关注等现代社交应用功能 ✨
-- **智能用户系统**: 自动生成用户名、双重登录方式（邮箱/手机号）、安全密码管理
+- **智能用户系统**: 自动生成用户名、双重登录方式（邮箱/手机号）、安全密码管理、手机号密码重置
 - **多级评论系统**: 支持两级评论（评论+回复）、@用户功能、层级管理 ✨
 - **完整功能覆盖**: 用户管理、帖子系统、排行榜、社区、文件上传、版本发布、横幅管理一应俱全
 - **灵活排行榜系统**: 支持升序排序、多标题过滤、精确排名计算
@@ -1363,7 +1416,9 @@ curl "http://localhost:5000/history/count?user=user123"
 - **启动脚本**: 智能启动脚本，自动检查依赖和初始化（`start.py`）
 - **数据填充**: 测试数据生成和统计工具（`add_history_data.py`、`check_history_data.py`）
 - **短信测试**: SMS API测试脚本和使用示例（`test_sms_api.py`、`examples/sms_usage_example.py`）
+- **密码重置**: 手机号密码重置使用示例（`examples/mobile_password_reset_example.py`）
 - **配置指南**: 详细的SMS配置指南（`SMS_SETUP_GUIDE.md`）
+- **功能总结**: 手机号密码重置功能实现总结（`MOBILE_PASSWORD_RESET_SUMMARY.md`）
 - **文档完善**: 详细的API文档和使用指南，包含完整的curl示例
 
 ### 🎮 应用场景
@@ -1373,7 +1428,7 @@ curl "http://localhost:5000/history/count?user=user123"
 - **社区应用**: 论坛、图片分享、用户互动、社交功能
 - **数据分析**: 用户行为分析、统计报表、关注关系分析
 - **竞赛系统**: 多维度排行榜、实时统计、用户排名
-- **用户验证**: 手机号注册验证、短信验证码登录、安全验证 ✨
+- **用户验证**: 手机号注册验证、短信验证码登录、手机号密码重置、安全验证 ✨
 
 ### 📈 项目优势
 - **生产就绪**: 完整的错误处理、健康检查端点、配置管理
@@ -1394,7 +1449,7 @@ SuperSpeedCalc Server 是一个功能完整、架构清晰的现代化后端服�
 - **完整的用户体系**：支持邮箱/手机号注册登录，密码安全管理，经验值和积分系统
 - **强大的统计功能**：多维度排行榜（日/月/年/总榜），实时用户统计分析
 - **智能内容管理**：帖子审核、横幅管理、图片上传、版本发布一应俱全
-- **短信验证服务**：集成Bmob短信服务，支持手机号验证码发送和验证 ✨
+- **短信验证服务**：集成Bmob短信服务，支持手机号验证码发送、验证和密码重置 ✨
 - **数据关联完整**：所有API返回完整的关联对象信息，减少客户端请求次数 ✨
 - **开发友好**：完整的测试脚本、数据迁移工具、详细的API文档
 
