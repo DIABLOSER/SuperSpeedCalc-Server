@@ -218,7 +218,7 @@ def update_password_by_mobile():
             'success': True,
             'message': '密码更新成功',
             'data': {
-                'id': user.id,
+                'id': user.objectId,
                 'username': user.username,
                 'mobile': user.mobile,
                 'updatedAt': user.updatedAt.isoformat()

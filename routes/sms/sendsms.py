@@ -28,7 +28,7 @@ def send_sms_code():
             bmob.setMasterKey(current_app.config['BMOB_MASTER_KEY'])
         
         # 发送短信验证码
-        result = bmob.sendSMSCode(phone)
+        result = bmob.requestSMSCode(phone)
         
         if result:
             return jsonify({

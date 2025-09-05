@@ -36,7 +36,7 @@ def verify_sms_code():
             bmob.setMasterKey(current_app.config['BMOB_MASTER_KEY'])
         
         # 验证短信验证码
-        result = bmob.verifySMSCode(phone, code)
+        result = bmob.verifySmsCode(phone, code)
         
         if result:
             return jsonify({
