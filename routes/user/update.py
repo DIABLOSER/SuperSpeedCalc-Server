@@ -216,13 +216,7 @@ def update_password_by_mobile():
         
         return jsonify({
             'success': True,
-            'message': '密码更新成功',
-            'data': {
-                'id': user.objectId,
-                'username': user.username,
-                'mobile': user.mobile,
-                'updatedAt': user.updatedAt.isoformat()
-            }
+            'data': user.to_dict()
         })
         
     except Exception as e:
