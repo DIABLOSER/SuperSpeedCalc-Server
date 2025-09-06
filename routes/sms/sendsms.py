@@ -7,17 +7,27 @@ from bmobpy import Bmob
 def send_sms_code():
     """发送短信验证码"""
     try:
+        # 添加详细日志
+        current_app.logger.info(f"收到短信发送请求: {request.get_json()}")
+        
         data = request.get_json()
-        phone = data.get('phone')
+        # 支持两种字段名：phone 和 phone_number
+        phone = data.get('phone') or data.get('phone_number')
+        
+        current_app.logger.info(f"提取的手机号: {phone}")
+        current_app.logger.info(f"原始请求数据: {data}")
         
         if not phone:
-            return jsonify({'success': False, 'error': '手机号是必需的'}), 400
+            current_app.logger.warning("手机号为空")
+            return jsonify({'success': False, 'error': '手机号是必需的，请使用 phone 或 phone_number 字段'}), 400
         
         # 验证手机号格式（简单验证）
         if not phone.isdigit() or len(phone) != 11:
+            current_app.logger.warning(f"手机号格式不正确: {phone}")
             return jsonify({'success': False, 'error': '手机号格式不正确'}), 400
         
         # 初始化Bmob
+        current_app.logger.info("开始初始化Bmob")
         bmob = Bmob(
             current_app.config['BMOB_APPLICATION_ID'],
             current_app.config['BMOB_REST_API_KEY']
@@ -25,12 +35,16 @@ def send_sms_code():
         
         # 设置Master Key（如果需要更高权限）
         if current_app.config.get('BMOB_MASTER_KEY'):
+            current_app.logger.info("设置Bmob Master Key")
             bmob.setMasterKey(current_app.config['BMOB_MASTER_KEY'])
         
         # 发送短信验证码
+        current_app.logger.info(f"开始发送短信验证码到: {phone}")
         result = bmob.requestSMSCode(phone)
+        current_app.logger.info(f"Bmob发送结果: {result}")
         
         if result:
+            current_app.logger.info(f"短信发送成功: {phone}")
             return jsonify({
                 'success': True,
                 'message': '短信验证码发送成功',
@@ -39,6 +53,7 @@ def send_sms_code():
         else:
             # 获取错误信息
             error_msg = bmob.getError() if hasattr(bmob, 'getError') else '发送失败'
+            current_app.logger.error(f"短信发送失败: {error_msg}")
             return jsonify({
                 'success': False,
                 'error': f'短信验证码发送失败: {error_msg}'
