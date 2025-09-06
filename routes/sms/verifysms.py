@@ -2,6 +2,9 @@ from flask import request, jsonify, current_app
 from models import db, Reply, MyUser, Posts
 from datetime import datetime
 from bmobpy import Bmob
+from utils.response import (
+    success_response, bad_request_response, internal_error_response
+)
 
 
 def verify_sms_code():
@@ -30,11 +33,17 @@ def verify_sms_code():
         
         if not phone:
             current_app.logger.warning("❌ 手机号为空")
-            return jsonify({'success': False, 'error': '手机号是必需的，请使用 phone 或 phone_number 字段'}), 400
+            return bad_request_response(
+                message='手机号是必需的，请使用 phone 或 phone_number 字段',
+                error_code='MISSING_PHONE'
+            )
         
         if not code:
             current_app.logger.warning("❌ 验证码为空")
-            return jsonify({'success': False, 'error': '验证码是必需的，请使用 code 或 verification_code 字段'}), 400
+            return bad_request_response(
+                message='验证码是必需的，请使用 code 或 verification_code 字段',
+                error_code='MISSING_VERIFICATION_CODE'
+            )
         
         # 验证手机号格式（简单验证）
         current_app.logger.info(f"开始验证手机号格式: {phone}")
@@ -43,7 +52,10 @@ def verify_sms_code():
         
         if not phone.isdigit() or len(phone) != 11:
             current_app.logger.warning(f"❌ 手机号格式不正确: {phone} (长度: {len(phone) if phone else 0}, 是否数字: {phone.isdigit() if phone else False})")
-            return jsonify({'success': False, 'error': '手机号格式不正确'}), 400
+            return bad_request_response(
+                message='手机号格式不正确',
+                error_code='INVALID_PHONE_FORMAT'
+            )
         
         current_app.logger.info(f"✅ 手机号格式验证通过: {phone}")
         
@@ -54,7 +66,10 @@ def verify_sms_code():
         
         if not code.isdigit() or len(code) != 6:
             current_app.logger.warning(f"❌ 验证码格式不正确: {code} (长度: {len(code) if code else 0}, 是否数字: {code.isdigit() if code else False})")
-            return jsonify({'success': False, 'error': '验证码格式不正确'}), 400
+            return bad_request_response(
+                message='验证码格式不正确',
+                error_code='INVALID_VERIFICATION_CODE_FORMAT'
+            )
         
         current_app.logger.info(f"✅ 验证码格式验证通过: {code}")
         
@@ -89,21 +104,22 @@ def verify_sms_code():
         if result:
             current_app.logger.info("✅ 短信验证码验证成功")
             current_app.logger.info("=" * 50)
-            return jsonify({
-                'success': True,
-                'message': '短信验证码验证成功',
-                'phone': phone,
-                'verified': True
-            }), 200
+            return success_response(
+                data={
+                    'phone': phone,
+                    'verified': True
+                },
+                message='短信验证码验证成功'
+            )
         else:
             # 获取错误信息
             error_msg = bmob.getError() if hasattr(bmob, 'getError') else '验证失败'
             current_app.logger.warning(f"❌ 短信验证码验证失败: {error_msg}")
             current_app.logger.info("=" * 50)
-            return jsonify({
-                'success': False,
-                'error': f'短信验证码验证失败: {error_msg}'
-            }), 400
+            return bad_request_response(
+                message=f'短信验证码验证失败: {error_msg}',
+                error_code='SMS_VERIFICATION_FAILED'
+            )
             
     except Exception as e:
         import traceback
@@ -111,7 +127,8 @@ def verify_sms_code():
         current_app.logger.error(f"异常类型: {type(e).__name__}")
         current_app.logger.error(f"异常详情: {traceback.format_exc()}")
         current_app.logger.error("=" * 50)
-        return jsonify({
-            'success': False,
-            'error': f'服务器内部错误: {str(e)}'
-        }), 500
+        return internal_error_response(
+            message=f'服务器内部错误: {str(e)}',
+            error_code='SMS_VERIFICATION_SERVICE_ERROR',
+            details=str(e)
+        )

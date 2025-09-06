@@ -2,6 +2,10 @@ from flask import request, jsonify
 from models import db, MyUser
 from werkzeug.security import generate_password_hash
 from datetime import datetime
+from utils.response import (
+    created_response, bad_request_response, internal_error_response,
+    success_response
+)
 
 
 # 用户信息类
@@ -50,26 +54,41 @@ def create_user():
         required_fields = ['username', 'password']
         for field in required_fields:
             if field not in data:
-                return jsonify({'success': False, 'error': f'{field} is required'}), 400
+                return bad_request_response(
+                    message=f'{field} is required',
+                    data={'field': field}
+                )
         
         email_value = (data.get('email') or '').strip() if isinstance(data.get('email'), str) else data.get('email')
         mobile_value = (data.get('mobile') or '').strip() if isinstance(data.get('mobile'), str) else data.get('mobile')
         if not email_value and not mobile_value:
-            return jsonify({'success': False, 'error': 'Either email or mobile is required'}), 400
+            return bad_request_response(
+                message='Either email or mobile is required',
+                error_code='MISSING_CONTACT_INFO'
+            )
         
         # 检查用户名是否已存在
         if MyUser.query.filter_by(username=data['username']).first():
-            return jsonify({'success': False, 'error': 'Username already exists'}), 400
+            return bad_request_response(
+                message='Username already exists',
+                error_code='DUPLICATE_USERNAME'
+            )
         
         # 可选：检查邮箱是否已存在
         if email_value:
             if MyUser.query.filter_by(email=email_value).first():
-                return jsonify({'success': False, 'error': 'Email already exists'}), 400
+                return bad_request_response(
+                    message='Email already exists',
+                    error_code='DUPLICATE_EMAIL'
+                )
         
         # 可选：检查手机号是否已存在
         if mobile_value:
             if MyUser.query.filter_by(mobile=mobile_value).first():
-                return jsonify({'success': False, 'error': 'Mobile already exists'}), 400
+                return bad_request_response(
+                    message='Mobile already exists',
+                    error_code='DUPLICATE_MOBILE'
+                )
         
         # 解析生日（可选，格式 YYYY-MM-DD）
         birthday_value = None
@@ -77,7 +96,11 @@ def create_user():
             try:
                 birthday_value = datetime.strptime(data['birthday'], '%Y-%m-%d').date()
             except ValueError:
-                return jsonify({'success': False, 'error': 'Invalid birthday format, expected YYYY-MM-DD'}), 400
+                return bad_request_response(
+                    message='Invalid birthday format, expected YYYY-MM-DD',
+                    error_code='INVALID_DATE_FORMAT',
+                    details={'field': 'birthday', 'expected_format': 'YYYY-MM-DD'}
+                )
         
         # 创建新用户
         user = MyUser(
@@ -98,14 +121,18 @@ def create_user():
         db.session.add(user)
         db.session.commit()
         
-        return jsonify({
-            'success': True,
-            'data': user.to_dict()
-        }), 201
+        return created_response(
+            data=user.to_dict(),
+            message="用户创建成功"
+        )
         
     except Exception as e:
         db.session.rollback()
-        return jsonify({'success': False, 'error': str(e)}), 500
+        return internal_error_response(
+            message="创建用户失败",
+            error_code="USER_CREATION_FAILED",
+            details=str(e)
+        )
 
 def register_user():
     """注册新用户（客户端/安卓端用，仅需邮箱或手机号 + 密码；可选提供 username）"""
@@ -113,18 +140,30 @@ def register_user():
         data = request.get_json() or {}
         password = data.get('password')
         if not password:
-            return jsonify({'success': False, 'error': 'Password is required'}), 400
+            return bad_request_response(
+                message='Password is required',
+                error_code='MISSING_PASSWORD'
+            )
         
         email_value = (data.get('email') or '').strip() if isinstance(data.get('email'), str) else data.get('email')
         mobile_value = (data.get('mobile') or '').strip() if isinstance(data.get('mobile'), str) else data.get('mobile')
         if not email_value and not mobile_value:
-            return jsonify({'success': False, 'error': 'Either email or mobile is required'}), 400
+            return bad_request_response(
+                message='Either email or mobile is required',
+                error_code='MISSING_CONTACT_INFO'
+            )
         
         # 唯一性检查
         if email_value and MyUser.query.filter_by(email=email_value).first():
-            return jsonify({'success': False, 'error': 'Email already exists'}), 400
+            return bad_request_response(
+                message='Email already exists',
+                error_code='DUPLICATE_EMAIL'
+            )
         if mobile_value and MyUser.query.filter_by(mobile=mobile_value).first():
-            return jsonify({'success': False, 'error': 'Mobile already exists'}), 400
+            return bad_request_response(
+                message='Mobile already exists',
+                error_code='DUPLICATE_MOBILE'
+            )
         
         # 生成用户名（安卓端逻辑）
         base_username = generate_android_style_username()
@@ -156,10 +195,17 @@ def register_user():
         db.session.add(user)
         db.session.commit()
         
-        return jsonify({'success': True, 'data': user.to_dict()}), 201
+        return created_response(
+            data=user.to_dict(),
+            message="用户注册成功"
+        )
     except Exception as e:
         db.session.rollback()
-        return jsonify({'success': False, 'error': str(e)}), 500
+        return internal_error_response(
+            message="用户注册失败",
+            error_code="USER_REGISTRATION_FAILED",
+            details=str(e)
+        )
 
 def login():
     """用户登录"""
@@ -172,9 +218,15 @@ def login():
         password = data.get('password')
         
         if not password:
-            return jsonify({'success': False, 'error': 'Password is required'}), 400
+            return bad_request_response(
+                message='Password is required',
+                error_code='MISSING_PASSWORD'
+            )
         if not email and not mobile:
-            return jsonify({'success': False, 'error': 'Email or mobile is required'}), 400
+            return bad_request_response(
+                message='Email or mobile is required',
+                error_code='MISSING_LOGIN_INFO'
+            )
         
         user = None
         if email:
@@ -183,13 +235,20 @@ def login():
             user = MyUser.query.filter_by(mobile=mobile).first()
         
         if user and check_password_hash(user.password, password):
-            return jsonify({
-                'success': True,
-                'data': user.to_dict(),
-                'message': 'Login successful'
-            })
+            return success_response(
+                data=user.to_dict(),
+                message='登录成功'
+            )
         else:
-            return jsonify({'success': False, 'error': 'Invalid credentials'}), 401
+            from utils.response import unauthorized_response
+            return unauthorized_response(
+                message='用户名或密码错误',
+                error_code='INVALID_CREDENTIALS'
+            )
             
     except Exception as e:
-        return jsonify({'success': False, 'error': str(e)}), 500 
+        return internal_error_response(
+            message="登录失败",
+            error_code="LOGIN_FAILED",
+            details=str(e)
+        ) 
