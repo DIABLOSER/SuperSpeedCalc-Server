@@ -23,6 +23,7 @@ user_bp.route('/<string:object_id>/experience', methods=['POST'])(update_user_ex
 user_bp.route('/<string:object_id>/boluo', methods=['POST'])(update_user_boluo)
 user_bp.route('/<string:object_id>/password', methods=['POST'])(update_user_password)
 user_bp.route('/reset-password', methods=['POST'])(update_password_by_mobile)
+user_bp.route('/reset_password', methods=['POST'])(update_password_by_mobile)  # 兼容下划线格式
 
 # 注册路由 - 删除操作
 user_bp.route('/<string:object_id>', methods=['DELETE'])(delete_user) 

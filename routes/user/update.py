@@ -211,8 +211,8 @@ def update_password_by_mobile():
     try:
         data = request.get_json()
         
-        # 检查必需的参数
-        mobile = data.get('mobile')
+        # 检查必需的参数（支持 mobile 和 phone_number 两种参数名）
+        mobile = data.get('mobile') or data.get('phone_number')
         new_password = data.get('new_password')
         
         if not mobile or not new_password:

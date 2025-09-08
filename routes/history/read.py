@@ -1,7 +1,11 @@
-from flask import request, jsonify
+from flask import request
 from models import db, History, MyUser
 from sqlalchemy import desc, func, and_
 from datetime import datetime, timedelta
+from utils.response import (
+    success_response, bad_request_response, not_found_response, 
+    internal_error_response, paginated_response
+)
 
 def get_histories():
     """获取历史记录列表"""
@@ -33,21 +37,20 @@ def get_histories():
         # 转换为字典列表
         history_list = [history.to_dict(include_user=True) for history in histories]
         
-        return jsonify({
-            'message': '获取历史记录列表成功',
-            'data': history_list,
-            'pagination': {
-                'page': page,
-                'per_page': per_page,
-                'total': pagination.total,
-                'pages': pagination.pages,
-                'has_next': pagination.has_next,
-                'has_prev': pagination.has_prev
-            }
-        }), 200
+        return paginated_response(
+            data=history_list,
+            page=page,
+            per_page=per_page,
+            total=pagination.total,
+            message='获取历史记录列表成功'
+        )
         
     except Exception as e:
-        return jsonify({'error': f'获取历史记录列表失败: {str(e)}'}), 500
+        return internal_error_response(
+            message="获取历史记录列表失败",
+            error_code="GET_HISTORIES_FAILED",
+            details=str(e)
+        )
 
 def get_history(object_id):
     """获取单个历史记录"""
@@ -55,17 +58,24 @@ def get_history(object_id):
         history = History.query.get(object_id)
         
         if not history:
-            return jsonify({'error': '历史记录不存在'}), 404
+            return not_found_response(
+                message='历史记录不存在',
+                error_code='HISTORY_NOT_FOUND'
+            )
         
         history_dict = history.to_dict(include_user=True)
         
-        return jsonify({
-            'message': '获取历史记录成功',
-            'data': history_dict
-        }), 200
+        return success_response(
+            data=history_dict,
+            message='获取历史记录成功'
+        )
         
     except Exception as e:
-        return jsonify({'error': f'获取历史记录失败: {str(e)}'}), 500
+        return internal_error_response(
+            message="获取历史记录失败",
+            error_code="GET_HISTORY_FAILED",
+            details=str(e)
+        )
 
 def get_histories_count():
     """获取历史记录总数"""
@@ -79,13 +89,17 @@ def get_histories_count():
         else:
             count = query.count()
         
-        return jsonify({
-            'message': '获取历史记录总数成功',
-            'data': {'count': count}
-        }), 200
+        return success_response(
+            data={'count': count},
+            message='获取历史记录总数成功'
+        )
         
     except Exception as e:
-        return jsonify({'error': f'获取历史记录总数失败: {str(e)}'}), 500
+        return internal_error_response(
+            message="获取历史记录总数失败",
+            error_code="GET_HISTORIES_COUNT_FAILED",
+            details=str(e)
+        )
 
 def get_score_leaderboard():
     """获取用户score得分排行榜"""
@@ -175,34 +189,38 @@ def get_score_leaderboard():
         # 计算分页信息
         total_pages = (total_count + per_page - 1) // per_page
         
-        return jsonify({
-            'message': f'获取{period}排行榜成功',
-            'data': leaderboard_list,
-            'pagination': {
-                'page': page,
-                'per_page': per_page,
-                'total': total_count,
-                'pages': total_pages,
-                'has_next': page < total_pages,
-                'has_prev': page > 1
-            },
-            'period': period
-        }), 200
+        return paginated_response(
+            data=leaderboard_list,
+            page=page,
+            per_page=per_page,
+            total=total_count,
+            message=f'获取{period}排行榜成功'
+        )
         
     except Exception as e:
-        return jsonify({'error': f'获取排行榜失败: {str(e)}'}), 500
+        return internal_error_response(
+            message="获取排行榜失败",
+            error_code="GET_LEADERBOARD_FAILED",
+            details=str(e)
+        )
 
 def get_user_score_stats():
     """获取用户score统计信息"""
     try:
         user_id = request.args.get('user')
         if not user_id:
-            return jsonify({'error': '用户ID不能为空'}), 400
+            return bad_request_response(
+                message='用户ID不能为空',
+                error_code='MISSING_USER_ID'
+            )
         
         # 验证用户是否存在
         user = MyUser.query.get(user_id)
         if not user:
-            return jsonify({'error': '用户不存在'}), 404
+            return not_found_response(
+                message='用户不存在',
+                error_code='USER_NOT_FOUND'
+            )
         
         now = datetime.utcnow()
         
@@ -279,9 +297,8 @@ def get_user_score_stats():
             'total': compute_rank(None)
         }
         
-        return jsonify({
-            'message': '获取用户score统计成功',
-            'data': {
+        return success_response(
+            data={
                 'user': {
                     'objectId': user.objectId,
                     'username': user.username,
@@ -320,8 +337,13 @@ def get_user_score_stats():
                         'rank': ranks['total']
                     }
                 }
-            }
-        }), 200
+            },
+            message='获取用户score统计成功'
+        )
         
     except Exception as e:
-        return jsonify({'error': f'获取用户score统计失败: {str(e)}'}), 500
+        return internal_error_response(
+            message="获取用户score统计失败",
+            error_code="GET_USER_STATS_FAILED",
+            details=str(e)
+        )
