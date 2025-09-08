@@ -1,4 +1,9 @@
 from flask import request, jsonify
+from utils.response import (
+    success_response, paginated_response, internal_error_response,
+    not_found_response, bad_request_response, forbidden_response,
+    created_response, updated_response, deleted_response
+)
 from werkzeug.utils import secure_filename
 from models import db, AppRelease
 import os
@@ -24,14 +29,14 @@ def upload_apk():
     """上传 APK 文件；可选绑定到指定发布记录（release_id）并回写 download_url"""
     try:
         if 'file' not in request.files:
-            return jsonify({'success': False, 'error': 'No file uploaded'}), 400
+            return internal_error_response(message='No file uploaded', code=400)
 
         file = request.files['file']
         if file.filename == '':
-            return jsonify({'success': False, 'error': 'No file selected'}), 400
+            return internal_error_response(message='No file selected', code=400)
 
         if not allowed_apk(file.filename):
-            return jsonify({'success': False, 'error': 'File type not allowed, only .apk'}), 400
+            return internal_error_response(message='File type not allowed, only .apk', code=400)
 
         upload_folder = 'uploads/apk'
         os.makedirs(upload_folder, exist_ok=True)
@@ -49,7 +54,7 @@ def upload_apk():
         if release_id:
             release = AppRelease.query.get(release_id)
             if not release:
-                return jsonify({'success': False, 'error': 'Release not found'}), 404
+                return internal_error_response(message='Release not found', code=404)
             release.download_url = file_url
             db.session.commit()
             release_dict = release.to_dict()
@@ -70,6 +75,6 @@ def upload_apk():
         return jsonify(result), 201
     except Exception as e:
         db.session.rollback()
-        return jsonify({'success': False, 'error': str(e)}), 500
+        return internal_error_response(message=str(e), code=500)
 
 

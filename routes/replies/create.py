@@ -1,4 +1,9 @@
 from flask import request, jsonify
+from utils.response import (
+    success_response, paginated_response, internal_error_response,
+    not_found_response, bad_request_response, forbidden_response,
+    created_response, updated_response, deleted_response
+)
 from models import db, Reply, Posts, MyUser
 from datetime import datetime
 
@@ -15,64 +20,50 @@ def create_reply():
         recipient_id = data.get('recipient')  # 可选，用于指定接收者
         
         if not post_id or not user_id or not content:
-            return jsonify({
-                'success': False,
-                'error': 'Post ID, user ID and content are required'
-            }), 400
+            return internal_error_response(
+                message='Post ID, user ID and content are required',
+                code=400
+            )
         
         # 验证帖子是否存在
         post = Posts.query.get(post_id)
         if not post:
-            return jsonify({
-                'success': False,
-                'error': 'Post not found'
-            }), 404
+            return internal_error_response(message='Post not found'
+            , code=404)
         
         # 验证用户是否存在
         user = MyUser.query.get(user_id)
         if not user:
-            return jsonify({
-                'success': False,
-                'error': 'User not found'
-            }), 404
+            return internal_error_response(message='User not found'
+            , code=404)
         
         # 检查帖子是否可见和可评论
         if not post.is_visible_to_user(user_id):
-            return jsonify({
-                'success': False,
-                'error': 'Post not visible or not approved'
-            }), 403
+            return internal_error_response(message='Post not visible or not approved'
+            , code=403)
         
         # 检查内容长度
         content = content.strip()
         if len(content) == 0:
-            return jsonify({
-                'success': False,
-                'error': 'Content cannot be empty'
-            }), 400
+            return internal_error_response(message='Content cannot be empty'
+            , code=400)
         
         # 如果是二级评论，验证父评论
         if parent_id:
             parent_reply = Reply.query.get(parent_id)
             if not parent_reply:
-                return jsonify({
-                    'success': False,
-                    'error': 'Parent reply not found'
-                }), 404
+                return internal_error_response(message='Parent reply not found'
+                , code=404)
             
             # 确保父评论是一级评论
             if not parent_reply.is_first_level():
-                return jsonify({
-                    'success': False,
-                    'error': 'Can only reply to first level comments'
-                }), 400
+                return internal_error_response(message='Can only reply to first level comments'
+                , code=400)
             
             # 确保父评论属于同一帖子
             if parent_reply.post != post_id:
-                return jsonify({
-                    'success': False,
-                    'error': 'Parent reply does not belong to this post'
-                }), 400
+                return internal_error_response(message='Parent reply does not belong to this post'
+                , code=400)
             
             # 如果没有指定接收者，默认为父评论的作者
             if not recipient_id:
@@ -82,10 +73,8 @@ def create_reply():
         if recipient_id:
             recipient = MyUser.query.get(recipient_id)
             if not recipient:
-                return jsonify({
-                    'success': False,
-                    'error': 'Recipient user not found'
-                }), 404
+                return internal_error_response(message='Recipient user not found'
+                , code=404)
         
         # 创建评论
         reply = Reply(
@@ -115,4 +104,4 @@ def create_reply():
         
     except Exception as e:
         db.session.rollback()
-        return jsonify({'success': False, 'error': str(e)}), 500
+        return internal_error_response(message=str(e), code=500)

@@ -1,4 +1,9 @@
 from flask import request, jsonify
+from utils.response import (
+    success_response, paginated_response, internal_error_response,
+    not_found_response, bad_request_response, forbidden_response,
+    created_response, updated_response, deleted_response
+)
 from models import db, Reply, MyUser, Posts
 from datetime import datetime
 
@@ -12,10 +17,8 @@ def delete_reply(reply_id):
         is_admin = data.get('is_admin', False)  # 是否为管理员操作
         
         if not user_id:
-            return jsonify({
-                'success': False,
-                'error': 'User ID is required'
-            }), 400
+            return internal_error_response(message='User ID is required'
+            , code=400)
         
         # 权限检查：作者或管理员可以删除评论
         if user_id == reply.user:
@@ -25,16 +28,12 @@ def delete_reply(reply_id):
             # 验证管理员权限
             admin_user = MyUser.query.get(user_id)
             if not admin_user or not admin_user.admin:
-                return jsonify({
-                    'success': False,
-                    'error': 'Permission denied. Admin access required.'
-                }), 403
+                return internal_error_response(message='Permission denied. Admin access required.'
+                , code=403)
             delete_reason = f'Deleted by admin: {admin_user.username}'
         else:
-            return jsonify({
-                'success': False,
-                'error': 'Permission denied. Only the author or admin can delete this reply.'
-            }), 403
+            return internal_error_response(message='Permission denied. Only the author or admin can delete this reply.'
+            , code=403)
         
         # 收集要删除的评论信息
         reply_info = {
@@ -82,4 +81,4 @@ def delete_reply(reply_id):
         
     except Exception as e:
         db.session.rollback()
-        return jsonify({'success': False, 'error': str(e)}), 500
+        return internal_error_response(message=str(e), code=500)

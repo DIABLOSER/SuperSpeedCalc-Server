@@ -1,4 +1,9 @@
 from flask import jsonify, request
+from utils.response import (
+    success_response, paginated_response, internal_error_response,
+    not_found_response, bad_request_response, forbidden_response,
+    created_response, updated_response, deleted_response
+)
 from models import db, Image
 import os
 
@@ -22,14 +27,12 @@ def delete_image(object_id):
             # 即使文件删除失败，数据库记录已经删除成功
             print(f"Warning: Failed to delete physical file {file_path}: {file_error}")
         
-        return jsonify({
-            'success': True,
-            'message': 'Image deleted successfully'
-        })
+        return deleted_response(message='Image deleted successfully'
+        )
         
     except Exception as e:
         db.session.rollback()
-        return jsonify({'success': False, 'error': str(e)}), 500
+        return internal_error_response(message=str(e), code=500)
 
 def delete_multiple_images():
     """批量删除图片"""
@@ -38,13 +41,13 @@ def delete_multiple_images():
         image_ids = data.get('image_ids', [])
         
         if not image_ids:
-            return jsonify({'success': False, 'error': 'No image IDs provided'}), 400
+            return internal_error_response(message='No image IDs provided', code=400)
         
         # 查找所有要删除的图片
         images = Image.query.filter(Image.objectId.in_(image_ids)).all()
         
         if not images:
-            return jsonify({'success': False, 'error': 'No images found'}), 404
+            return internal_error_response(message='No images found', code=404)
         
         deleted_count = 0
         file_errors = []
@@ -84,7 +87,7 @@ def delete_multiple_images():
         
     except Exception as e:
         db.session.rollback()
-        return jsonify({'success': False, 'error': str(e)}), 500
+        return internal_error_response(message=str(e), code=500)
 
 def clear_all_images():
     """清空所有图片（危险操作）"""
@@ -130,4 +133,4 @@ def clear_all_images():
         
     except Exception as e:
         db.session.rollback()
-        return jsonify({'success': False, 'error': str(e)}), 500 
+        return internal_error_response(message=str(e), code=500) 

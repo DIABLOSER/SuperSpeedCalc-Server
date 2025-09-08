@@ -1,6 +1,10 @@
 from flask import jsonify, request
 from models import Posts, MyUser
 from sqlalchemy import desc, and_, or_
+from utils.response import (
+    success_response, paginated_response, internal_error_response,
+    not_found_response, forbidden_response
+)
 
 def get_posts():
     """获取帖子列表（支持排序、分页、筛选）"""
@@ -76,19 +80,20 @@ def get_posts():
         posts = query.limit(per_page).offset((page - 1) * per_page).all()
         pages = (total + per_page - 1) // per_page if per_page else 1
         
-        return jsonify({
-            'success': True,
-            'data': [post.to_dict(include_author=True, user_id=user_id, sync_like_count=True, sync_reply_count=True) for post in posts],
-            'pagination': {
-                'page': page,
-                'per_page': per_page,
-                'total': total,
-                'pages': pages
-            }
-        })
+        return paginated_response(
+            data=[post.to_dict(include_author=True, user_id=user_id, sync_like_count=True, sync_reply_count=True) for post in posts],
+            page=page,
+            per_page=per_page,
+            total=total,
+            message="获取帖子列表成功"
+        )
         
     except Exception as e:
-        return jsonify({'success': False, 'error': str(e)}), 500
+        return internal_error_response(
+            message="获取帖子列表失败",
+            error_code="GET_POSTS_FAILED",
+            details=str(e)
+        )
 
 def get_post(post_id):
     """获取单个帖子详情"""
@@ -99,18 +104,22 @@ def get_post(post_id):
         
         # 检查可见性
         if not post.is_visible_to_user(user_id):
-            return jsonify({
-                'success': False,
-                'error': 'Post not visible or not approved'
-            }), 403
+            return forbidden_response(
+                message="帖子不可见或未审核通过",
+                error_code="POST_NOT_VISIBLE"
+            )
         
-        return jsonify({
-            'success': True,
-            'data': post.to_dict(include_author=True, user_id=user_id, sync_like_count=True, sync_reply_count=True)
-        })
+        return success_response(
+            data=post.to_dict(include_author=True, user_id=user_id, sync_like_count=True, sync_reply_count=True),
+            message="获取帖子详情成功"
+        )
         
     except Exception as e:
-        return jsonify({'success': False, 'error': str(e)}), 500
+        return internal_error_response(
+            message="获取帖子详情失败",
+            error_code="GET_POST_FAILED",
+            details=str(e)
+        )
 
 def get_user_posts(user_id):
     """获取指定用户的帖子列表"""
@@ -143,9 +152,8 @@ def get_user_posts(user_id):
         posts = query.limit(per_page).offset((page - 1) * per_page).all()
         pages = (total + per_page - 1) // per_page if per_page else 1
         
-        return jsonify({
-            'success': True,
-            'data': {
+        return success_response(
+            data={
                 'user': {
                     'objectId': user.objectId,
                     'username': user.username,
@@ -158,11 +166,16 @@ def get_user_posts(user_id):
                     'total': total,
                     'pages': pages
                 }
-            }
-        })
+            },
+            message="获取用户帖子列表成功"
+        )
         
     except Exception as e:
-        return jsonify({'success': False, 'error': str(e)}), 500
+        return internal_error_response(
+            message="获取用户帖子列表失败",
+            error_code="GET_USER_POSTS_FAILED",
+            details=str(e)
+        )
 
 def get_posts_by_audit_state(audit_state):
     """根据审核状态获取帖子列表（管理员功能）"""
@@ -170,10 +183,12 @@ def get_posts_by_audit_state(audit_state):
         # 验证审核状态
         valid_states = Posts.get_audit_states()
         if audit_state not in valid_states:
-            return jsonify({
-                'success': False,
-                'error': f'Invalid audit state. Valid states: {list(valid_states.keys())}'
-            }), 400
+            from utils.response import bad_request_response
+            return bad_request_response(
+                message=f'无效的审核状态。有效状态: {list(valid_states.keys())}',
+                error_code='INVALID_AUDIT_STATE',
+                details={'valid_states': list(valid_states.keys())}
+            )
         
         # 分页参数
         page = request.args.get('page', default=1, type=int)
@@ -189,9 +204,8 @@ def get_posts_by_audit_state(audit_state):
         posts = query.limit(per_page).offset((page - 1) * per_page).all()
         pages = (total + per_page - 1) // per_page if per_page else 1
         
-        return jsonify({
-            'success': True,
-            'data': {
+        return success_response(
+            data={
                 'audit_state': audit_state,
                 'audit_state_name': valid_states[audit_state],
                 'posts': [post.to_dict(include_author=True, sync_like_count=True, sync_reply_count=True) for post in posts],
@@ -201,8 +215,13 @@ def get_posts_by_audit_state(audit_state):
                     'total': total,
                     'pages': pages
                 }
-            }
-        })
+            },
+            message="获取审核状态帖子列表成功"
+        )
         
     except Exception as e:
-        return jsonify({'success': False, 'error': str(e)}), 500
+        return internal_error_response(
+            message="获取审核状态帖子列表失败",
+            error_code="GET_POSTS_BY_AUDIT_STATE_FAILED",
+            details=str(e)
+        )

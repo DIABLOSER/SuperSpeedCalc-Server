@@ -1,4 +1,9 @@
 from flask import request, jsonify
+from utils.response import (
+    success_response, paginated_response, internal_error_response,
+    not_found_response, bad_request_response, forbidden_response,
+    created_response, updated_response, deleted_response
+)
 from models import db, Posts, MyUser, Likes
 from datetime import datetime
 
@@ -11,19 +16,15 @@ def update_post(post_id):
         # 权限检查：只有作者可以更新帖子
         user_id = data.get('user_id')  # 当前用户ID
         if not user_id or user_id != post.user:
-            return jsonify({
-                'success': False,
-                'error': 'Permission denied. Only the author can update this post.'
-            }), 403
+            return internal_error_response(message='Permission denied. Only the author can update this post.'
+            , code=403)
         
         # 更新允许的字段
         if 'content' in data:
             content = data['content'].strip()
             if not content:
-                return jsonify({
-                    'success': False,
-                    'error': 'Content cannot be empty'
-                }), 400
+                return internal_error_response(message='Content cannot be empty'
+                , code=400)
             post.content = content
         
         if 'visible' in data:
@@ -37,15 +38,12 @@ def update_post(post_id):
         post.updatedAt = datetime.utcnow()
         db.session.commit()
         
-        return jsonify({
-            'success': True,
-            'message': 'Post updated successfully',
-            'data': post.to_dict(include_author=True, user_id=user_id)
-        })
+        return created_response(data=post.to_dict(include_author=True, user_id=user_id)
+        , message='Post updated successfully')
         
     except Exception as e:
         db.session.rollback()
-        return jsonify({'success': False, 'error': str(e)}), 500
+        return internal_error_response(message=str(e), code=500)
 
 def update_post_audit_state(post_id):
     """更新帖子审核状态（管理员功能）"""
@@ -69,10 +67,8 @@ def update_post_audit_state(post_id):
         if admin_user_id:
             admin_user = MyUser.query.get(admin_user_id)
             if not admin_user or not admin_user.admin:
-                return jsonify({
-                    'success': False,
-                    'error': 'Permission denied. Admin access required.'
-                }), 403
+                return internal_error_response(message='Permission denied. Admin access required.'
+                , code=403)
         
         old_state = post.audit_state
         post.audit_state = new_audit_state
@@ -95,7 +91,7 @@ def update_post_audit_state(post_id):
         
     except Exception as e:
         db.session.rollback()
-        return jsonify({'success': False, 'error': str(e)}), 500
+        return internal_error_response(message=str(e), code=500)
 
 def like_post(post_id):
     """点赞帖子"""
@@ -105,33 +101,25 @@ def like_post(post_id):
         
         user_id = data.get('user_id')
         if not user_id:
-            return jsonify({
-                'success': False,
-                'error': 'User ID is required'
-            }), 400
+            return internal_error_response(message='User ID is required'
+            , code=400)
         
         # 验证用户存在
         user = MyUser.query.get(user_id)
         if not user:
-            return jsonify({
-                'success': False,
-                'error': 'User not found'
-            }), 404
+            return internal_error_response(message='User not found'
+            , code=404)
         
         # 检查帖子是否可见
         if not post.is_visible_to_user(user_id):
-            return jsonify({
-                'success': False,
-                'error': 'Post not visible or not approved'
-            }), 403
+            return internal_error_response(message='Post not visible or not approved'
+            , code=403)
         
         # 检查是否已经点赞
         existing_like = Likes.query.filter_by(post=post_id, user=user_id).first()
         if existing_like:
-            return jsonify({
-                'success': False,
-                'error': 'User has already liked this post'
-            }), 400
+            return internal_error_response(message='User has already liked this post'
+            , code=400)
         
         # 创建点赞记录
         like_record = Likes(post=post_id, user=user_id)
@@ -157,7 +145,7 @@ def like_post(post_id):
         
     except Exception as e:
         db.session.rollback()
-        return jsonify({'success': False, 'error': str(e)}), 500
+        return internal_error_response(message=str(e), code=500)
 
 def unlike_post(post_id):
     """取消点赞帖子"""
@@ -167,33 +155,25 @@ def unlike_post(post_id):
         
         user_id = data.get('user_id')
         if not user_id:
-            return jsonify({
-                'success': False,
-                'error': 'User ID is required'
-            }), 400
+            return internal_error_response(message='User ID is required'
+            , code=400)
         
         # 验证用户存在
         user = MyUser.query.get(user_id)
         if not user:
-            return jsonify({
-                'success': False,
-                'error': 'User not found'
-            }), 404
+            return internal_error_response(message='User not found'
+            , code=404)
         
         # 检查帖子是否可见
         if not post.is_visible_to_user(user_id):
-            return jsonify({
-                'success': False,
-                'error': 'Post not visible or not approved'
-            }), 403
+            return internal_error_response(message='Post not visible or not approved'
+            , code=403)
         
         # 查找点赞记录
         like_record = Likes.query.filter_by(post=post_id, user=user_id).first()
         if not like_record:
-            return jsonify({
-                'success': False,
-                'error': 'User has not liked this post'
-            }), 400
+            return internal_error_response(message='User has not liked this post'
+            , code=400)
         
         # 删除点赞记录
         db.session.delete(like_record)
@@ -217,4 +197,4 @@ def unlike_post(post_id):
         
     except Exception as e:
         db.session.rollback()
-        return jsonify({'success': False, 'error': str(e)}), 500
+        return internal_error_response(message=str(e), code=500)

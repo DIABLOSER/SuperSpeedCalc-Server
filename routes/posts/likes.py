@@ -1,4 +1,9 @@
 from flask import jsonify, request
+from utils.response import (
+    success_response, paginated_response, internal_error_response,
+    not_found_response, bad_request_response, forbidden_response,
+    created_response, updated_response, deleted_response
+)
 from models import Posts, MyUser, Likes
 from sqlalchemy import desc
 
@@ -19,10 +24,8 @@ def get_post_likers(post_id):
         
         # 检查帖子是否可见
         if not post.is_visible_to_user(viewer_id):
-            return jsonify({
-                'success': False,
-                'error': 'Post not visible or not approved'
-            }), 403
+            return internal_error_response(message='Post not visible or not approved'
+            , code=403)
         
         # 查询点赞用户
         query = Likes.query.filter_by(post=post_id).order_by(desc(Likes.createdAt))
@@ -64,7 +67,7 @@ def get_post_likers(post_id):
         })
         
     except Exception as e:
-        return jsonify({'success': False, 'error': str(e)}), 500
+        return internal_error_response(message=str(e), code=500)
 
 def get_user_liked_posts(user_id):
     """获取用户点赞的帖子列表"""
@@ -124,7 +127,7 @@ def get_user_liked_posts(user_id):
         })
         
     except Exception as e:
-        return jsonify({'success': False, 'error': str(e)}), 500
+        return internal_error_response(message=str(e), code=500)
 
 def sync_all_post_like_counts():
     """同步所有帖子的点赞数量（管理员工具）"""
@@ -134,10 +137,8 @@ def sync_all_post_like_counts():
         if admin_user_id:
             admin_user = MyUser.query.get(admin_user_id)
             if not admin_user or not admin_user.admin:
-                return jsonify({
-                    'success': False,
-                    'error': 'Permission denied. Admin access required.'
-                }), 403
+                return internal_error_response(message='Permission denied. Admin access required.'
+                , code=403)
         
         # 获取所有帖子
         posts = Posts.query.all()
@@ -164,4 +165,4 @@ def sync_all_post_like_counts():
     except Exception as e:
         from models import db
         db.session.rollback()
-        return jsonify({'success': False, 'error': str(e)}), 500
+        return internal_error_response(message=str(e), code=500)

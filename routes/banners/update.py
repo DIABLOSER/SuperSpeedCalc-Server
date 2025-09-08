@@ -1,4 +1,9 @@
 from flask import request, jsonify
+from utils.response import (
+    success_response, paginated_response, internal_error_response,
+    not_found_response, bad_request_response, forbidden_response,
+    created_response, updated_response, deleted_response
+)
 from models import db, Banner, MyUser
 from datetime import datetime
 
@@ -13,19 +18,15 @@ def update_banner(banner_id):
         if admin_user_id:
             admin_user = MyUser.query.get(admin_user_id)
             if not admin_user or not admin_user.admin:
-                return jsonify({
-                    'success': False,
-                    'error': 'Permission denied. Admin access required.'
-                }), 403
+                return internal_error_response(message='Permission denied. Admin access required.'
+                , code=403)
         
         # 更新允许的字段
         if 'title' in data:
             title = data['title'].strip() if data['title'] else ''
             if not title:
-                return jsonify({
-                    'success': False,
-                    'error': 'Title cannot be empty'
-                }), 400
+                return internal_error_response(message='Title cannot be empty'
+                , code=400)
             banner.title = title
         
         if 'show' in data:
@@ -49,15 +50,14 @@ def update_banner(banner_id):
         banner.updatedAt = datetime.utcnow()
         db.session.commit()
         
-        return jsonify({
-            'success': True,
-            'message': 'Banner updated successfully',
-            'data': banner.to_dict()
-        })
+        return created_response(
+            data=banner.to_dict(),
+            message='Banner updated successfully'
+        )
         
     except Exception as e:
         db.session.rollback()
-        return jsonify({'success': False, 'error': str(e)}), 500
+        return internal_error_response(message=str(e), code=500)
 
 def update_banner_sort_order(banner_id):
     """更新横幅排序权重"""
@@ -70,17 +70,13 @@ def update_banner_sort_order(banner_id):
         if admin_user_id:
             admin_user = MyUser.query.get(admin_user_id)
             if not admin_user or not admin_user.admin:
-                return jsonify({
-                    'success': False,
-                    'error': 'Permission denied. Admin access required.'
-                }), 403
+                return internal_error_response(message='Permission denied. Admin access required.'
+                , code=403)
         
         sort_order = data.get('sort_order')
         if sort_order is None:
-            return jsonify({
-                'success': False,
-                'error': 'sort_order is required'
-            }), 400
+            return internal_error_response(message='sort_order is required'
+            , code=400)
         
         old_sort_order = banner.sort_order
         banner.sort_order = int(sort_order)
@@ -101,7 +97,7 @@ def update_banner_sort_order(banner_id):
         
     except Exception as e:
         db.session.rollback()
-        return jsonify({'success': False, 'error': str(e)}), 500
+        return internal_error_response(message=str(e), code=500)
 
 def track_banner_view(banner_id):
     """记录横幅展示（简化版）"""
@@ -110,10 +106,8 @@ def track_banner_view(banner_id):
         
         # 检查横幅是否处于活跃状态
         if not banner.is_active():
-            return jsonify({
-                'success': False,
-                'error': 'Banner is not active'
-            }), 400
+            return internal_error_response(message='Banner is not active'
+            , code=400)
         
         return jsonify({
             'success': True,
@@ -125,7 +119,7 @@ def track_banner_view(banner_id):
         })
         
     except Exception as e:
-        return jsonify({'success': False, 'error': str(e)}), 500
+        return internal_error_response(message=str(e), code=500)
 
 def track_banner_click(banner_id):
     """记录横幅点击（简化版）"""
@@ -134,16 +128,12 @@ def track_banner_click(banner_id):
         
         # 检查横幅是否处于活跃状态且可点击
         if not banner.is_active():
-            return jsonify({
-                'success': False,
-                'error': 'Banner is not active'
-            }), 400
+            return internal_error_response(message='Banner is not active'
+            , code=400)
         
         if not banner.click:
-            return jsonify({
-                'success': False,
-                'error': 'Banner is not clickable'
-            }), 400
+            return internal_error_response(message='Banner is not clickable'
+            , code=400)
         
         return jsonify({
             'success': True,
@@ -156,4 +146,4 @@ def track_banner_click(banner_id):
         })
         
     except Exception as e:
-        return jsonify({'success': False, 'error': str(e)}), 500
+        return internal_error_response(message=str(e), code=500)

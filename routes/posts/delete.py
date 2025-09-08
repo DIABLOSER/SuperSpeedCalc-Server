@@ -1,4 +1,9 @@
 from flask import request, jsonify
+from utils.response import (
+    success_response, paginated_response, internal_error_response,
+    not_found_response, bad_request_response, forbidden_response,
+    created_response, updated_response, deleted_response
+)
 from models import db, Posts, MyUser
 
 def delete_post(post_id):
@@ -11,10 +16,8 @@ def delete_post(post_id):
         is_admin = data.get('is_admin', False)  # 是否为管理员操作
         
         if not user_id:
-            return jsonify({
-                'success': False,
-                'error': 'User ID is required'
-            }), 400
+            return internal_error_response(message='User ID is required'
+            , code=400)
         
         # 权限检查：作者或管理员可以删除帖子
         if user_id == post.user:
@@ -24,16 +27,12 @@ def delete_post(post_id):
             # 验证管理员权限
             admin_user = MyUser.query.get(user_id)
             if not admin_user or not admin_user.admin:
-                return jsonify({
-                    'success': False,
-                    'error': 'Permission denied. Admin access required.'
-                }), 403
+                return internal_error_response(message='Permission denied. Admin access required.'
+                , code=403)
             delete_reason = f'Deleted by admin: {admin_user.username}'
         else:
-            return jsonify({
-                'success': False,
-                'error': 'Permission denied. Only the author or admin can delete this post.'
-            }), 403
+            return internal_error_response(message='Permission denied. Only the author or admin can delete this post.'
+            , code=403)
         
         # 记录被删除的帖子信息（用于日志）
         post_info = {
@@ -48,12 +47,9 @@ def delete_post(post_id):
         db.session.delete(post)
         db.session.commit()
         
-        return jsonify({
-            'success': True,
-            'message': 'Post deleted successfully',
-            'data': post_info
-        })
+        return created_response(data=post_info
+        , message='Post deleted successfully')
         
     except Exception as e:
         db.session.rollback()
-        return jsonify({'success': False, 'error': str(e)}), 500
+        return internal_error_response(message=str(e), code=500)

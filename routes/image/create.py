@@ -1,4 +1,9 @@
 from flask import request, jsonify, current_app
+from utils.response import (
+    success_response, paginated_response, internal_error_response,
+    not_found_response, bad_request_response, forbidden_response,
+    created_response, updated_response, deleted_response
+)
 from werkzeug.utils import secure_filename
 from models import db, Image
 import os
@@ -59,7 +64,11 @@ def create_image():
         required_fields = ['fileName', 'path', 'url']
         for field in required_fields:
             if field not in data:
-                return jsonify({'success': False, 'error': f'{field} is required'}), 400
+                return bad_request_response(
+                    message=f'{field} is required',
+                    error_code='MISSING_REQUIRED_FIELD',
+                    details={'field': field}
+                )
         
         # 创建新图片记录
         image = Image(
@@ -72,21 +81,19 @@ def create_image():
         db.session.add(image)
         db.session.commit()
         
-        return jsonify({
-            'success': True,
-            'data': image.to_dict()
-        }), 201
+        return success_response(data=image.to_dict()
+        ), 201
         
     except Exception as e:
         db.session.rollback()
-        return jsonify({'success': False, 'error': str(e)}), 500
+        return internal_error_response(message=str(e), code=500)
 
 def upload_single_image():
     """上传单个图片文件"""
     try:
         # 检查是否有文件上传
         if 'file' not in request.files:
-            return jsonify({'success': False, 'error': 'No file uploaded'}), 400
+            return internal_error_response(message='No file uploaded', code=400)
         
         file = request.files['file']
         
@@ -104,29 +111,28 @@ def upload_single_image():
         db.session.add(image)
         db.session.commit()
         
-        return jsonify({
-            'success': True,
-            'data': image.to_dict(),
-            'message': 'Image uploaded successfully'
-        }), 201
+        return success_response(
+            data=image.to_dict(),
+            message='Image uploaded successfully'
+        ), 201
         
     except ValueError as e:
-        return jsonify({'success': False, 'error': str(e)}), 400
+        return internal_error_response(message=str(e), code=400)
     except Exception as e:
         db.session.rollback()
-        return jsonify({'success': False, 'error': str(e)}), 500
+        return internal_error_response(message=str(e), code=500)
 
 def upload_multiple_images():
     """批量上传图片文件"""
     try:
         # 检查是否有文件上传
         if 'files' not in request.files:
-            return jsonify({'success': False, 'error': 'No files uploaded'}), 400
+            return internal_error_response(message='No files uploaded', code=400)
         
         files = request.files.getlist('files')
         
         if not files or all(file.filename == '' for file in files):
-            return jsonify({'success': False, 'error': 'No files selected'}), 400
+            return internal_error_response(message='No files selected', code=400)
         
         uploaded_images = []
         errors = []
@@ -174,4 +180,4 @@ def upload_multiple_images():
         
     except Exception as e:
         db.session.rollback()
-        return jsonify({'success': False, 'error': str(e)}), 500 
+        return internal_error_response(message=str(e), code=500) 

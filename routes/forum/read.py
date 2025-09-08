@@ -1,4 +1,9 @@
 from flask import request, jsonify
+from utils.response import (
+    success_response, paginated_response, internal_error_response,
+    not_found_response, bad_request_response, forbidden_response,
+    created_response, updated_response, deleted_response
+)
 from models import db, Forum
 
 def get_forum_posts():
@@ -40,7 +45,7 @@ def get_forum_posts():
             }
         })
     except Exception as e:
-        return jsonify({'success': False, 'error': str(e)}), 500
+        return internal_error_response(message=str(e), code=500)
 
 def get_forum_post(object_id):
     """根据 objectId 获取单个社区帖子"""
@@ -51,12 +56,10 @@ def get_forum_post(object_id):
         post.viewCount += 1
         db.session.commit()
         
-        return jsonify({
-            'success': True,
-            'data': post.to_dict(include_user=True)
-        })
+        return success_response(data=post.to_dict(include_user=True)
+        )
     except Exception as e:
-        return jsonify({'success': False, 'error': str(e)}), 404
+        return internal_error_response(message=str(e), code=404)
 
 def get_categories():
     """获取所有帖子分类（支持分页）"""
@@ -88,7 +91,7 @@ def get_categories():
             }
         })
     except Exception as e:
-        return jsonify({'success': False, 'error': str(e)}), 500
+        return internal_error_response(message=str(e), code=500)
 
 def get_popular_posts():
     """获取热门帖子（按浏览次数或点赞数排序，支持分页）"""
@@ -121,7 +124,7 @@ def get_popular_posts():
             }
         })
     except Exception as e:
-        return jsonify({'success': False, 'error': str(e)}), 500
+        return internal_error_response(message=str(e), code=500)
 
 def get_public_posts():
     """获取所有公开的社区帖子（支持分页）"""
@@ -147,4 +150,4 @@ def get_public_posts():
             }
         })
     except Exception as e:
-        return jsonify({'success': False, 'error': str(e)}), 500 
+        return internal_error_response(message=str(e), code=500) 

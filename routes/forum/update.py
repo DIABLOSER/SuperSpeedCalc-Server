@@ -1,4 +1,9 @@
 from flask import request, jsonify
+from utils.response import (
+    success_response, paginated_response, internal_error_response,
+    not_found_response, bad_request_response, forbidden_response,
+    created_response, updated_response, deleted_response
+)
 from models import db, Forum
 from datetime import datetime
 
@@ -17,14 +22,12 @@ def update_forum_post(object_id):
         post.updatedAt = datetime.utcnow()
         db.session.commit()
         
-        return jsonify({
-            'success': True,
-            'data': post.to_dict(include_user=True)
-        })
+        return success_response(data=post.to_dict(include_user=True)
+        )
         
     except Exception as e:
         db.session.rollback()
-        return jsonify({'success': False, 'error': str(e)}), 500
+        return internal_error_response(message=str(e), code=500)
 
 def like_forum_post(object_id):
     """给社区帖子点赞"""
@@ -36,12 +39,11 @@ def like_forum_post(object_id):
         post.updatedAt = datetime.utcnow()
         db.session.commit()
         
-        return jsonify({
-            'success': True,
-            'data': post.to_dict(include_user=True),
-            'message': 'Post liked successfully'
-        })
+        return success_response(
+            data=post.to_dict(include_user=True),
+            message='Post liked successfully'
+        )
         
     except Exception as e:
         db.session.rollback()
-        return jsonify({'success': False, 'error': str(e)}), 500 
+        return internal_error_response(message=str(e), code=500) 

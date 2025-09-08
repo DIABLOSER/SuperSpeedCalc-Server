@@ -1,4 +1,9 @@
 from flask import jsonify, request
+from utils.response import (
+    success_response, paginated_response, internal_error_response,
+    not_found_response, bad_request_response, forbidden_response,
+    created_response, updated_response, deleted_response
+)
 from models import db, Banner
 from sqlalchemy import desc, asc, or_, func
 
@@ -73,20 +78,18 @@ def get_banners():
         })
         
     except Exception as e:
-        return jsonify({'success': False, 'error': str(e)}), 500
+        return internal_error_response(message=str(e), code=500)
 
 def get_banner(banner_id):
     """获取单个横幅详情"""
     try:
         banner = Banner.query.get_or_404(banner_id)
         
-        return jsonify({
-            'success': True,
-            'data': banner.to_dict()
-        })
+        return success_response(data=banner.to_dict()
+        )
         
     except Exception as e:
-        return jsonify({'success': False, 'error': str(e)}), 500
+        return internal_error_response(message=str(e), code=500)
 
 def get_active_banners():
     """获取活跃的横幅列表（客户端使用）"""
@@ -97,15 +100,16 @@ def get_active_banners():
         # 获取活跃横幅
         banners = Banner.get_active_banners(limit=limit)
         
-        return jsonify({
-            'success': True,
-            'data': [banner.to_dict() for banner in banners],
-            'total': len(banners),
-            'action_types': Banner.get_action_types()
-        })
+        return success_response(
+            data={
+                'banners': [banner.to_dict() for banner in banners],
+                'total': len(banners),
+                'action_types': Banner.get_action_types()
+            }
+        )
         
     except Exception as e:
-        return jsonify({'success': False, 'error': str(e)}), 500
+        return internal_error_response(message=str(e), code=500)
 
 def get_banner_stats():
     """获取横幅基本统计信息（管理员功能）"""
@@ -116,10 +120,8 @@ def get_banner_stats():
             from models import MyUser
             admin_user = MyUser.query.get(admin_user_id)
             if not admin_user or not admin_user.admin:
-                return jsonify({
-                    'success': False,
-                    'error': 'Permission denied. Admin access required.'
-                }), 403
+                return internal_error_response(message='Permission denied. Admin access required.'
+                , code=403)
         
         # 统计基本数据
         total_banners = Banner.query.count()
@@ -138,4 +140,4 @@ def get_banner_stats():
         })
         
     except Exception as e:
-        return jsonify({'success': False, 'error': str(e)}), 500
+        return internal_error_response(message=str(e), code=500)

@@ -1,4 +1,9 @@
 from flask import jsonify
+from utils.response import (
+    success_response, paginated_response, internal_error_response,
+    not_found_response, bad_request_response, forbidden_response,
+    created_response, updated_response, deleted_response
+)
 from models import db, MyUser, UserRelationship
 
 def unfollow_user(user_id, target_user_id):
@@ -10,10 +15,8 @@ def unfollow_user(user_id, target_user_id):
         
         # 检查是否尝试取消关注自己
         if user_id == target_user_id:
-            return jsonify({
-                'success': False,
-                'error': 'Cannot unfollow yourself'
-            }), 400
+            return internal_error_response(message='Cannot unfollow yourself'
+            , code=400)
         
         # 查找关注关系
         relationship = UserRelationship.query.filter_by(
@@ -22,10 +25,8 @@ def unfollow_user(user_id, target_user_id):
         ).first()
         
         if not relationship:
-            return jsonify({
-                'success': False,
-                'error': 'Not following this user'
-            }), 400
+            return internal_error_response(message='Not following this user'
+            , code=400)
         
         # 删除关注关系
         db.session.delete(relationship)
@@ -48,4 +49,4 @@ def unfollow_user(user_id, target_user_id):
         
     except Exception as e:
         db.session.rollback()
-        return jsonify({'success': False, 'error': str(e)}), 500
+        return internal_error_response(message=str(e), code=500)

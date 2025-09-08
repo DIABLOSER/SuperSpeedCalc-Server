@@ -250,16 +250,15 @@ def update_password_by_mobile():
         
         db.session.commit()
         
-        return jsonify({
-            'success': True,
-            'message': '密码更新成功',
-            'data': {
+        return updated_response(
+            data={
                 'id': user.objectId,
                 'username': user.username,
                 'mobile': user.mobile,
                 'updatedAt': user.updatedAt.isoformat()
-            }
-        })
+            },
+            message='密码更新成功'
+        )
         
     except Exception as e:
         db.session.rollback()

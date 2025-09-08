@@ -1,6 +1,10 @@
 from flask import jsonify, request
 from models import MyUser
 from sqlalchemy import or_
+from utils.response import (
+    success_response, paginated_response, internal_error_response,
+    not_found_response
+)
 
 #获取所有用户
 def get_users():
@@ -55,18 +59,19 @@ def get_users():
         items = query.limit(per_page).offset((page - 1) * per_page).all()
         pages = (total + per_page - 1) // per_page if per_page else 1
 
-        return jsonify({
-            'success': True,
-            'data': [u.to_dict() for u in items],
-            'pagination': {
-                'page': page,
-                'per_page': per_page,
-                'total': total,
-                'pages': pages
-            }
-        })
+        return paginated_response(
+            data=[u.to_dict() for u in items],
+            page=page,
+            per_page=per_page,
+            total=total,
+            message="获取用户列表成功"
+        )
     except Exception as e:
-        return jsonify({'success': False, 'error': str(e)}), 500
+        return internal_error_response(
+            message="获取用户列表失败",
+            error_code="GET_USERS_FAILED",
+            details=str(e)
+        )
 #根据用户名、手机号、邮箱进行模糊匹配
 
 #根据用户Id获取用户信息
@@ -74,18 +79,29 @@ def get_user(object_id):
     """根据 objectId 获取单个用户"""
     try:
         user = MyUser.query.get_or_404(object_id)
-        return jsonify({
-            'success': True,
-            'data': user.to_dict()
-        })
+        return success_response(
+            data=user.to_dict(),
+            message="获取用户信息成功"
+        )
     except Exception as e:
-        return jsonify({'success': False, 'error': str(e)}), 404
+        return not_found_response(
+            message="用户不存在",
+            error_code="USER_NOT_FOUND",
+            details=str(e)
+        )
 
 #获取用户总数
 def get_users_count():
     """获取用户总数"""
     try:
         total = MyUser.query.count()
-        return jsonify({'success': True, 'data': {'total_users': total}})
+        return success_response(
+            data={'total_users': total},
+            message="获取用户总数成功"
+        )
     except Exception as e:
-        return jsonify({'success': False, 'error': str(e)}), 500 
+        return internal_error_response(
+            message="获取用户总数失败",
+            error_code="GET_USERS_COUNT_FAILED",
+            details=str(e)
+        ) 

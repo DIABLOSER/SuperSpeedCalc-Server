@@ -1,4 +1,9 @@
 from flask import request, jsonify
+from utils.response import (
+    success_response, paginated_response, internal_error_response,
+    not_found_response, bad_request_response, forbidden_response,
+    created_response, updated_response, deleted_response
+)
 from models import db, Banner, MyUser
 
 def delete_banner(banner_id):
@@ -12,10 +17,8 @@ def delete_banner(banner_id):
         if admin_user_id:
             admin_user = MyUser.query.get(admin_user_id)
             if not admin_user or not admin_user.admin:
-                return jsonify({
-                    'success': False,
-                    'error': 'Permission denied. Admin access required.'
-                }), 403
+                return internal_error_response(message='Permission denied. Admin access required.'
+                , code=403)
         
         # 记录被删除的横幅信息
         banner_info = {
@@ -30,12 +33,9 @@ def delete_banner(banner_id):
         db.session.delete(banner)
         db.session.commit()
         
-        return jsonify({
-            'success': True,
-            'message': 'Banner deleted successfully',
-            'data': banner_info
-        })
+        return created_response(data=banner_info
+        , message='Banner deleted successfully')
         
     except Exception as e:
         db.session.rollback()
-        return jsonify({'success': False, 'error': str(e)}), 500
+        return internal_error_response(message=str(e), code=500)

@@ -1,4 +1,9 @@
 from flask import jsonify, request
+from utils.response import (
+    success_response, paginated_response, internal_error_response,
+    not_found_response, bad_request_response, forbidden_response,
+    created_response, updated_response, deleted_response
+)
 from models import db, MyUser, UserRelationship
 from sqlalchemy import or_
 
@@ -50,7 +55,7 @@ def get_user_followers(user_id):
         })
         
     except Exception as e:
-        return jsonify({'success': False, 'error': str(e)}), 500
+        return internal_error_response(message=str(e), code=500)
 
 def get_user_following(user_id):
     """获取用户关注的用户列表"""
@@ -100,7 +105,7 @@ def get_user_following(user_id):
         })
         
     except Exception as e:
-        return jsonify({'success': False, 'error': str(e)}), 500
+        return internal_error_response(message=str(e), code=500)
 
 def check_follow_relationship(user_id, target_user_id):
     """检查用户之间的关注关系"""
@@ -133,7 +138,7 @@ def check_follow_relationship(user_id, target_user_id):
         })
         
     except Exception as e:
-        return jsonify({'success': False, 'error': str(e)}), 500
+        return internal_error_response(message=str(e), code=500)
 
 def get_mutual_followers(user_id):
     """获取用户的互关列表（相互关注的用户）"""
@@ -203,4 +208,4 @@ def get_mutual_followers(user_id):
         })
         
     except Exception as e:
-        return jsonify({'success': False, 'error': str(e)}), 500
+        return internal_error_response(message=str(e), code=500)

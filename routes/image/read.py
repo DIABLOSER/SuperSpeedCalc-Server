@@ -1,5 +1,9 @@
 from flask import request, jsonify
 from models import db, Image
+from utils.response import (
+    success_response, paginated_response, internal_error_response,
+    not_found_response
+)
 
 #支持排序和分页获取所有图片
 def get_images():
@@ -31,18 +35,19 @@ def get_images():
         # 分页
         images = query.paginate(page=page, per_page=per_page, error_out=False)
         
-        return jsonify({
-            'success': True,
-            'data': [image.to_dict() for image in images.items],
-            'pagination': {
-                'page': page,
-                'per_page': per_page,
-                'total': images.total,
-                'pages': images.pages
-            }
-        })
+        return paginated_response(
+            data=[image.to_dict() for image in images.items],
+            page=page,
+            per_page=per_page,
+            total=images.total,
+            message="获取图片列表成功"
+        )
     except Exception as e:
-        return jsonify({'success': False, 'error': str(e)}), 500
+        return internal_error_response(
+            message="获取图片列表失败",
+            error_code="GET_IMAGES_FAILED",
+            details=str(e)
+        )
 
 #根据 objectId 获取单个图片
 def get_image(object_id):
@@ -50,12 +55,16 @@ def get_image(object_id):
     try:
         image = Image.query.get_or_404(object_id)
         
-        return jsonify({
-            'success': True,
-            'data': image.to_dict()
-        })
+        return success_response(
+            data=image.to_dict(),
+            message="获取图片信息成功"
+        )
     except Exception as e:
-        return jsonify({'success': False, 'error': str(e)}), 404
+        return not_found_response(
+            message="图片不存在",
+            error_code="IMAGE_NOT_FOUND",
+            details=str(e)
+        )
 
 #获取图片统计信息
 def get_image_stats():
@@ -64,16 +73,20 @@ def get_image_stats():
         total_count = Image.query.count()
         total_size = db.session.query(db.func.sum(Image.fileSize)).scalar() or 0
         
-        return jsonify({
-            'success': True,
-            'data': {
+        return success_response(
+            data={
                 'total_images': total_count,
                 'total_size_bytes': total_size,
                 'total_size_mb': round(total_size / 1024 / 1024, 2)
-            }
-        })
+            },
+            message="获取图片统计信息成功"
+        )
     except Exception as e:
-        return jsonify({'success': False, 'error': str(e)}), 500
+        return internal_error_response(
+            message="获取图片统计信息失败",
+            error_code="GET_IMAGE_STATS_FAILED",
+            details=str(e)
+        )
 
 #搜索图片（按文件名）
 def search_images():
@@ -84,7 +97,11 @@ def search_images():
         per_page = request.args.get('per_page', 20, type=int)
         
         if not query_text:
-            return jsonify({'success': False, 'error': 'Search query is required'}), 400
+            from utils.response import bad_request_response
+            return bad_request_response(
+                message="搜索关键词是必需的",
+                error_code="MISSING_SEARCH_QUERY"
+            )
         
         # 按文件名搜索
         images = Image.query.filter(
@@ -93,16 +110,22 @@ def search_images():
             page=page, per_page=per_page, error_out=False
         )
         
-        return jsonify({
-            'success': True,
-            'data': [image.to_dict() for image in images.items],
-            'pagination': {
-                'page': page,
-                'per_page': per_page,
-                'total': images.total,
-                'pages': images.pages
+        return success_response(
+            data={
+                'images': [image.to_dict() for image in images.items],
+                'pagination': {
+                    'page': page,
+                    'per_page': per_page,
+                    'total': images.total,
+                    'pages': images.pages
+                },
+                'search_query': query_text
             },
-            'search_query': query_text
-        })
+            message="搜索图片成功"
+        )
     except Exception as e:
-        return jsonify({'success': False, 'error': str(e)}), 500 
+        return internal_error_response(
+            message="搜索图片失败",
+            error_code="SEARCH_IMAGES_FAILED",
+            details=str(e)
+        ) 
