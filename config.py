@@ -1,4 +1,5 @@
 import os
+import logging
 from datetime import timedelta
 
 class Config:
@@ -26,6 +27,11 @@ class DevelopmentConfig(Config):
     """开发环境配置"""
     DEBUG = True
     SQLALCHEMY_ECHO = True
+    
+    # 详细日志配置
+    LOG_LEVEL = logging.DEBUG
+    LOG_FORMAT = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+    LOG_FILE = 'app.log'
 
 class ProductionConfig(Config):
     """生产环境配置"""

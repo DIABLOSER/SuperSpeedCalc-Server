@@ -1,14 +1,57 @@
 import os
-from flask import Flask, jsonify, send_from_directory
+import logging
+from flask import Flask, jsonify, send_from_directory, request
 from flask_cors import CORS
 from config import config
 from models import db
+
+def configure_logging(app):
+    """配置详细日志"""
+    if not app.debug and not app.testing:
+        # 生产环境：只记录到文件
+        if not os.path.exists('logs'):
+            os.mkdir('logs')
+        file_handler = logging.FileHandler('logs/app.log')
+        file_handler.setFormatter(logging.Formatter(
+            '%(asctime)s %(levelname)s: %(message)s [in %(pathname)s:%(lineno)d]'
+        ))
+        file_handler.setLevel(logging.INFO)
+        app.logger.addHandler(file_handler)
+        app.logger.setLevel(logging.INFO)
+        app.logger.info('应用启动')
+    else:
+        # 开发环境：同时输出到控制台和文件
+        # 控制台日志
+        console_handler = logging.StreamHandler()
+        console_handler.setLevel(logging.DEBUG)
+        console_formatter = logging.Formatter(
+            '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+        )
+        console_handler.setFormatter(console_formatter)
+        app.logger.addHandler(console_handler)
+        
+        # 文件日志
+        if not os.path.exists('logs'):
+            os.mkdir('logs')
+        file_handler = logging.FileHandler('logs/app.log')
+        file_handler.setLevel(logging.DEBUG)
+        file_formatter = logging.Formatter(
+            '%(asctime)s - %(name)s - %(levelname)s - %(message)s [in %(pathname)s:%(lineno)d]'
+        )
+        file_handler.setFormatter(file_formatter)
+        app.logger.addHandler(file_handler)
+        
+        app.logger.setLevel(logging.DEBUG)
+        app.logger.info('应用启动 (开发模式)')
 
 def create_app(config_name='default'):
     """应用工厂函数"""
     app = Flask(__name__)
     app.config.from_object(config[config_name])
 
+    # 配置详细日志
+    configure_logging(app)
+    
     # 允许路由末尾斜杠差异，不做 308 重定向
     app.url_map.strict_slashes = False
     
@@ -16,6 +59,22 @@ def create_app(config_name='default'):
     db.init_app(app)
     #部署到服务器需要注释这行
     CORS(app)
+    
+    # 添加请求日志中间件
+    @app.before_request
+    def log_request_info():
+        app.logger.info(f'请求: {request.method} {request.url}')
+        app.logger.info(f'请求头: {dict(request.headers)}')
+        if request.is_json:
+            app.logger.info(f'请求体: {request.get_json()}')
+        elif request.form:
+            app.logger.info(f'表单数据: {dict(request.form)}')
+    
+    @app.after_request
+    def log_response_info(response):
+        app.logger.info(f'响应状态: {response.status_code}')
+        app.logger.info(f'响应头: {dict(response.headers)}')
+        return response
     
     # 注册蓝图 - 使用新的模块化结构
     from routes import user_bp, charts_bp, forum_bp, image_bp, history_bp, releases_bp, relationship_bp, posts_bp, replies_bp, banners_bp

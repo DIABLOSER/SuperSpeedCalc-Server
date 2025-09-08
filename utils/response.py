@@ -53,7 +53,9 @@ class APIResponse:
     @staticmethod
     def error(
         message: str = "操作失败",
-        code: int = 400
+        code: int = 400,
+        error_code: Optional[str] = None,
+        details: Optional[Any] = None
     ) -> tuple:
         """
         错误响应
@@ -61,6 +63,8 @@ class APIResponse:
         Args:
             message: 错误消息
             code: HTTP状态码
+            error_code: 错误代码
+            details: 错误详情
             
         Returns:
             tuple: (jsonify对象, HTTP状态码)
@@ -70,6 +74,12 @@ class APIResponse:
             "message": message,
             "data": None
         }
+        
+        # 添加错误代码和详情到响应中
+        if error_code:
+            response["error_code"] = error_code
+        if details is not None:
+            response["details"] = details
             
         return jsonify(response), code
     
@@ -124,78 +134,98 @@ class APIResponse:
     
     @staticmethod
     def not_found(
-        message: str = "资源不存在"
+        message: str = "资源不存在",
+        error_code: Optional[str] = None,
+        details: Optional[Any] = None
     ) -> tuple:
         """
         资源不存在响应 (404)
         
         Args:
             message: 错误消息
+            error_code: 错误代码
+            details: 错误详情
             
         Returns:
             tuple: (jsonify对象, 404)
         """
-        return APIResponse.error(message=message, code=404)
+        return APIResponse.error(message=message, code=404, error_code=error_code, details=details)
     
     @staticmethod
     def bad_request(
-        message: str = "请求参数错误"
+        message: str = "请求参数错误",
+        error_code: Optional[str] = None,
+        details: Optional[Any] = None
     ) -> tuple:
         """
         请求参数错误响应 (400)
         
         Args:
             message: 错误消息
+            error_code: 错误代码
+            details: 错误详情
             
         Returns:
             tuple: (jsonify对象, 400)
         """
-        return APIResponse.error(message=message, code=400)
+        return APIResponse.error(message=message, code=400, error_code=error_code, details=details)
     
     @staticmethod
     def unauthorized(
-        message: str = "未授权访问"
+        message: str = "未授权访问",
+        error_code: Optional[str] = None,
+        details: Optional[Any] = None
     ) -> tuple:
         """
         未授权响应 (401)
         
         Args:
             message: 错误消息
+            error_code: 错误代码
+            details: 错误详情
             
         Returns:
             tuple: (jsonify对象, 401)
         """
-        return APIResponse.error(message=message, code=401)
+        return APIResponse.error(message=message, code=401, error_code=error_code, details=details)
     
     @staticmethod
     def forbidden(
-        message: str = "禁止访问"
+        message: str = "禁止访问",
+        error_code: Optional[str] = None,
+        details: Optional[Any] = None
     ) -> tuple:
         """
         禁止访问响应 (403)
         
         Args:
             message: 错误消息
+            error_code: 错误代码
+            details: 错误详情
             
         Returns:
             tuple: (jsonify对象, 403)
         """
-        return APIResponse.error(message=message, code=403)
+        return APIResponse.error(message=message, code=403, error_code=error_code, details=details)
     
     @staticmethod
     def internal_error(
-        message: str = "服务器内部错误"
+        message: str = "服务器内部错误",
+        error_code: Optional[str] = None,
+        details: Optional[Any] = None
     ) -> tuple:
         """
         服务器内部错误响应 (500)
         
         Args:
             message: 错误消息
+            error_code: 错误代码
+            details: 错误详情
             
         Returns:
             tuple: (jsonify对象, 500)
         """
-        return APIResponse.error(message=message, code=500)
+        return APIResponse.error(message=message, code=500, error_code=error_code, details=details)
     
     @staticmethod
     def paginated(
@@ -244,9 +274,9 @@ def success_response(data=None, message="操作成功", code=200):
     return APIResponse.success(data, message, code)
 
 
-def error_response(message="操作失败", code=400):
+def error_response(message="操作失败", code=400, error_code=None, details=None):
     """错误响应便捷函数"""
-    return APIResponse.error(message, code)
+    return APIResponse.error(message, code, error_code, details)
 
 
 def created_response(data=None, message="创建成功"):
@@ -264,29 +294,29 @@ def deleted_response(message="删除成功"):
     return APIResponse.deleted(message)
 
 
-def not_found_response(message="资源不存在"):
+def not_found_response(message="资源不存在", error_code=None, details=None):
     """资源不存在响应便捷函数"""
-    return APIResponse.not_found(message)
+    return APIResponse.not_found(message, error_code, details)
 
 
-def bad_request_response(message="请求参数错误"):
+def bad_request_response(message="请求参数错误", error_code=None, details=None):
     """请求参数错误响应便捷函数"""
-    return APIResponse.bad_request(message)
+    return APIResponse.bad_request(message, error_code, details)
 
 
-def unauthorized_response(message="未授权访问"):
+def unauthorized_response(message="未授权访问", error_code=None, details=None):
     """未授权响应便捷函数"""
-    return APIResponse.unauthorized(message)
+    return APIResponse.unauthorized(message, error_code, details)
 
 
-def forbidden_response(message="禁止访问"):
+def forbidden_response(message="禁止访问", error_code=None, details=None):
     """禁止访问响应便捷函数"""
-    return APIResponse.forbidden(message)
+    return APIResponse.forbidden(message, error_code, details)
 
 
-def internal_error_response(message="服务器内部错误"):
+def internal_error_response(message="服务器内部错误", error_code=None, details=None):
     """服务器内部错误响应便捷函数"""
-    return APIResponse.internal_error(message)
+    return APIResponse.internal_error(message, error_code, details)
 
 
 def paginated_response(data, page, per_page, total, message="获取成功"):
