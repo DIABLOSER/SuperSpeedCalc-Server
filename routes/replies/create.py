@@ -96,11 +96,10 @@ def create_reply():
         # 返回创建的评论信息
         reply_data = reply.to_dict(include_details=True, include_children=False)
         
-        return jsonify({
-            'success': True,
-            'message': f'{"Reply" if parent_id else "Comment"} created successfully',
-            'data': reply_data
-        }), 201
+        return created_response(
+            data=reply_data,
+            message=f'{"Reply" if parent_id else "Comment"} created successfully'
+        )
         
     except Exception as e:
         db.session.rollback()

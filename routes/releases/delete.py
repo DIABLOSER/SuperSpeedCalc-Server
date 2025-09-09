@@ -11,13 +11,20 @@ def delete_release(object_id):
     try:
         item = AppRelease.query.get(object_id)
         if not item:
-            return jsonify({'error': '发布记录不存在'}), 404
+            return not_found_response(
+                message='发布记录不存在',
+                error_code='RELEASE_NOT_FOUND'
+            )
 
         db.session.delete(item)
         db.session.commit()
-        return jsonify({'message': '删除成功'}), 200
+        return deleted_response(message='删除成功')
     except Exception as e:
         db.session.rollback()
-        return jsonify({'error': f'删除失败: {str(e)}'}), 500
+        return internal_error_response(
+            message='删除失败',
+            error_code='RELEASE_DELETE_FAILED',
+            details=str(e)
+        )
 
 

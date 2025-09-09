@@ -73,11 +73,10 @@ def delete_reply(reply_id):
         
         db.session.commit()
         
-        return jsonify({
-            'success': True,
-            'message': f'Reply deleted successfully. {child_replies_count} child replies also deleted.' if child_replies_count > 0 else 'Reply deleted successfully',
-            'data': reply_info
-        })
+        return success_response(
+            data=reply_info,
+            message=f'Reply deleted successfully. {child_replies_count} child replies also deleted.' if child_replies_count > 0 else 'Reply deleted successfully'
+        )
         
     except Exception as e:
         db.session.rollback()

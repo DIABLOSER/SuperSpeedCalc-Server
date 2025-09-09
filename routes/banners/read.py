@@ -66,16 +66,13 @@ def get_banners():
         banners = query.limit(per_page).offset((page - 1) * per_page).all()
         pages = (total + per_page - 1) // per_page if per_page else 1
         
-        return jsonify({
-            'success': True,
-            'data': [banner.to_dict() for banner in banners],
-            'pagination': {
-                'page': page,
-                'per_page': per_page,
-                'total': total,
-                'pages': pages
-            }
-        })
+        return paginated_response(
+            data=[banner.to_dict() for banner in banners],
+            page=page,
+            per_page=per_page,
+            total=total,
+            message='获取横幅列表成功'
+        )
         
     except Exception as e:
         return internal_error_response(message=str(e), code=500)
@@ -128,16 +125,16 @@ def get_banner_stats():
         active_banners = len(Banner.get_active_banners())
         visible_banners = Banner.query.filter(Banner.show == True).count()
         
-        return jsonify({
-            'success': True,
-            'data': {
+        return success_response(
+            data={
                 'overview': {
                     'total_banners': total_banners,
                     'active_banners': active_banners,
                     'visible_banners': visible_banners
                 }
-            }
-        })
+            },
+            message='获取横幅统计成功'
+        )
         
     except Exception as e:
         return internal_error_response(message=str(e), code=500)

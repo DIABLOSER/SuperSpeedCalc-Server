@@ -30,30 +30,39 @@ def get_releases():
         pagination = query.paginate(page=page, per_page=per_page, error_out=False)
         items = [x.to_dict() for x in pagination.items]
 
-        return jsonify({
-            'message': '获取发布记录成功',
-            'data': items,
-            'pagination': {
-                'page': page,
-                'per_page': per_page,
-                'total': pagination.total,
-                'pages': pagination.pages,
-                'has_next': pagination.has_next,
-                'has_prev': pagination.has_prev,
-            }
-        }), 200
+        return paginated_response(
+            data=items,
+            page=page,
+            per_page=per_page,
+            total=pagination.total,
+            message='获取发布记录成功'
+        )
     except Exception as e:
-        return jsonify({'error': f'获取失败: {str(e)}'}), 500
+        return internal_error_response(
+            message='获取失败',
+            error_code='RELEASE_GET_FAILED',
+            details=str(e)
+        )
 
 
 def get_release(object_id):
     try:
         item = AppRelease.query.get(object_id)
         if not item:
-            return jsonify({'error': '发布记录不存在'}), 404
-        return jsonify({'message': '获取成功', 'data': item.to_dict()}), 200
+            return not_found_response(
+                message='发布记录不存在',
+                error_code='RELEASE_NOT_FOUND'
+            )
+        return success_response(
+            data=item.to_dict(),
+            message='获取成功'
+        )
     except Exception as e:
-        return jsonify({'error': f'获取失败: {str(e)}'}), 500
+        return internal_error_response(
+            message='获取失败',
+            error_code='RELEASE_GET_FAILED',
+            details=str(e)
+        )
 
 
 def get_releases_count():
@@ -70,8 +79,15 @@ def get_releases_count():
         if status:
             query = query.filter(AppRelease.status == status)
 
-        return jsonify({'message': '获取数量成功', 'data': {'count': query.count()}}), 200
+        return success_response(
+            data={'count': query.count()},
+            message='获取数量成功'
+        )
     except Exception as e:
-        return jsonify({'error': f'获取失败: {str(e)}'}), 500
+        return internal_error_response(
+            message='获取失败',
+            error_code='RELEASE_GET_FAILED',
+            details=str(e)
+        )
 
 

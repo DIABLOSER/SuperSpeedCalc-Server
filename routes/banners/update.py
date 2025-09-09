@@ -84,16 +84,15 @@ def update_banner_sort_order(banner_id):
         
         db.session.commit()
         
-        return jsonify({
-            'success': True,
-            'message': f'Banner sort order updated from {old_sort_order} to {banner.sort_order}',
-            'data': {
+        return success_response(
+            data={
                 'objectId': banner.objectId,
                 'title': banner.title,
                 'old_sort_order': old_sort_order,
                 'new_sort_order': banner.sort_order
-            }
-        })
+            },
+            message=f'Banner sort order updated from {old_sort_order} to {banner.sort_order}'
+        )
         
     except Exception as e:
         db.session.rollback()
@@ -109,14 +108,13 @@ def track_banner_view(banner_id):
             return internal_error_response(message='Banner is not active'
             , code=400)
         
-        return jsonify({
-            'success': True,
-            'message': 'Banner view tracked',
-            'data': {
+        return success_response(
+            data={
                 'banner_id': banner.objectId,
                 'title': banner.title
-            }
-        })
+            },
+            message='Banner view tracked'
+        )
         
     except Exception as e:
         return internal_error_response(message=str(e), code=500)
@@ -135,15 +133,14 @@ def track_banner_click(banner_id):
             return internal_error_response(message='Banner is not clickable'
             , code=400)
         
-        return jsonify({
-            'success': True,
-            'message': 'Banner click tracked',
-            'data': {
+        return success_response(
+            data={
                 'banner_id': banner.objectId,
                 'title': banner.title,
                 'action': banner.action
-            }
-        })
+            },
+            message='Banner click tracked'
+        )
         
     except Exception as e:
         return internal_error_response(message=str(e), code=500)

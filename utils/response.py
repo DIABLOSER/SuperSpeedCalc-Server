@@ -3,7 +3,7 @@
 提供标准化的API响应格式，确保所有接口返回数据的一致性
 使用智能的 code、message、data 格式：
 - 基础只有三个字段：code、message、data
-- 成功时：data 包含所有返回数据（JSON字符串格式）
+- 成功时：data 包含所有返回数据（JSON对象格式）
 - 错误时：data 为 null
 - 其他信息（如分页、元数据等）都包含在 data 中
 """
@@ -33,19 +33,10 @@ class APIResponse:
         Returns:
             tuple: (jsonify对象, HTTP状态码)
         """
-        # 将data转换为JSON字符串
-        data_str = None
-        if data is not None:
-            try:
-                data_str = json.dumps(data, ensure_ascii=False)
-            except (TypeError, ValueError) as e:
-                # 如果无法序列化，则使用字符串表示
-                data_str = str(data)
-        
         response = {
             "code": code,
             "message": message,
-            "data": data_str
+            "data": data
         }
             
         return jsonify(response), code

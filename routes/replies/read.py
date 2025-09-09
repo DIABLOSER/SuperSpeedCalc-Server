@@ -51,9 +51,8 @@ def get_post_replies(post_id):
         replies = query.limit(per_page).offset((page - 1) * per_page).all()
         pages = (total + per_page - 1) // per_page if per_page else 1
         
-        return jsonify({
-            'success': True,
-            'data': {
+        return success_response(
+            data={
                 'post': {
                     'objectId': post.objectId,
                     'content_preview': post.content[:50] + '...' if len(post.content) > 50 else post.content,
@@ -75,8 +74,9 @@ def get_post_replies(post_id):
                     'first_level_count': post.get_first_level_reply_count(),
                     'second_level_count': post.get_second_level_reply_count()
                 }
-            }
-        })
+            },
+            message='获取帖子回复成功'
+        )
         
     except Exception as e:
         return internal_error_response(message=str(e), code=500)
@@ -143,9 +143,8 @@ def get_user_replies(user_id):
         replies = query.limit(per_page).offset((page - 1) * per_page).all()
         pages = (total + per_page - 1) // per_page if per_page else 1
         
-        return jsonify({
-            'success': True,
-            'data': {
+        return success_response(
+            data={
                 'user': {
                     'objectId': user.objectId,
                     'username': user.username,
@@ -164,8 +163,9 @@ def get_user_replies(user_id):
                 'stats': {
                     'total_replies': Reply.get_user_reply_count(user_id)
                 }
-            }
-        })
+            },
+            message='获取用户回复成功'
+        )
         
     except Exception as e:
         return internal_error_response(message=str(e), code=500)
@@ -199,9 +199,8 @@ def get_first_level_replies(post_id):
         first_level_replies = query.limit(per_page).offset((page - 1) * per_page).all()
         pages = (total + per_page - 1) // per_page if per_page else 1
         
-        return jsonify({
-            'success': True,
-            'data': {
+        return success_response(
+            data={
                 'post': {
                     'objectId': post.objectId,
                     'content_preview': post.content[:50] + '...' if len(post.content) > 50 else post.content,
@@ -221,8 +220,9 @@ def get_first_level_replies(post_id):
                     'first_level_count': post.get_first_level_reply_count(),
                     'second_level_count': post.get_second_level_reply_count()
                 }
-            }
-        })
+            },
+            message='获取一级回复成功'
+        )
         
     except Exception as e:
         return internal_error_response(message=str(e), code=500)

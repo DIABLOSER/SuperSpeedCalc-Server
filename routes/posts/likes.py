@@ -35,9 +35,8 @@ def get_post_likers(post_id):
         likes = query.limit(per_page).offset((page - 1) * per_page).all()
         pages = (total + per_page - 1) // per_page if per_page else 1
         
-        return jsonify({
-            'success': True,
-            'data': {
+        return success_response(
+            data={
                 'post': {
                     'objectId': post.objectId,
                     'content_preview': post.content[:50] + '...' if len(post.content) > 50 else post.content,
@@ -63,8 +62,9 @@ def get_post_likers(post_id):
                     'total': total,
                     'pages': pages
                 }
-            }
-        })
+            },
+            message='获取帖子点赞列表成功'
+        )
         
     except Exception as e:
         return internal_error_response(message=str(e), code=500)
@@ -99,9 +99,8 @@ def get_user_liked_posts(user_id):
         likes = query.limit(per_page).offset((page - 1) * per_page).all()
         pages = (total + per_page - 1) // per_page if per_page else 1
         
-        return jsonify({
-            'success': True,
-            'data': {
+        return success_response(
+            data={
                 'user': {
                     'objectId': user.objectId,
                     'username': user.username,
@@ -123,8 +122,9 @@ def get_user_liked_posts(user_id):
                     'total': total,
                     'pages': pages
                 }
-            }
-        })
+            },
+            message='获取用户点赞帖子列表成功'
+        )
         
     except Exception as e:
         return internal_error_response(message=str(e), code=500)
@@ -152,15 +152,14 @@ def sync_all_post_like_counts():
         from models import db
         db.session.commit()
         
-        return jsonify({
-            'success': True,
-            'message': f'Synchronized like counts for {updated_count} posts',
-            'data': {
+        return success_response(
+            data={
                 'total_posts': len(posts),
                 'updated_posts': updated_count,
                 'admin_user': admin_user_id
-            }
-        })
+            },
+            message=f'Synchronized like counts for {updated_count} posts'
+        )
         
     except Exception as e:
         from models import db

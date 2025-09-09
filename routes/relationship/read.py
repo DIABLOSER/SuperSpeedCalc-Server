@@ -28,9 +28,8 @@ def get_user_followers(user_id):
         followers = query.limit(per_page).offset((page - 1) * per_page).all()
         pages = (total + per_page - 1) // per_page if per_page else 1
         
-        return jsonify({
-            'success': True,
-            'data': {
+        return success_response(
+            data={
                 'user': {
                     'objectId': user.objectId,
                     'username': user.username,
@@ -51,8 +50,9 @@ def get_user_followers(user_id):
                     'total': total,
                     'pages': pages
                 }
-            }
-        })
+            },
+            message='获取粉丝列表成功'
+        )
         
     except Exception as e:
         return internal_error_response(message=str(e), code=500)
@@ -78,9 +78,8 @@ def get_user_following(user_id):
         following = query.limit(per_page).offset((page - 1) * per_page).all()
         pages = (total + per_page - 1) // per_page if per_page else 1
         
-        return jsonify({
-            'success': True,
-            'data': {
+        return success_response(
+            data={
                 'user': {
                     'objectId': user.objectId,
                     'username': user.username,
@@ -101,8 +100,9 @@ def get_user_following(user_id):
                     'total': total,
                     'pages': pages
                 }
-            }
-        })
+            },
+            message='获取关注列表成功'
+        )
         
     except Exception as e:
         return internal_error_response(message=str(e), code=500)
@@ -118,9 +118,8 @@ def check_follow_relationship(user_id, target_user_id):
         is_following = user.is_following(target_user_id)
         is_followed_by = target_user.is_following(user_id)
         
-        return jsonify({
-            'success': True,
-            'data': {
+        return success_response(
+            data={
                 'user': {
                     'objectId': user.objectId,
                     'username': user.username
@@ -134,8 +133,9 @@ def check_follow_relationship(user_id, target_user_id):
                     'is_followed_by': is_followed_by,  # 当前用户是否被目标用户关注
                     'mutual': is_following and is_followed_by  # 是否互相关注
                 }
-            }
-        })
+            },
+            message='获取关注关系成功'
+        )
         
     except Exception as e:
         return internal_error_response(message=str(e), code=500)
@@ -175,9 +175,8 @@ def get_mutual_followers(user_id):
         mutual_users = mutual_query.limit(per_page).offset((page - 1) * per_page).all()
         pages = (total + per_page - 1) // per_page if per_page else 1
         
-        return jsonify({
-            'success': True,
-            'data': {
+        return success_response(
+            data={
                 'user': {
                     'objectId': user.objectId,
                     'username': user.username,
@@ -204,8 +203,9 @@ def get_mutual_followers(user_id):
                     'followers_count': user.get_followers_count(),
                     'following_count': user.get_following_count()
                 }
-            }
-        })
+            },
+            message='获取互关列表成功'
+        )
         
     except Exception as e:
         return internal_error_response(message=str(e), code=500)

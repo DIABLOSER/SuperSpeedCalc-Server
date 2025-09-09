@@ -32,10 +32,8 @@ def unfollow_user(user_id, target_user_id):
         db.session.delete(relationship)
         db.session.commit()
         
-        return jsonify({
-            'success': True,
-            'message': f'{user.username} has unfollowed {target_user.username}',
-            'data': {
+        return success_response(
+            data={
                 'follower': {
                     'objectId': user.objectId,
                     'username': user.username
@@ -44,8 +42,9 @@ def unfollow_user(user_id, target_user_id):
                     'objectId': target_user.objectId,
                     'username': target_user.username
                 }
-            }
-        })
+            },
+            message=f'{user.username} has unfollowed {target_user.username}'
+        )
         
     except Exception as e:
         db.session.rollback()

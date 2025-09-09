@@ -15,13 +15,20 @@ def create_release():
         required_fields = ['app_name', 'version_name', 'version_code']
         for field in required_fields:
             if data.get(field) in [None, '']:
-                return jsonify({'error': f'{field} 不能为空'}), 400
+                return bad_request_response(
+                    message=f'{field} 不能为空',
+                    error_code='MISSING_REQUIRED_FIELD',
+                    details={'field': field}
+                )
 
         # 校验类型
         try:
             version_code = int(data.get('version_code'))
         except Exception:
-            return jsonify({'error': 'version_code 必须是整数'}), 400
+            return bad_request_response(
+                message='version_code 必须是整数',
+                error_code='INVALID_VERSION_CODE'
+            )
 
         release = AppRelease(
             app_name=str(data.get('app_name')).strip(),
@@ -38,10 +45,17 @@ def create_release():
         db.session.add(release)
         db.session.commit()
 
-        return jsonify({'message': '发布记录创建成功', 'data': release.to_dict()}), 201
+        return created_response(
+            data=release.to_dict(),
+            message='发布记录创建成功'
+        )
     except Exception as e:
         db.session.rollback()
-        return jsonify({'error': f'创建失败: {str(e)}'}), 500
+        return internal_error_response(
+            message='创建失败',
+            error_code='RELEASE_CREATE_FAILED',
+            details=str(e)
+        )
 
         
 

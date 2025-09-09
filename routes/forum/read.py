@@ -34,16 +34,13 @@ def get_forum_posts():
         # 分页
         posts = query.paginate(page=page, per_page=per_page, error_out=False)
         
-        return jsonify({
-            'success': True,
-            'data': [post.to_dict(include_user=True) for post in posts.items],
-            'pagination': {
-                'page': page,
-                'per_page': per_page,
-                'total': posts.total,
-                'pages': posts.pages
-            }
-        })
+        return paginated_response(
+            data=[post.to_dict(include_user=True) for post in posts.items],
+            page=page,
+            per_page=per_page,
+            total=posts.total,
+            message='获取论坛帖子列表成功'
+        )
     except Exception as e:
         return internal_error_response(message=str(e), code=500)
 
@@ -80,16 +77,13 @@ def get_categories():
 
         pages = (total + per_page - 1) // per_page if per_page else 1
 
-        return jsonify({
-            'success': True,
-            'data': categories,
-            'pagination': {
-                'page': page,
-                'per_page': per_page,
-                'total': total,
-                'pages': pages
-            }
-        })
+        return paginated_response(
+            data=categories,
+            page=page,
+            per_page=per_page,
+            total=total,
+            message='获取论坛分类列表成功'
+        )
     except Exception as e:
         return internal_error_response(message=str(e), code=500)
 
@@ -113,16 +107,13 @@ def get_popular_posts():
         posts = query.limit(per_page).offset((page - 1) * per_page).all()
         pages = (total + per_page - 1) // per_page if per_page else 1
 
-        return jsonify({
-            'success': True,
-            'data': [post.to_dict(include_user=True) for post in posts],
-            'pagination': {
-                'page': page,
-                'per_page': per_page,
-                'total': total,
-                'pages': pages
-            }
-        })
+        return paginated_response(
+            data=[post.to_dict(include_user=True) for post in posts],
+            page=page,
+            per_page=per_page,
+            total=total,
+            message='获取热门帖子列表成功'
+        )
     except Exception as e:
         return internal_error_response(message=str(e), code=500)
 
@@ -139,15 +130,12 @@ def get_public_posts():
         posts = query.limit(per_page).offset((page - 1) * per_page).all()
         pages = (total + per_page - 1) // per_page if per_page else 1
 
-        return jsonify({
-            'success': True,
-            'data': [post.to_dict(include_user=True) for post in posts],
-            'pagination': {
-                'page': page,
-                'per_page': per_page,
-                'total': total,
-                'pages': pages
-            }
-        })
+        return paginated_response(
+            data=[post.to_dict(include_user=True) for post in posts],
+            page=page,
+            per_page=per_page,
+            total=total,
+            message='获取公开帖子列表成功'
+        )
     except Exception as e:
         return internal_error_response(message=str(e), code=500) 

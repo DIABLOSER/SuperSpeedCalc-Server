@@ -11,7 +11,10 @@ def update_release(object_id):
     try:
         item = AppRelease.query.get(object_id)
         if not item:
-            return jsonify({'error': '发布记录不存在'}), 404
+            return not_found_response(
+                message='发布记录不存在',
+                error_code='RELEASE_NOT_FOUND'
+            )
 
         data = request.get_json() or {}
 
@@ -23,7 +26,10 @@ def update_release(object_id):
             try:
                 item.version_code = int(data['version_code'])
             except Exception:
-                return jsonify({'error': 'version_code 必须是整数'}), 400
+                return bad_request_response(
+                    message='version_code 必须是整数',
+                    error_code='INVALID_VERSION_CODE'
+                )
         if 'changelog' in data:
             item.changelog = data['changelog']
         if 'download_url' in data:
@@ -39,9 +45,16 @@ def update_release(object_id):
 
         db.session.commit()
 
-        return jsonify({'message': '更新成功', 'data': item.to_dict()}), 200
+        return updated_response(
+            data=item.to_dict(),
+            message='更新成功'
+        )
     except Exception as e:
         db.session.rollback()
-        return jsonify({'error': f'更新失败: {str(e)}'}), 500
+        return internal_error_response(
+            message='更新失败',
+            error_code='RELEASE_UPDATE_FAILED',
+            details=str(e)
+        )
 
 

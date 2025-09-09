@@ -38,10 +38,8 @@ def follow_user(user_id, target_user_id):
         db.session.add(relationship)
         db.session.commit()
         
-        return jsonify({
-            'success': True,
-            'message': f'{user.username} is now following {target_user.username}',
-            'data': {
+        return success_response(
+            data={
                 'follower': {
                     'objectId': user.objectId,
                     'username': user.username
@@ -52,8 +50,9 @@ def follow_user(user_id, target_user_id):
                 },
                 'relationship_id': relationship.objectId,
                 'createdAt': relationship.createdAt.isoformat()
-            }
-        })
+            },
+            message=f'{user.username} is now following {target_user.username}'
+        )
         
     except Exception as e:
         db.session.rollback()

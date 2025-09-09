@@ -58,10 +58,10 @@ def update_post_audit_state(post_id):
         # 验证审核状态
         valid_states = Posts.get_audit_states()
         if new_audit_state not in valid_states:
-            return jsonify({
-                'success': False,
-                'error': f'Invalid audit state. Valid states: {list(valid_states.keys())}'
-            }), 400
+            return error_response(
+                message=f'Invalid audit state. Valid states: {list(valid_states.keys())}',
+                code=400
+            )
         
         # 权限检查：验证是否为管理员（这里简化处理，实际应该检查管理员权限）
         if admin_user_id:
@@ -76,18 +76,17 @@ def update_post_audit_state(post_id):
         
         db.session.commit()
         
-        return jsonify({
-            'success': True,
-            'message': f'Post audit state updated from {old_state} to {new_audit_state}',
-            'data': {
+        return success_response(
+            data={
                 'post_id': post.objectId,
                 'old_audit_state': old_state,
                 'new_audit_state': new_audit_state,
                 'reason': reason,
                 'updated_by': admin_user_id,
                 'updated_at': post.updatedAt.isoformat()
-            }
-        })
+            },
+            message=f'Post audit state updated from {old_state} to {new_audit_state}'
+        )
         
     except Exception as e:
         db.session.rollback()
@@ -131,17 +130,16 @@ def like_post(post_id):
         
         db.session.commit()
         
-        return jsonify({
-            'success': True,
-            'message': 'Post liked successfully',
-            'data': {
+        return success_response(
+            data={
                 'post_id': post.objectId,
                 'likeCount': post.likeCount,
                 'user_id': user_id,
                 'like_id': like_record.objectId,
                 'is_liked_by_user': True
-            }
-        })
+            },
+            message='Post liked successfully'
+        )
         
     except Exception as e:
         db.session.rollback()
@@ -184,16 +182,15 @@ def unlike_post(post_id):
         
         db.session.commit()
         
-        return jsonify({
-            'success': True,
-            'message': 'Post unliked successfully',
-            'data': {
+        return success_response(
+            data={
                 'post_id': post.objectId,
                 'likeCount': post.likeCount,
                 'user_id': user_id,
                 'is_liked_by_user': False
-            }
-        })
+            },
+            message='Post unliked successfully'
+        )
         
     except Exception as e:
         db.session.rollback()
