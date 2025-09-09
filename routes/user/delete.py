@@ -15,8 +15,4 @@ def delete_user(object_id):
         
     except Exception as e:
         db.session.rollback()
-        return internal_error_response(
-            message="删除用户失败",
-            error_code="USER_DELETE_FAILED",
-            details=str(e)
-        ) 
+        return internal_error_response(message="删除用户失败") 

@@ -28,7 +28,28 @@ GET /images?page=1&per_page=20&sort_by=createdAt&order=desc
 {
   "code": 200,
   "message": "获取图片列表成功",
-  "data": "{\"list\": [{\"objectId\": 1, \"fileName\": \"20250109_100000_abc12345.jpg\", \"originalName\": \"avatar.jpg\", \"fileSize\": 102400, \"filePath\": \"/uploads/images/20250109_100000_abc12345.jpg\", \"url\": \"http://localhost:5000/uploads/images/20250109_100000_abc12345.jpg\", \"createdAt\": \"2025-01-09T10:00:00\", \"updatedAt\": \"2025-01-09T10:00:00\"}], \"pagination\": {\"page\": 1, \"per_page\": 20, \"total\": 1, \"pages\": 1, \"has_next\": false, \"has_prev\": false}}"
+  "data": {
+    "list": [
+      {
+        "objectId": 1,
+        "fileName": "20250109_100000_abc12345.jpg",
+        "originalName": "avatar.jpg",
+        "fileSize": 102400,
+        "filePath": "/uploads/images/20250109_100000_abc12345.jpg",
+        "url": "http://localhost:8000/uploads/images/20250109_100000_abc12345.jpg",
+        "createdAt": "2025-01-09T10:00:00",
+        "updatedAt": "2025-01-09T10:00:00"
+      }
+    ],
+    "pagination": {
+      "page": 1,
+      "per_page": 20,
+      "total": 1,
+      "pages": 1,
+      "has_next": false,
+      "has_prev": false
+    }
+  }
 }
 ```
 
@@ -50,7 +71,16 @@ GET /images/1
 {
   "code": 200,
   "message": "获取图片信息成功",
-  "data": "{\"objectId\": 1, \"fileName\": \"20250109_100000_abc12345.jpg\", \"originalName\": \"avatar.jpg\", \"fileSize\": 102400, \"filePath\": \"/uploads/images/20250109_100000_abc12345.jpg\", \"url\": \"http://localhost:5000/uploads/images/20250109_100000_abc12345.jpg\", \"createdAt\": \"2025-01-09T10:00:00\", \"updatedAt\": \"2025-01-09T10:00:00\"}"
+  "data": {
+    "objectId": 1,
+    "fileName": "20250109_100000_abc12345.jpg",
+    "originalName": "avatar.jpg",
+    "fileSize": 102400,
+    "filePath": "/uploads/images/20250109_100000_abc12345.jpg",
+    "url": "http://localhost:8000/uploads/images/20250109_100000_abc12345.jpg",
+    "createdAt": "2025-01-09T10:00:00",
+    "updatedAt": "2025-01-09T10:00:00"
+  }
 }
 ```
 
@@ -67,7 +97,7 @@ GET /images/1
 
 #### 请求示例
 ```bash
-curl -X POST -F "file=@avatar.jpg" http://localhost:5000/images/upload
+curl -X POST -F "file=@avatar.jpg" http://localhost:8000/images/upload
 ```
 
 #### 响应示例
@@ -75,7 +105,16 @@ curl -X POST -F "file=@avatar.jpg" http://localhost:5000/images/upload
 {
   "code": 201,
   "message": "图片上传成功",
-  "data": "{\"objectId\": 1, \"fileName\": \"20250109_100000_abc12345.jpg\", \"originalName\": \"avatar.jpg\", \"fileSize\": 102400, \"filePath\": \"/uploads/images/20250109_100000_abc12345.jpg\", \"url\": \"http://localhost:5000/uploads/images/20250109_100000_abc12345.jpg\", \"createdAt\": \"2025-01-09T10:00:00\", \"updatedAt\": \"2025-01-09T10:00:00\"}"
+  "data": {
+    "objectId": 1,
+    "fileName": "20250109_100000_abc12345.jpg",
+    "originalName": "avatar.jpg",
+    "fileSize": 102400,
+    "filePath": "/uploads/images/20250109_100000_abc12345.jpg",
+    "url": "http://localhost:8000/uploads/images/20250109_100000_abc12345.jpg",
+    "createdAt": "2025-01-09T10:00:00",
+    "updatedAt": "2025-01-09T10:00:00"
+  }
 }
 ```
 
@@ -89,7 +128,7 @@ curl -X POST -F "file=@avatar.jpg" http://localhost:5000/images/upload
 
 #### 请求示例
 ```bash
-curl -X POST -F "files=@image1.jpg" -F "files=@image2.jpg" http://localhost:5000/images/upload/batch
+curl -X POST -F "files=@image1.jpg" -F "files=@image2.jpg" http://localhost:8000/images/upload/batch
 ```
 
 #### 响应示例
@@ -97,7 +136,27 @@ curl -X POST -F "files=@image1.jpg" -F "files=@image2.jpg" http://localhost:5000
 {
   "code": 201,
   "message": "批量上传成功",
-  "data": "{\"uploaded\": [{\"objectId\": 1, \"fileName\": \"20250109_100000_abc12345.jpg\", \"originalName\": \"image1.jpg\", \"fileSize\": 102400, \"url\": \"http://localhost:5000/uploads/images/20250109_100000_abc12345.jpg\"}, {\"objectId\": 2, \"fileName\": \"20250109_100001_def67890.jpg\", \"originalName\": \"image2.jpg\", \"fileSize\": 204800, \"url\": \"http://localhost:5000/uploads/images/20250109_100001_def67890.jpg\"}], \"failed\": [], \"total\": 2, \"success_count\": 2}"
+  "data": {
+    "uploaded": [
+      {
+        "objectId": 1,
+        "fileName": "20250109_100000_abc12345.jpg",
+        "originalName": "image1.jpg",
+        "fileSize": 102400,
+        "url": "http://localhost:8000/uploads/images/20250109_100000_abc12345.jpg"
+      },
+      {
+        "objectId": 2,
+        "fileName": "20250109_100001_def67890.jpg",
+        "originalName": "image2.jpg",
+        "fileSize": 204800,
+        "url": "http://localhost:8000/uploads/images/20250109_100001_def67890.jpg"
+      }
+    ],
+    "failed": [],
+    "total": 2,
+    "success_count": 2
+  }
 }
 ```
 
@@ -121,7 +180,16 @@ curl -X POST -F "files=@image1.jpg" -F "files=@image2.jpg" http://localhost:5000
 {
   "code": 200,
   "message": "图片信息更新成功",
-  "data": "{\"objectId\": 1, \"fileName\": \"20250109_100000_abc12345.jpg\", \"originalName\": \"new_avatar.jpg\", \"fileSize\": 102400, \"filePath\": \"/uploads/images/20250109_100000_abc12345.jpg\", \"url\": \"http://localhost:5000/uploads/images/20250109_100000_abc12345.jpg\", \"createdAt\": \"2025-01-09T10:00:00\", \"updatedAt\": \"2025-01-09T11:00:00\"}"
+  "data": {
+    "objectId": 1,
+    "fileName": "20250109_100000_abc12345.jpg",
+    "originalName": "new_avatar.jpg",
+    "fileSize": 102400,
+    "filePath": "/uploads/images/20250109_100000_abc12345.jpg",
+    "url": "http://localhost:8000/uploads/images/20250109_100000_abc12345.jpg",
+    "createdAt": "2025-01-09T10:00:00",
+    "updatedAt": "2025-01-09T11:00:00"
+  }
 }
 ```
 
@@ -167,7 +235,27 @@ GET /images/search?q=avatar&page=1&per_page=10
 {
   "code": 200,
   "message": "搜索图片成功",
-  "data": "{\"list\": [{\"objectId\": 1, \"fileName\": \"20250109_100000_abc12345.jpg\", \"originalName\": \"avatar.jpg\", \"fileSize\": 102400, \"url\": \"http://localhost:5000/uploads/images/20250109_100000_abc12345.jpg\", \"createdAt\": \"2025-01-09T10:00:00\"}], \"pagination\": {\"page\": 1, \"per_page\": 10, \"total\": 1, \"pages\": 1, \"has_next\": false, \"has_prev\": false}, \"query\": \"avatar\"}"
+  "data": {
+    "list": [
+      {
+        "objectId": 1,
+        "fileName": "20250109_100000_abc12345.jpg",
+        "originalName": "avatar.jpg",
+        "fileSize": 102400,
+        "url": "http://localhost:8000/uploads/images/20250109_100000_abc12345.jpg",
+        "createdAt": "2025-01-09T10:00:00"
+      }
+    ],
+    "pagination": {
+      "page": 1,
+      "per_page": 10,
+      "total": 1,
+      "pages": 1,
+      "has_next": false,
+      "has_prev": false
+    },
+    "query": "avatar"
+  }
 }
 ```
 
@@ -179,7 +267,16 @@ GET /images/search?q=avatar&page=1&per_page=10
 {
   "code": 200,
   "message": "获取图片统计成功",
-  "data": "{\"total_images\": 100, \"total_size\": 10485760, \"average_size\": 104857, \"file_types\": {\"jpg\": 50, \"png\": 30, \"gif\": 20}}"
+  "data": {
+    "total_images": 100,
+    "total_size": 10485760,
+    "average_size": 104857,
+    "file_types": {
+      "jpg": 50,
+      "png": 30,
+      "gif": 20
+    }
+  }
 }
 ```
 
@@ -203,7 +300,16 @@ GET /images/search?q=avatar&page=1&per_page=10
 {
   "code": 200,
   "message": "图片URL更新成功",
-  "data": "{\"objectId\": 1, \"fileName\": \"20250109_100000_abc12345.jpg\", \"originalName\": \"avatar.jpg\", \"fileSize\": 102400, \"filePath\": \"/uploads/images/20250109_100000_abc12345.jpg\", \"url\": \"https://example.com/new-image.jpg\", \"createdAt\": \"2025-01-09T10:00:00\", \"updatedAt\": \"2025-01-09T12:00:00\"}"
+  "data": {
+    "objectId": 1,
+    "fileName": "20250109_100000_abc12345.jpg",
+    "originalName": "avatar.jpg",
+    "fileSize": 102400,
+    "filePath": "/uploads/images/20250109_100000_abc12345.jpg",
+    "url": "https://example.com/new-image.jpg",
+    "createdAt": "2025-01-09T10:00:00",
+    "updatedAt": "2025-01-09T12:00:00"
+  }
 }
 ```
 

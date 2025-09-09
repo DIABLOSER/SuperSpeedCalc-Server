@@ -28,7 +28,31 @@ GET /banners?page=1&per_page=20&status=active
 {
   "code": 200,
   "message": "获取横幅列表成功",
-  "data": "{\"list\": [{\"objectId\": 1, \"title\": \"欢迎横幅\", \"image_url\": \"https://example.com/banner1.jpg\", \"action_type\": \"url\", \"action_value\": \"https://example.com\", \"status\": \"active\", \"sort_order\": 1, \"start_date\": \"2025-01-09T00:00:00\", \"end_date\": \"2025-12-31T23:59:59\", \"createdAt\": \"2025-01-09T10:00:00\", \"updatedAt\": \"2025-01-09T10:00:00\"}], \"pagination\": {\"page\": 1, \"per_page\": 20, \"total\": 1, \"pages\": 1, \"has_next\": false, \"has_prev\": false}}"
+  "data": {
+    "list": [
+      {
+        "objectId": 1,
+        "title": "欢迎横幅",
+        "image_url": "https://example.com/banner1.jpg",
+        "action_type": "url",
+        "action_value": "https://example.com",
+        "status": "active",
+        "sort_order": 1,
+        "start_date": "2025-01-09T00:00:00",
+        "end_date": "2025-12-31T23:59:59",
+        "createdAt": "2025-01-09T10:00:00",
+        "updatedAt": "2025-01-09T10:00:00"
+      }
+    ],
+    "pagination": {
+      "page": 1,
+      "per_page": 20,
+      "total": 1,
+      "pages": 1,
+      "has_next": false,
+      "has_prev": false
+    }
+  }
 }
 ```
 
@@ -50,7 +74,19 @@ GET /banners/1
 {
   "code": 200,
   "message": "获取横幅成功",
-  "data": "{\"objectId\": 1, \"title\": \"欢迎横幅\", \"image_url\": \"https://example.com/banner1.jpg\", \"action_type\": \"url\", \"action_value\": \"https://example.com\", \"status\": \"active\", \"sort_order\": 1, \"start_date\": \"2025-01-09T00:00:00\", \"end_date\": \"2025-12-31T23:59:59\", \"createdAt\": \"2025-01-09T10:00:00\", \"updatedAt\": \"2025-01-09T10:00:00\"}"
+  "data": {
+    "objectId": 1,
+    "title": "欢迎横幅",
+    "image_url": "https://example.com/banner1.jpg",
+    "action_type": "url",
+    "action_value": "https://example.com",
+    "status": "active",
+    "sort_order": 1,
+    "start_date": "2025-01-09T00:00:00",
+    "end_date": "2025-12-31T23:59:59",
+    "createdAt": "2025-01-09T10:00:00",
+    "updatedAt": "2025-01-09T10:00:00"
+  }
 }
 ```
 
@@ -88,7 +124,19 @@ GET /banners/1
 {
   "code": 201,
   "message": "横幅创建成功",
-  "data": "{\"objectId\": 1, \"title\": \"欢迎横幅\", \"image_url\": \"https://example.com/banner1.jpg\", \"action_type\": \"url\", \"action_value\": \"https://example.com\", \"status\": \"active\", \"sort_order\": 1, \"start_date\": \"2025-01-09T00:00:00\", \"end_date\": \"2025-12-31T23:59:59\", \"createdAt\": \"2025-01-09T10:00:00\", \"updatedAt\": \"2025-01-09T10:00:00\"}"
+  "data": {
+    "objectId": 1,
+    "title": "欢迎横幅",
+    "image_url": "https://example.com/banner1.jpg",
+    "action_type": "url",
+    "action_value": "https://example.com",
+    "status": "active",
+    "sort_order": 1,
+    "start_date": "2025-01-09T00:00:00",
+    "end_date": "2025-12-31T23:59:59",
+    "createdAt": "2025-01-09T10:00:00",
+    "updatedAt": "2025-01-09T10:00:00"
+  }
 }
 ```
 
@@ -124,7 +172,19 @@ GET /banners/1
 {
   "code": 200,
   "message": "横幅更新成功",
-  "data": "{\"objectId\": 1, \"title\": \"欢迎横幅（更新）\", \"image_url\": \"https://example.com/banner1_updated.jpg\", \"action_type\": \"app_page\", \"action_value\": \"home\", \"status\": \"active\", \"sort_order\": 2, \"start_date\": \"2025-01-09T00:00:00\", \"end_date\": \"2025-12-31T23:59:59\", \"createdAt\": \"2025-01-09T10:00:00\", \"updatedAt\": \"2025-01-09T11:00:00\"}"
+  "data": {
+    "objectId": 1,
+    "title": "欢迎横幅（更新）",
+    "image_url": "https://example.com/banner1_updated.jpg",
+    "action_type": "app_page",
+    "action_value": "home",
+    "status": "active",
+    "sort_order": 2,
+    "start_date": "2025-01-09T00:00:00",
+    "end_date": "2025-12-31T23:59:59",
+    "createdAt": "2025-01-09T10:00:00",
+    "updatedAt": "2025-01-09T11:00:00"
+  }
 }
 ```
 
@@ -168,7 +228,23 @@ GET /banners/active?limit=5
 {
   "code": 200,
   "message": "获取活跃横幅成功",
-  "data": "{\"banners\": [{\"objectId\": 1, \"title\": \"欢迎横幅\", \"image_url\": \"https://example.com/banner1.jpg\", \"action_type\": \"url\", \"action_value\": \"https://example.com\", \"status\": \"active\", \"sort_order\": 1, \"start_date\": \"2025-01-09T00:00:00\", \"end_date\": \"2025-12-31T23:59:59\"}], \"total\": 1, \"action_types\": [\"url\", \"app_page\", \"product\"]}"
+  "data": {
+    "banners": [
+      {
+        "objectId": 1,
+        "title": "欢迎横幅",
+        "image_url": "https://example.com/banner1.jpg",
+        "action_type": "url",
+        "action_value": "https://example.com",
+        "status": "active",
+        "sort_order": 1,
+        "start_date": "2025-01-09T00:00:00",
+        "end_date": "2025-12-31T23:59:59"
+      }
+    ],
+    "total": 1,
+    "action_types": ["url", "app_page", "product"]
+  }
 }
 ```
 
@@ -192,7 +268,19 @@ GET /banners/active?limit=5
 {
   "code": 200,
   "message": "横幅排序更新成功",
-  "data": "{\"objectId\": 1, \"title\": \"欢迎横幅\", \"image_url\": \"https://example.com/banner1.jpg\", \"action_type\": \"url\", \"action_value\": \"https://example.com\", \"status\": \"active\", \"sort_order\": 3, \"start_date\": \"2025-01-09T00:00:00\", \"end_date\": \"2025-12-31T23:59:59\", \"createdAt\": \"2025-01-09T10:00:00\", \"updatedAt\": \"2025-01-09T12:00:00\"}"
+  "data": {
+    "objectId": 1,
+    "title": "欢迎横幅",
+    "image_url": "https://example.com/banner1.jpg",
+    "action_type": "url",
+    "action_value": "https://example.com",
+    "status": "active",
+    "sort_order": 3,
+    "start_date": "2025-01-09T00:00:00",
+    "end_date": "2025-12-31T23:59:59",
+    "createdAt": "2025-01-09T10:00:00",
+    "updatedAt": "2025-01-09T12:00:00"
+  }
 }
 ```
 
@@ -215,7 +303,7 @@ GET /banners/active?limit=5
 
 #### 请求示例
 ```bash
-curl -X PUT http://localhost:5000/banners/batch-status \
+curl -X PUT http://localhost:8000/banners/batch-status \
   -H "Content-Type: application/json" \
   -d '{"banner_ids": [1, 2, 3], "status": "inactive"}'
 ```
@@ -225,7 +313,24 @@ curl -X PUT http://localhost:5000/banners/batch-status \
 {
   "code": 200,
   "message": "批量更新横幅状态成功",
-  "data": "{\"success_count\": 3, \"failed_count\": 0, \"results\": [{\"banner_id\": 1, \"status\": \"success\"}, {\"banner_id\": 2, \"status\": \"success\"}, {\"banner_id\": 3, \"status\": \"success\"}]}"
+  "data": {
+    "success_count": 3,
+    "failed_count": 0,
+    "results": [
+      {
+        "banner_id": 1,
+        "status": "success"
+      },
+      {
+        "banner_id": 2,
+        "status": "success"
+      },
+      {
+        "banner_id": 3,
+        "status": "success"
+      }
+    ]
+  }
 }
 ```
 
@@ -237,7 +342,18 @@ curl -X PUT http://localhost:5000/banners/batch-status \
 {
   "code": 200,
   "message": "获取横幅统计成功",
-  "data": "{\"total_banners\": 10, \"active_banners\": 8, \"inactive_banners\": 2, \"action_types\": {\"url\": 5, \"app_page\": 3, \"product\": 2}, \"expired_banners\": 1, \"upcoming_banners\": 2}"
+  "data": {
+    "total_banners": 10,
+    "active_banners": 8,
+    "inactive_banners": 2,
+    "action_types": {
+      "url": 5,
+      "app_page": 3,
+      "product": 2
+    },
+    "expired_banners": 1,
+    "upcoming_banners": 2
+  }
 }
 ```
 
@@ -254,7 +370,7 @@ curl -X PUT http://localhost:5000/banners/batch-status \
 
 #### 请求示例
 ```bash
-curl -X POST -F "file=@banner.jpg" http://localhost:5000/banners/upload
+curl -X POST -F "file=@banner.jpg" http://localhost:8000/banners/upload
 ```
 
 #### 响应示例
@@ -262,7 +378,11 @@ curl -X POST -F "file=@banner.jpg" http://localhost:5000/banners/upload
 {
   "code": 201,
   "message": "横幅图片上传成功",
-  "data": "{\"image_url\": \"http://localhost:5000/uploads/banners/20250109_100000_abc12345.jpg\", \"file_size\": 102400, \"uploaded_at\": \"2025-01-09T10:00:00\"}"
+  "data": {
+    "image_url": "http://localhost:8000/uploads/banners/20250109_100000_abc12345.jpg",
+    "file_size": 102400,
+    "uploaded_at": "2025-01-09T10:00:00"
+  }
 }
 ```
 

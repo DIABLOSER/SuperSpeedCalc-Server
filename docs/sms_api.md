@@ -31,7 +31,7 @@
 
 #### 请求示例
 ```bash
-curl -X POST http://localhost:5000/sms/send \
+curl -X POST http://localhost:8000/sms/send \
   -H "Content-Type: application/json" \
   -d '{"phone": "13800138000", "template": "password_reset"}'
 ```
@@ -68,7 +68,7 @@ curl -X POST http://localhost:5000/sms/send \
 
 #### 请求示例
 ```bash
-curl -X POST http://localhost:5000/sms/verify \
+curl -X POST http://localhost:8000/sms/verify \
   -H "Content-Type: application/json" \
   -d '{"phone": "13800138000", "code": "123456"}'
 ```
@@ -107,7 +107,7 @@ curl -X POST http://localhost:5000/sms/verify \
 
 #### 请求示例
 ```bash
-curl -X POST http://localhost:5000/sms/reset-password \
+curl -X POST http://localhost:8000/sms/reset-password \
   -H "Content-Type: application/json" \
   -d '{"phone": "13800138000", "code": "123456", "new_password": "new_password123"}'
 ```
@@ -219,17 +219,17 @@ BMOB_CONFIG = {
 ### 使用curl测试
 ```bash
 # 1. 发送验证码
-curl -X POST http://localhost:5000/sms/send \
+curl -X POST http://localhost:8000/sms/send \
   -H "Content-Type: application/json" \
   -d '{"phone": "13800138000", "template": "password_reset"}'
 
 # 2. 验证验证码
-curl -X POST http://localhost:5000/sms/verify \
+curl -X POST http://localhost:8000/sms/verify \
   -H "Content-Type: application/json" \
   -d '{"phone": "13800138000", "code": "123456"}'
 
 # 3. 重置密码
-curl -X POST http://localhost:5000/sms/reset-password \
+curl -X POST http://localhost:8000/sms/reset-password \
   -H "Content-Type: application/json" \
   -d '{"phone": "13800138000", "code": "123456", "new_password": "new_password123"}'
 ```

@@ -51,8 +51,8 @@ def main():
     app.logger.info("=" * 50)
     
     print("\n🌟 服务器启动中...")
-    print("📍 访问地址: http://localhost:5000")
-    print("🔍 健康检查: http://localhost:5000/health")
+    print("📍 访问地址: http://localhost:8000")
+    print("🔍 健康检查: http://localhost:8000/health")
     print("📚 API 文档请查看 README.md")
     print("📝 详细日志将输出到控制台和 logs/app.log 文件")
     print("\n按 Ctrl+C 停止服务器")
@@ -60,7 +60,7 @@ def main():
     
     # 启动服务器
     try:
-        app.run(host='0.0.0.0', port=5000, debug=True)
+        app.run(host='0.0.0.0', port=8000, debug=True)
     except KeyboardInterrupt:
         app.logger.info("👋 服务器已停止")
         print("\n👋 服务器已停止")

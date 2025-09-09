@@ -29,7 +29,47 @@ GET /replies?page=1&per_page=20&post_id=1&parent_id=null
 {
   "code": 200,
   "message": "获取回复列表成功",
-  "data": "{\"list\": [{\"objectId\": 1, \"content\": \"这是一条评论\", \"post_id\": 1, \"user\": 1, \"user_info\": {\"id\": 1, \"username\": \"test_user\", \"avatar\": \"https://example.com/avatar.jpg\"}, \"parent_id\": null, \"children\": [{\"objectId\": 2, \"content\": \"这是对评论的回复\", \"user\": 2, \"user_info\": {\"id\": 2, \"username\": \"user2\", \"avatar\": \"https://example.com/avatar2.jpg\"}, \"parent_id\": 1, \"createdAt\": \"2025-01-09T10:05:00\"}], \"likes\": 5, \"createdAt\": \"2025-01-09T10:00:00\", \"updatedAt\": \"2025-01-09T10:00:00\"}], \"pagination\": {\"page\": 1, \"per_page\": 20, \"total\": 1, \"pages\": 1, \"has_next\": false, \"has_prev\": false}}"
+  "data": {
+    "list": [
+      {
+        "objectId": 1,
+        "content": "这是一条评论",
+        "post_id": 1,
+        "user": 1,
+        "user_info": {
+          "id": 1,
+          "username": "test_user",
+          "avatar": "https://example.com/avatar.jpg"
+        },
+        "parent_id": null,
+        "children": [
+          {
+            "objectId": 2,
+            "content": "这是对评论的回复",
+            "user": 2,
+            "user_info": {
+              "id": 2,
+              "username": "user2",
+              "avatar": "https://example.com/avatar2.jpg"
+            },
+            "parent_id": 1,
+            "createdAt": "2025-01-09T10:05:00"
+          }
+        ],
+        "likes": 5,
+        "createdAt": "2025-01-09T10:00:00",
+        "updatedAt": "2025-01-09T10:00:00"
+      }
+    ],
+    "pagination": {
+      "page": 1,
+      "per_page": 20,
+      "total": 1,
+      "pages": 1,
+      "has_next": false,
+      "has_prev": false
+    }
+  }
 }
 ```
 
@@ -51,7 +91,35 @@ GET /replies/1
 {
   "code": 200,
   "message": "获取回复成功",
-  "data": "{\"objectId\": 1, \"content\": \"这是一条评论\", \"post_id\": 1, \"user\": 1, \"user_info\": {\"id\": 1, \"username\": \"test_user\", \"avatar\": \"https://example.com/avatar.jpg\"}, \"parent_id\": null, \"children\": [{\"objectId\": 2, \"content\": \"这是对评论的回复\", \"user\": 2, \"user_info\": {\"id\": 2, \"username\": \"user2\", \"avatar\": \"https://example.com/avatar2.jpg\"}, \"parent_id\": 1, \"createdAt\": \"2025-01-09T10:05:00\"}], \"likes\": 5, \"createdAt\": \"2025-01-09T10:00:00\", \"updatedAt\": \"2025-01-09T10:00:00\"}"
+  "data": {
+    "objectId": 1,
+    "content": "这是一条评论",
+    "post_id": 1,
+    "user": 1,
+    "user_info": {
+      "id": 1,
+      "username": "test_user",
+      "avatar": "https://example.com/avatar.jpg"
+    },
+    "parent_id": null,
+    "children": [
+      {
+        "objectId": 2,
+        "content": "这是对评论的回复",
+        "user": 2,
+        "user_info": {
+          "id": 2,
+          "username": "user2",
+          "avatar": "https://example.com/avatar2.jpg"
+        },
+        "parent_id": 1,
+        "createdAt": "2025-01-09T10:05:00"
+      }
+    ],
+    "likes": 5,
+    "createdAt": "2025-01-09T10:00:00",
+    "updatedAt": "2025-01-09T10:00:00"
+  }
 }
 ```
 
@@ -83,7 +151,22 @@ GET /replies/1
 {
   "code": 201,
   "message": "回复创建成功",
-  "data": "{\"objectId\": 1, \"content\": \"这是一条评论\", \"post_id\": 1, \"user\": 1, \"user_info\": {\"id\": 1, \"username\": \"test_user\", \"avatar\": \"https://example.com/avatar.jpg\"}, \"parent_id\": null, \"mentioned_users\": [2, 3], \"likes\": 0, \"createdAt\": \"2025-01-09T10:00:00\", \"updatedAt\": \"2025-01-09T10:00:00\"}"
+  "data": {
+    "objectId": 1,
+    "content": "这是一条评论",
+    "post_id": 1,
+    "user": 1,
+    "user_info": {
+      "id": 1,
+      "username": "test_user",
+      "avatar": "https://example.com/avatar.jpg"
+    },
+    "parent_id": null,
+    "mentioned_users": [2, 3],
+    "likes": 0,
+    "createdAt": "2025-01-09T10:00:00",
+    "updatedAt": "2025-01-09T10:00:00"
+  }
 }
 ```
 
@@ -107,7 +190,22 @@ GET /replies/1
 {
   "code": 200,
   "message": "回复更新成功",
-  "data": "{\"objectId\": 1, \"content\": \"这是更新后的评论内容\", \"post_id\": 1, \"user\": 1, \"user_info\": {\"id\": 1, \"username\": \"test_user\", \"avatar\": \"https://example.com/avatar.jpg\"}, \"parent_id\": null, \"mentioned_users\": [2, 3], \"likes\": 5, \"createdAt\": \"2025-01-09T10:00:00\", \"updatedAt\": \"2025-01-09T11:00:00\"}"
+  "data": {
+    "objectId": 1,
+    "content": "这是更新后的评论内容",
+    "post_id": 1,
+    "user": 1,
+    "user_info": {
+      "id": 1,
+      "username": "test_user",
+      "avatar": "https://example.com/avatar.jpg"
+    },
+    "parent_id": null,
+    "mentioned_users": [2, 3],
+    "likes": 5,
+    "createdAt": "2025-01-09T10:00:00",
+    "updatedAt": "2025-01-09T11:00:00"
+  }
 }
 ```
 
@@ -154,7 +252,46 @@ GET /replies/post/1?page=1&per_page=20&include_children=true
 {
   "code": 200,
   "message": "获取帖子回复成功",
-  "data": "{\"list\": [{\"objectId\": 1, \"content\": \"这是一条评论\", \"post_id\": 1, \"user\": 1, \"user_info\": {\"id\": 1, \"username\": \"test_user\", \"avatar\": \"https://example.com/avatar.jpg\"}, \"parent_id\": null, \"children\": [{\"objectId\": 2, \"content\": \"这是对评论的回复\", \"user\": 2, \"user_info\": {\"id\": 2, \"username\": \"user2\", \"avatar\": \"https://example.com/avatar2.jpg\"}, \"parent_id\": 1, \"createdAt\": \"2025-01-09T10:05:00\"}], \"likes\": 5, \"createdAt\": \"2025-01-09T10:00:00\"}], \"pagination\": {\"page\": 1, \"per_page\": 20, \"total\": 1, \"pages\": 1, \"has_next\": false, \"has_prev\": false}}"
+  "data": {
+    "list": [
+      {
+        "objectId": 1,
+        "content": "这是一条评论",
+        "post_id": 1,
+        "user": 1,
+        "user_info": {
+          "id": 1,
+          "username": "test_user",
+          "avatar": "https://example.com/avatar.jpg"
+        },
+        "parent_id": null,
+        "children": [
+          {
+            "objectId": 2,
+            "content": "这是对评论的回复",
+            "user": 2,
+            "user_info": {
+              "id": 2,
+              "username": "user2",
+              "avatar": "https://example.com/avatar2.jpg"
+            },
+            "parent_id": 1,
+            "createdAt": "2025-01-09T10:05:00"
+          }
+        ],
+        "likes": 5,
+        "createdAt": "2025-01-09T10:00:00"
+      }
+    ],
+    "pagination": {
+      "page": 1,
+      "per_page": 20,
+      "total": 1,
+      "pages": 1,
+      "has_next": false,
+      "has_prev": false
+    }
+  }
 }
 ```
 
@@ -178,7 +315,27 @@ GET /replies/user/1?page=1&per_page=20
 {
   "code": 200,
   "message": "获取用户回复成功",
-  "data": "{\"list\": [{\"objectId\": 1, \"content\": \"这是一条评论\", \"post_id\": 1, \"user\": 1, \"parent_id\": null, \"likes\": 5, \"createdAt\": \"2025-01-09T10:00:00\"}], \"pagination\": {\"page\": 1, \"per_page\": 20, \"total\": 1, \"pages\": 1, \"has_next\": false, \"has_prev\": false}}"
+  "data": {
+    "list": [
+      {
+        "objectId": 1,
+        "content": "这是一条评论",
+        "post_id": 1,
+        "user": 1,
+        "parent_id": null,
+        "likes": 5,
+        "createdAt": "2025-01-09T10:00:00"
+      }
+    ],
+    "pagination": {
+      "page": 1,
+      "per_page": 20,
+      "total": 1,
+      "pages": 1,
+      "has_next": false,
+      "has_prev": false
+    }
+  }
 }
 ```
 
@@ -202,7 +359,32 @@ GET /replies/1/children?page=1&per_page=20
 {
   "code": 200,
   "message": "获取子回复成功",
-  "data": "{\"list\": [{\"objectId\": 2, \"content\": \"这是对评论的回复\", \"post_id\": 1, \"user\": 2, \"user_info\": {\"id\": 2, \"username\": \"user2\", \"avatar\": \"https://example.com/avatar2.jpg\"}, \"parent_id\": 1, \"likes\": 2, \"createdAt\": \"2025-01-09T10:05:00\"}], \"pagination\": {\"page\": 1, \"per_page\": 20, \"total\": 1, \"pages\": 1, \"has_next\": false, \"has_prev\": false}}"
+  "data": {
+    "list": [
+      {
+        "objectId": 2,
+        "content": "这是对评论的回复",
+        "post_id": 1,
+        "user": 2,
+        "user_info": {
+          "id": 2,
+          "username": "user2",
+          "avatar": "https://example.com/avatar2.jpg"
+        },
+        "parent_id": 1,
+        "likes": 2,
+        "createdAt": "2025-01-09T10:05:00"
+      }
+    ],
+    "pagination": {
+      "page": 1,
+      "per_page": 20,
+      "total": 1,
+      "pages": 1,
+      "has_next": false,
+      "has_prev": false
+    }
+  }
 }
 ```
 
@@ -226,7 +408,11 @@ GET /replies/1/children?page=1&per_page=20
 {
   "code": 201,
   "message": "回复点赞成功",
-  "data": "{\"reply_id\": 1, \"user_id\": 3, \"liked_at\": \"2025-01-09T10:00:00\"}"
+  "data": {
+    "reply_id": 1,
+    "user_id": 3,
+    "liked_at": "2025-01-09T10:00:00"
+  }
 }
 ```
 
@@ -249,7 +435,16 @@ GET /replies/stats?post_id=1
 {
   "code": 200,
   "message": "获取回复统计成功",
-  "data": "{\"total_replies\": 100, \"total_likes\": 500, \"average_likes_per_reply\": 5.0, \"post_stats\": {\"total\": 10, \"likes\": 50, \"average_likes\": 5.0}}"
+  "data": {
+    "total_replies": 100,
+    "total_likes": 500,
+    "average_likes_per_reply": 5.0,
+    "post_stats": {
+      "total": 10,
+      "likes": 50,
+      "average_likes": 5.0
+    }
+  }
 }
 ```
 

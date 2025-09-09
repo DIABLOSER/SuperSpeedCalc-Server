@@ -113,19 +113,22 @@ def create_app(config_name='default'):
     # 错误处理
     @app.errorhandler(404)
     def not_found(error):
-        return jsonify({'error': 'Not found'}), 404
+        from utils.response import error_response
+        return error_response(message='Not found', code=404)
     
     @app.errorhandler(500)
     def internal_error(error):
-        return jsonify({'error': 'Internal server error'}), 500
+        from utils.response import error_response
+        return error_response(message='Internal server error', code=500)
     
     # 健康检查端点
     @app.route('/health')
     def health_check():
-        return jsonify({
-            'status': 'healthy',
-            'message': 'SuperSpeedCalc Server is running'
-        })
+        from utils.response import success_response
+        return success_response(
+            data={'status': 'healthy'},
+            message='SuperSpeedCalc Server is running'
+        )
     
     return app
 

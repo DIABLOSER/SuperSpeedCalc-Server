@@ -26,7 +26,11 @@ POST /users/1/follow/2
 {
   "code": 201,
   "message": "关注成功",
-  "data": "{\"follower\": 1, \"followed\": 2, \"created_at\": \"2025-01-09T10:00:00\"}"
+  "data": {
+    "follower": 1,
+    "followed": 2,
+    "created_at": "2025-01-09T10:00:00"
+  }
 }
 ```
 
@@ -73,7 +77,25 @@ GET /users/1/followers?page=1&per_page=20
 {
   "code": 200,
   "message": "获取粉丝列表成功",
-  "data": "{\"list\": [{\"id\": 2, \"username\": \"user2\", \"avatar\": \"https://example.com/avatar2.jpg\", \"bio\": \"用户2的简介\", \"followed_at\": \"2025-01-09T10:00:00\"}], \"pagination\": {\"page\": 1, \"per_page\": 20, \"total\": 1, \"pages\": 1, \"has_next\": false, \"has_prev\": false}}"
+  "data": {
+    "list": [
+      {
+        "id": 2,
+        "username": "user2",
+        "avatar": "https://example.com/avatar2.jpg",
+        "bio": "用户2的简介",
+        "followed_at": "2025-01-09T10:00:00"
+      }
+    ],
+    "pagination": {
+      "page": 1,
+      "per_page": 20,
+      "total": 1,
+      "pages": 1,
+      "has_next": false,
+      "has_prev": false
+    }
+  }
 }
 ```
 
@@ -97,7 +119,25 @@ GET /users/1/following?page=1&per_page=20
 {
   "code": 200,
   "message": "获取关注列表成功",
-  "data": "{\"list\": [{\"id\": 3, \"username\": \"user3\", \"avatar\": \"https://example.com/avatar3.jpg\", \"bio\": \"用户3的简介\", \"followed_at\": \"2025-01-09T10:00:00\"}], \"pagination\": {\"page\": 1, \"per_page\": 20, \"total\": 1, \"pages\": 1, \"has_next\": false, \"has_prev\": false}}"
+  "data": {
+    "list": [
+      {
+        "id": 3,
+        "username": "user3",
+        "avatar": "https://example.com/avatar3.jpg",
+        "bio": "用户3的简介",
+        "followed_at": "2025-01-09T10:00:00"
+      }
+    ],
+    "pagination": {
+      "page": 1,
+      "per_page": 20,
+      "total": 1,
+      "pages": 1,
+      "has_next": false,
+      "has_prev": false
+    }
+  }
 }
 ```
 
@@ -121,7 +161,25 @@ GET /users/1/mutual?page=1&per_page=20
 {
   "code": 200,
   "message": "获取互关列表成功",
-  "data": "{\"list\": [{\"id\": 4, \"username\": \"user4\", \"avatar\": \"https://example.com/avatar4.jpg\", \"bio\": \"用户4的简介\", \"followed_at\": \"2025-01-09T10:00:00\"}], \"pagination\": {\"page\": 1, \"per_page\": 20, \"total\": 1, \"pages\": 1, \"has_next\": false, \"has_prev\": false}}"
+  "data": {
+    "list": [
+      {
+        "id": 4,
+        "username": "user4",
+        "avatar": "https://example.com/avatar4.jpg",
+        "bio": "用户4的简介",
+        "followed_at": "2025-01-09T10:00:00"
+      }
+    ],
+    "pagination": {
+      "page": 1,
+      "per_page": 20,
+      "total": 1,
+      "pages": 1,
+      "has_next": false,
+      "has_prev": false
+    }
+  }
 }
 ```
 
@@ -144,7 +202,11 @@ GET /users/1/follow-status/2
 {
   "code": 200,
   "message": "获取关注状态成功",
-  "data": "{\"is_following\": true, \"is_followed_by\": false, \"is_mutual\": false}"
+  "data": {
+    "is_following": true,
+    "is_followed_by": false,
+    "is_mutual": false
+  }
 }
 ```
 
@@ -166,7 +228,11 @@ GET /users/1/relationship-stats
 {
   "code": 200,
   "message": "获取用户关系统计成功",
-  "data": "{\"followers_count\": 10, \"following_count\": 5, \"mutual_count\": 3}"
+  "data": {
+    "followers_count": 10,
+    "following_count": 5,
+    "mutual_count": 3
+  }
 }
 ```
 
@@ -187,7 +253,7 @@ GET /users/1/relationship-stats
 
 #### 请求示例
 ```bash
-curl -X POST http://localhost:5000/users/1/follow/batch \
+curl -X POST http://localhost:8000/users/1/follow/batch \
   -H "Content-Type: application/json" \
   -d '{"target_user_ids": [2, 3, 4]}'
 ```
@@ -197,7 +263,24 @@ curl -X POST http://localhost:5000/users/1/follow/batch \
 {
   "code": 201,
   "message": "批量关注成功",
-  "data": "{\"success_count\": 3, \"failed_count\": 0, \"results\": [{\"target_user_id\": 2, \"status\": \"success\"}, {\"target_user_id\": 3, \"status\": \"success\"}, {\"target_user_id\": 4, \"status\": \"success\"}]}"
+  "data": {
+    "success_count": 3,
+    "failed_count": 0,
+    "results": [
+      {
+        "target_user_id": 2,
+        "status": "success"
+      },
+      {
+        "target_user_id": 3,
+        "status": "success"
+      },
+      {
+        "target_user_id": 4,
+        "status": "success"
+      }
+    ]
+  }
 }
 ```
 
@@ -220,7 +303,26 @@ GET /users/1/recommendations?limit=10
 {
   "code": 200,
   "message": "获取推荐用户成功",
-  "data": "{\"recommendations\": [{\"id\": 5, \"username\": \"user5\", \"avatar\": \"https://example.com/avatar5.jpg\", \"bio\": \"用户5的简介\", \"mutual_friends\": 2, \"reason\": \"mutual_friends\"}, {\"id\": 6, \"username\": \"user6\", \"avatar\": \"https://example.com/avatar6.jpg\", \"bio\": \"用户6的简介\", \"mutual_friends\": 1, \"reason\": \"mutual_friends\"}]}"
+  "data": {
+    "recommendations": [
+      {
+        "id": 5,
+        "username": "user5",
+        "avatar": "https://example.com/avatar5.jpg",
+        "bio": "用户5的简介",
+        "mutual_friends": 2,
+        "reason": "mutual_friends"
+      },
+      {
+        "id": 6,
+        "username": "user6",
+        "avatar": "https://example.com/avatar6.jpg",
+        "bio": "用户6的简介",
+        "mutual_friends": 1,
+        "reason": "mutual_friends"
+      }
+    ]
+  }
 }
 ```
 

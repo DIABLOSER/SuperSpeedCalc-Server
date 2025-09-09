@@ -75,7 +75,19 @@ GET /charts/1
 {
   "code": 200,
   "message": "获取排行榜记录成功",
-  "data": "{\"objectId\": 1, \"title\": \"数学挑战\", \"achievement\": 95, \"user\": 1, \"user_info\": {\"id\": 1, \"username\": \"test_user\", \"avatar\": \"https://example.com/avatar.jpg\"}, \"createdAt\": \"2025-01-09T10:00:00\", \"updatedAt\": \"2025-01-09T10:00:00\"}"
+  "data": {
+    "objectId": 1,
+    "title": "数学挑战",
+    "achievement": 95,
+    "user": 1,
+    "user_info": {
+      "id": 1,
+      "username": "test_user",
+      "avatar": "https://example.com/avatar.jpg"
+    },
+    "createdAt": "2025-01-09T10:00:00",
+    "updatedAt": "2025-01-09T10:00:00"
+  }
 }
 ```
 
@@ -103,7 +115,19 @@ GET /charts/1
 {
   "code": 201,
   "message": "排行榜记录创建成功",
-  "data": "{\"objectId\": 1, \"title\": \"数学挑战\", \"achievement\": 95, \"user\": 1, \"user_info\": {\"id\": 1, \"username\": \"test_user\", \"avatar\": \"https://example.com/avatar.jpg\"}, \"createdAt\": \"2025-01-09T10:00:00\", \"updatedAt\": \"2025-01-09T10:00:00\"}"
+  "data": {
+    "objectId": 1,
+    "title": "数学挑战",
+    "achievement": 95,
+    "user": 1,
+    "user_info": {
+      "id": 1,
+      "username": "test_user",
+      "avatar": "https://example.com/avatar.jpg"
+    },
+    "createdAt": "2025-01-09T10:00:00",
+    "updatedAt": "2025-01-09T10:00:00"
+  }
 }
 ```
 
@@ -129,7 +153,19 @@ GET /charts/1
 {
   "code": 200,
   "message": "排行榜记录更新成功",
-  "data": "{\"objectId\": 1, \"title\": \"数学挑战升级版\", \"achievement\": 98, \"user\": 1, \"user_info\": {\"id\": 1, \"username\": \"test_user\", \"avatar\": \"https://example.com/avatar.jpg\"}, \"createdAt\": \"2025-01-09T10:00:00\", \"updatedAt\": \"2025-01-09T11:00:00\"}"
+  "data": {
+    "objectId": 1,
+    "title": "数学挑战升级版",
+    "achievement": 98,
+    "user": 1,
+    "user_info": {
+      "id": 1,
+      "username": "test_user",
+      "avatar": "https://example.com/avatar.jpg"
+    },
+    "createdAt": "2025-01-09T10:00:00",
+    "updatedAt": "2025-01-09T11:00:00"
+  }
 }
 ```
 
@@ -175,7 +211,25 @@ GET /charts/user/1?page=1&per_page=10
 {
   "code": 200,
   "message": "获取用户排行榜记录成功",
-  "data": "{\"list\": [{\"objectId\": 1, \"title\": \"数学挑战\", \"achievement\": 95, \"user\": 1, \"createdAt\": \"2025-01-09T10:00:00\"}], \"pagination\": {\"page\": 1, \"per_page\": 10, \"total\": 1, \"pages\": 1, \"has_next\": false, \"has_prev\": false}}"
+  "data": {
+    "list": [
+      {
+        "objectId": 1,
+        "title": "数学挑战",
+        "achievement": 95,
+        "user": 1,
+        "createdAt": "2025-01-09T10:00:00"
+      }
+    ],
+    "pagination": {
+      "page": 1,
+      "per_page": 10,
+      "total": 1,
+      "pages": 1,
+      "has_next": false,
+      "has_prev": false
+    }
+  }
 }
 ```
 
@@ -197,7 +251,18 @@ GET /charts/stats?user=1
 {
   "code": 200,
   "message": "获取排行榜统计成功",
-  "data": "{\"total_records\": 100, \"average_achievement\": 85.5, \"max_achievement\": 100, \"min_achievement\": 0, \"user_stats\": {\"total\": 5, \"average\": 90.0, \"max\": 98, \"min\": 85}}"
+  "data": {
+    "total_records": 100,
+    "average_achievement": 85.5,
+    "max_achievement": 100,
+    "min_achievement": 0,
+    "user_stats": {
+      "total": 5,
+      "average": 90.0,
+      "max": 98,
+      "min": 85
+    }
+  }
 }
 ```
 
@@ -221,7 +286,19 @@ GET /charts/stats?user=1
 {
   "code": 200,
   "message": "成就更新成功",
-  "data": "{\"objectId\": 1, \"title\": \"数学挑战\", \"achievement\": 100, \"user\": 1, \"user_info\": {\"id\": 1, \"username\": \"test_user\", \"avatar\": \"https://example.com/avatar.jpg\"}, \"createdAt\": \"2025-01-09T10:00:00\", \"updatedAt\": \"2025-01-09T12:00:00\"}"
+  "data": {
+    "objectId": 1,
+    "title": "数学挑战",
+    "achievement": 100,
+    "user": 1,
+    "user_info": {
+      "id": 1,
+      "username": "test_user",
+      "avatar": "https://example.com/avatar.jpg"
+    },
+    "createdAt": "2025-01-09T10:00:00",
+    "updatedAt": "2025-01-09T12:00:00"
+  }
 }
 ```
 

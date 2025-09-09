@@ -57,18 +57,22 @@ def get_users():
         items = query.limit(per_page).offset((page - 1) * per_page).all()
         pages = (total + per_page - 1) // per_page if per_page else 1
 
+        pagination = {
+            "page": page,
+            "per_page": per_page,
+            "total": total,
+            "pages": pages,
+            "has_next": page < pages,
+            "has_prev": page > 1
+        }
         return paginated_response(
-            data=[u.to_dict() for u in items],
-            page=page,
-            per_page=per_page,
-            total=total,
+            items=[u.to_dict() for u in items],
+            pagination=pagination,
             message="获取用户列表成功"
         )
     except Exception as e:
         return internal_error_response(
-            message="获取用户列表失败",
-            error_code="GET_USERS_FAILED",
-            details=str(e)
+            message="获取用户列表失败"
         )
 #根据用户名、手机号、邮箱进行模糊匹配
 
@@ -83,9 +87,7 @@ def get_user(object_id):
         )
     except Exception as e:
         return not_found_response(
-            message="用户不存在",
-            error_code="USER_NOT_FOUND",
-            details=str(e)
+            message="用户不存在"
         )
 
 #获取用户总数
@@ -99,7 +101,5 @@ def get_users_count():
         )
     except Exception as e:
         return internal_error_response(
-            message="获取用户总数失败",
-            error_code="GET_USERS_COUNT_FAILED",
-            details=str(e)
+            message="获取用户总数失败"
         ) 

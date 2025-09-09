@@ -24,7 +24,7 @@
 
 #### 请求示例
 ```bash
-curl -X POST http://localhost:5000/posts/1/like \
+curl -X POST http://localhost:8000/posts/1/like \
   -H "Content-Type: application/json" \
   -d '{"user_id": 2}'
 ```
@@ -34,7 +34,11 @@ curl -X POST http://localhost:5000/posts/1/like \
 {
   "code": 201,
   "message": "点赞成功",
-  "data": "{\"post_id\": 1, \"user_id\": 2, \"liked_at\": \"2025-01-09T10:00:00\"}"
+  "data": {
+    "post_id": 1,
+    "user_id": 2,
+    "liked_at": "2025-01-09T10:00:00"
+  }
 }
 ```
 
@@ -55,7 +59,7 @@ curl -X POST http://localhost:5000/posts/1/like \
 
 #### 请求示例
 ```bash
-curl -X DELETE http://localhost:5000/posts/1/unlike \
+curl -X DELETE http://localhost:8000/posts/1/unlike \
   -H "Content-Type: application/json" \
   -d '{"user_id": 2}'
 ```
@@ -90,7 +94,25 @@ GET /posts/1/likers?page=1&per_page=20&viewer_id=1
 {
   "code": 200,
   "message": "获取点赞用户列表成功",
-  "data": "{\"list\": [{\"id\": 2, \"username\": \"user2\", \"avatar\": \"https://example.com/avatar2.jpg\", \"bio\": \"用户2的简介\", \"liked_at\": \"2025-01-09T10:00:00\"}], \"pagination\": {\"page\": 1, \"per_page\": 20, \"total\": 1, \"pages\": 1, \"has_next\": false, \"has_prev\": false}}"
+  "data": {
+    "list": [
+      {
+        "id": 2,
+        "username": "user2",
+        "avatar": "https://example.com/avatar2.jpg",
+        "bio": "用户2的简介",
+        "liked_at": "2025-01-09T10:00:00"
+      }
+    ],
+    "pagination": {
+      "page": 1,
+      "per_page": 20,
+      "total": 1,
+      "pages": 1,
+      "has_next": false,
+      "has_prev": false
+    }
+  }
 }
 ```
 
@@ -114,7 +136,35 @@ GET /posts/liked-by/2?page=1&per_page=20
 {
   "code": 200,
   "message": "获取用户点赞帖子成功",
-  "data": "{\"list\": [{\"objectId\": 1, \"title\": \"我的第一篇帖子\", \"content\": \"这是帖子内容\", \"user\": 1, \"user_info\": {\"id\": 1, \"username\": \"test_user\", \"avatar\": \"https://example.com/avatar.jpg\"}, \"category\": \"技术\", \"status\": \"published\", \"audit_state\": \"approved\", \"likes\": 10, \"views\": 100, \"liked_at\": \"2025-01-09T10:00:00\"}], \"pagination\": {\"page\": 1, \"per_page\": 20, \"total\": 1, \"pages\": 1, \"has_next\": false, \"has_prev\": false}}"
+  "data": {
+    "list": [
+      {
+        "objectId": 1,
+        "title": "我的第一篇帖子",
+        "content": "这是帖子内容",
+        "user": 1,
+        "user_info": {
+          "id": 1,
+          "username": "test_user",
+          "avatar": "https://example.com/avatar.jpg"
+        },
+        "category": "技术",
+        "status": "published",
+        "audit_state": "approved",
+        "likes": 10,
+        "views": 100,
+        "liked_at": "2025-01-09T10:00:00"
+      }
+    ],
+    "pagination": {
+      "page": 1,
+      "per_page": 20,
+      "total": 1,
+      "pages": 1,
+      "has_next": false,
+      "has_prev": false
+    }
+  }
 }
 ```
 
@@ -137,7 +187,10 @@ GET /posts/1/like-status/2
 {
   "code": 200,
   "message": "获取点赞状态成功",
-  "data": "{\"is_liked\": true, \"liked_at\": \"2025-01-09T10:00:00\"}"
+  "data": {
+    "is_liked": true,
+    "liked_at": "2025-01-09T10:00:00"
+  }
 }
 ```
 
@@ -159,7 +212,12 @@ GET /posts/1/like-stats
 {
   "code": 200,
   "message": "获取点赞统计成功",
-  "data": "{\"total_likes\": 10, \"likes_today\": 2, \"likes_this_week\": 5, \"likes_this_month\": 8}"
+  "data": {
+    "total_likes": 10,
+    "likes_today": 2,
+    "likes_this_week": 5,
+    "likes_this_month": 8
+  }
 }
 ```
 
@@ -182,7 +240,7 @@ GET /posts/1/like-stats
 
 #### 请求示例
 ```bash
-curl -X POST http://localhost:5000/posts/like/batch \
+curl -X POST http://localhost:8000/posts/like/batch \
   -H "Content-Type: application/json" \
   -d '{"user_id": 2, "post_ids": [1, 2, 3]}'
 ```
@@ -192,7 +250,24 @@ curl -X POST http://localhost:5000/posts/like/batch \
 {
   "code": 201,
   "message": "批量点赞成功",
-  "data": "{\"success_count\": 3, \"failed_count\": 0, \"results\": [{\"post_id\": 1, \"status\": \"success\"}, {\"post_id\": 2, \"status\": \"success\"}, {\"post_id\": 3, \"status\": \"success\"}]}"
+  "data": {
+    "success_count": 3,
+    "failed_count": 0,
+    "results": [
+      {
+        "post_id": 1,
+        "status": "success"
+      },
+      {
+        "post_id": 2,
+        "status": "success"
+      },
+      {
+        "post_id": 3,
+        "status": "success"
+      }
+    ]
+  }
 }
 ```
 
@@ -216,7 +291,36 @@ GET /posts/popular?page=1&per_page=20&period=week
 {
   "code": 200,
   "message": "获取热门帖子成功",
-  "data": "{\"list\": [{\"objectId\": 1, \"title\": \"我的第一篇帖子\", \"content\": \"这是帖子内容\", \"user\": 1, \"user_info\": {\"id\": 1, \"username\": \"test_user\", \"avatar\": \"https://example.com/avatar.jpg\"}, \"category\": \"技术\", \"status\": \"published\", \"audit_state\": \"approved\", \"likes\": 100, \"views\": 1000, \"createdAt\": \"2025-01-09T10:00:00\"}], \"pagination\": {\"page\": 1, \"per_page\": 20, \"total\": 1, \"pages\": 1, \"has_next\": false, \"has_prev\": false}, \"period\": \"week\"}"
+  "data": {
+    "list": [
+      {
+        "objectId": 1,
+        "title": "我的第一篇帖子",
+        "content": "这是帖子内容",
+        "user": 1,
+        "user_info": {
+          "id": 1,
+          "username": "test_user",
+          "avatar": "https://example.com/avatar.jpg"
+        },
+        "category": "技术",
+        "status": "published",
+        "audit_state": "approved",
+        "likes": 100,
+        "views": 1000,
+        "createdAt": "2025-01-09T10:00:00"
+      }
+    ],
+    "pagination": {
+      "page": 1,
+      "per_page": 20,
+      "total": 1,
+      "pages": 1,
+      "has_next": false,
+      "has_prev": false
+    },
+    "period": "week"
+  }
 }
 ```
 
@@ -238,7 +342,13 @@ GET /posts/user/2/like-stats
 {
   "code": 200,
   "message": "获取用户点赞统计成功",
-  "data": "{\"total_likes_given\": 50, \"total_likes_received\": 100, \"likes_today\": 5, \"likes_this_week\": 20, \"likes_this_month\": 80}"
+  "data": {
+    "total_likes_given": 50,
+    "total_likes_received": 100,
+    "likes_today": 5,
+    "likes_this_week": 20,
+    "likes_this_month": 80
+  }
 }
 ```
 

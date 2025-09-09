@@ -30,7 +30,36 @@ GET /posts?page=1&per_page=20&status=published&audit_state=approved
 {
   "code": 200,
   "message": "获取帖子列表成功",
-  "data": "{\"list\": [{\"objectId\": 1, \"title\": \"我的第一篇帖子\", \"content\": \"这是帖子内容\", \"user\": 1, \"user_info\": {\"id\": 1, \"username\": \"test_user\", \"avatar\": \"https://example.com/avatar.jpg\"}, \"category\": \"技术\", \"status\": \"published\", \"audit_state\": \"approved\", \"likes\": 10, \"views\": 100, \"createdAt\": \"2025-01-09T10:00:00\", \"updatedAt\": \"2025-01-09T10:00:00\"}], \"pagination\": {\"page\": 1, \"per_page\": 20, \"total\": 1, \"pages\": 1, \"has_next\": false, \"has_prev\": false}}"
+  "data": {
+    "list": [
+      {
+        "objectId": 1,
+        "title": "我的第一篇帖子",
+        "content": "这是帖子内容",
+        "user": 1,
+        "user_info": {
+          "id": 1,
+          "username": "test_user",
+          "avatar": "https://example.com/avatar.jpg"
+        },
+        "category": "技术",
+        "status": "published",
+        "audit_state": "approved",
+        "likes": 10,
+        "views": 100,
+        "createdAt": "2025-01-09T10:00:00",
+        "updatedAt": "2025-01-09T10:00:00"
+      }
+    ],
+    "pagination": {
+      "page": 1,
+      "per_page": 20,
+      "total": 1,
+      "pages": 1,
+      "has_next": false,
+      "has_prev": false
+    }
+  }
 }
 ```
 
@@ -52,7 +81,24 @@ GET /posts/1
 {
   "code": 200,
   "message": "获取帖子成功",
-  "data": "{\"objectId\": 1, \"title\": \"我的第一篇帖子\", \"content\": \"这是帖子内容\", \"user\": 1, \"user_info\": {\"id\": 1, \"username\": \"test_user\", \"avatar\": \"https://example.com/avatar.jpg\"}, \"category\": \"技术\", \"status\": \"published\", \"audit_state\": \"approved\", \"likes\": 10, \"views\": 100, \"createdAt\": \"2025-01-09T10:00:00\", \"updatedAt\": \"2025-01-09T10:00:00\"}"
+  "data": {
+    "objectId": 1,
+    "title": "我的第一篇帖子",
+    "content": "这是帖子内容",
+    "user": 1,
+    "user_info": {
+      "id": 1,
+      "username": "test_user",
+      "avatar": "https://example.com/avatar.jpg"
+    },
+    "category": "技术",
+    "status": "published",
+    "audit_state": "approved",
+    "likes": 10,
+    "views": 100,
+    "createdAt": "2025-01-09T10:00:00",
+    "updatedAt": "2025-01-09T10:00:00"
+  }
 }
 ```
 
@@ -84,7 +130,24 @@ GET /posts/1
 {
   "code": 201,
   "message": "帖子创建成功",
-  "data": "{\"objectId\": 1, \"title\": \"我的第一篇帖子\", \"content\": \"这是帖子内容\", \"user\": 1, \"user_info\": {\"id\": 1, \"username\": \"test_user\", \"avatar\": \"https://example.com/avatar.jpg\"}, \"category\": \"技术\", \"status\": \"published\", \"audit_state\": \"pending\", \"likes\": 0, \"views\": 0, \"createdAt\": \"2025-01-09T10:00:00\", \"updatedAt\": \"2025-01-09T10:00:00\"}"
+  "data": {
+    "objectId": 1,
+    "title": "我的第一篇帖子",
+    "content": "这是帖子内容",
+    "user": 1,
+    "user_info": {
+      "id": 1,
+      "username": "test_user",
+      "avatar": "https://example.com/avatar.jpg"
+    },
+    "category": "技术",
+    "status": "published",
+    "audit_state": "pending",
+    "likes": 0,
+    "views": 0,
+    "createdAt": "2025-01-09T10:00:00",
+    "updatedAt": "2025-01-09T10:00:00"
+  }
 }
 ```
 
@@ -114,7 +177,24 @@ GET /posts/1
 {
   "code": 200,
   "message": "帖子更新成功",
-  "data": "{\"objectId\": 1, \"title\": \"我的第一篇帖子（更新）\", \"content\": \"这是更新后的帖子内容\", \"user\": 1, \"user_info\": {\"id\": 1, \"username\": \"test_user\", \"avatar\": \"https://example.com/avatar.jpg\"}, \"category\": \"技术分享\", \"status\": \"published\", \"audit_state\": \"pending\", \"likes\": 10, \"views\": 100, \"createdAt\": \"2025-01-09T10:00:00\", \"updatedAt\": \"2025-01-09T11:00:00\"}"
+  "data": {
+    "objectId": 1,
+    "title": "我的第一篇帖子（更新）",
+    "content": "这是更新后的帖子内容",
+    "user": 1,
+    "user_info": {
+      "id": 1,
+      "username": "test_user",
+      "avatar": "https://example.com/avatar.jpg"
+    },
+    "category": "技术分享",
+    "status": "published",
+    "audit_state": "pending",
+    "likes": 10,
+    "views": 100,
+    "createdAt": "2025-01-09T10:00:00",
+    "updatedAt": "2025-01-09T11:00:00"
+  }
 }
 ```
 
@@ -161,7 +241,30 @@ GET /posts/user/1?page=1&per_page=10&status=published
 {
   "code": 200,
   "message": "获取用户帖子成功",
-  "data": "{\"list\": [{\"objectId\": 1, \"title\": \"我的第一篇帖子\", \"content\": \"这是帖子内容\", \"user\": 1, \"category\": \"技术\", \"status\": \"published\", \"audit_state\": \"approved\", \"likes\": 10, \"views\": 100, \"createdAt\": \"2025-01-09T10:00:00\"}], \"pagination\": {\"page\": 1, \"per_page\": 10, \"total\": 1, \"pages\": 1, \"has_next\": false, \"has_prev\": false}}"
+  "data": {
+    "list": [
+      {
+        "objectId": 1,
+        "title": "我的第一篇帖子",
+        "content": "这是帖子内容",
+        "user": 1,
+        "category": "技术",
+        "status": "published",
+        "audit_state": "approved",
+        "likes": 10,
+        "views": 100,
+        "createdAt": "2025-01-09T10:00:00"
+      }
+    ],
+    "pagination": {
+      "page": 1,
+      "per_page": 10,
+      "total": 1,
+      "pages": 1,
+      "has_next": false,
+      "has_prev": false
+    }
+  }
 }
 ```
 
@@ -185,7 +288,35 @@ GET /posts/audit/pending?page=1&per_page=20
 {
   "code": 200,
   "message": "获取审核帖子成功",
-  "data": "{\"list\": [{\"objectId\": 1, \"title\": \"我的第一篇帖子\", \"content\": \"这是帖子内容\", \"user\": 1, \"user_info\": {\"id\": 1, \"username\": \"test_user\", \"avatar\": \"https://example.com/avatar.jpg\"}, \"category\": \"技术\", \"status\": \"published\", \"audit_state\": \"pending\", \"likes\": 0, \"views\": 0, \"createdAt\": \"2025-01-09T10:00:00\"}], \"pagination\": {\"page\": 1, \"per_page\": 20, \"total\": 1, \"pages\": 1, \"has_next\": false, \"has_prev\": false}}"
+  "data": {
+    "list": [
+      {
+        "objectId": 1,
+        "title": "我的第一篇帖子",
+        "content": "这是帖子内容",
+        "user": 1,
+        "user_info": {
+          "id": 1,
+          "username": "test_user",
+          "avatar": "https://example.com/avatar.jpg"
+        },
+        "category": "技术",
+        "status": "published",
+        "audit_state": "pending",
+        "likes": 0,
+        "views": 0,
+        "createdAt": "2025-01-09T10:00:00"
+      }
+    ],
+    "pagination": {
+      "page": 1,
+      "per_page": 20,
+      "total": 1,
+      "pages": 1,
+      "has_next": false,
+      "has_prev": false
+    }
+  }
 }
 ```
 
@@ -211,7 +342,25 @@ GET /posts/audit/pending?page=1&per_page=20
 {
   "code": 200,
   "message": "帖子审核成功",
-  "data": "{\"objectId\": 1, \"title\": \"我的第一篇帖子\", \"content\": \"这是帖子内容\", \"user\": 1, \"user_info\": {\"id\": 1, \"username\": \"test_user\", \"avatar\": \"https://example.com/avatar.jpg\"}, \"category\": \"技术\", \"status\": \"published\", \"audit_state\": \"approved\", \"audit_comment\": \"内容符合规范\", \"likes\": 10, \"views\": 100, \"createdAt\": \"2025-01-09T10:00:00\", \"updatedAt\": \"2025-01-09T12:00:00\"}"
+  "data": {
+    "objectId": 1,
+    "title": "我的第一篇帖子",
+    "content": "这是帖子内容",
+    "user": 1,
+    "user_info": {
+      "id": 1,
+      "username": "test_user",
+      "avatar": "https://example.com/avatar.jpg"
+    },
+    "category": "技术",
+    "status": "published",
+    "audit_state": "approved",
+    "audit_comment": "内容符合规范",
+    "likes": 10,
+    "views": 100,
+    "createdAt": "2025-01-09T10:00:00",
+    "updatedAt": "2025-01-09T12:00:00"
+  }
 }
 ```
 
@@ -236,7 +385,36 @@ GET /posts/search?q=技术&page=1&per_page=10&category=技术
 {
   "code": 200,
   "message": "搜索帖子成功",
-  "data": "{\"list\": [{\"objectId\": 1, \"title\": \"我的第一篇帖子\", \"content\": \"这是帖子内容\", \"user\": 1, \"user_info\": {\"id\": 1, \"username\": \"test_user\", \"avatar\": \"https://example.com/avatar.jpg\"}, \"category\": \"技术\", \"status\": \"published\", \"audit_state\": \"approved\", \"likes\": 10, \"views\": 100, \"createdAt\": \"2025-01-09T10:00:00\"}], \"pagination\": {\"page\": 1, \"per_page\": 10, \"total\": 1, \"pages\": 1, \"has_next\": false, \"has_prev\": false}, \"query\": \"技术\"}"
+  "data": {
+    "list": [
+      {
+        "objectId": 1,
+        "title": "我的第一篇帖子",
+        "content": "这是帖子内容",
+        "user": 1,
+        "user_info": {
+          "id": 1,
+          "username": "test_user",
+          "avatar": "https://example.com/avatar.jpg"
+        },
+        "category": "技术",
+        "status": "published",
+        "audit_state": "approved",
+        "likes": 10,
+        "views": 100,
+        "createdAt": "2025-01-09T10:00:00"
+      }
+    ],
+    "pagination": {
+      "page": 1,
+      "per_page": 10,
+      "total": 1,
+      "pages": 1,
+      "has_next": false,
+      "has_prev": false
+    },
+    "query": "技术"
+  }
 }
 ```
 
@@ -258,7 +436,23 @@ GET /posts/stats?user=1
 {
   "code": 200,
   "message": "获取帖子统计成功",
-  "data": "{\"total_posts\": 100, \"published_posts\": 80, \"draft_posts\": 15, \"archived_posts\": 5, \"pending_audit\": 10, \"approved_posts\": 70, \"rejected_posts\": 5, \"user_stats\": {\"total\": 5, \"published\": 4, \"draft\": 1, \"pending_audit\": 1, \"approved\": 3, \"rejected\": 0}}"
+  "data": {
+    "total_posts": 100,
+    "published_posts": 80,
+    "draft_posts": 15,
+    "archived_posts": 5,
+    "pending_audit": 10,
+    "approved_posts": 70,
+    "rejected_posts": 5,
+    "user_stats": {
+      "total": 5,
+      "published": 4,
+      "draft": 1,
+      "pending_audit": 1,
+      "approved": 3,
+      "rejected": 0
+    }
+  }
 }
 ```
 

@@ -317,7 +317,9 @@ DELETE /users/1
 {
   "code": 200,
   "message": "获取用户数量成功",
-  "data": "{\"count\": 100}"
+  "data": {
+    "count": 100
+  }
 }
 ```
 

@@ -30,7 +30,36 @@ GET /forum?page=1&per_page=20&category=技术讨论&isPinned=true
 {
   "code": 200,
   "message": "获取论坛帖子成功",
-  "data": "{\"list\": [{\"objectId\": 1, \"title\": \"技术讨论\", \"content\": \"这是一个技术讨论帖子\", \"category\": \"技术讨论\", \"user\": 1, \"user_info\": {\"id\": 1, \"username\": \"test_user\", \"avatar\": \"https://example.com/avatar.jpg\"}, \"isPinned\": true, \"public\": true, \"likes\": 10, \"replies\": 5, \"createdAt\": \"2025-01-09T10:00:00\", \"updatedAt\": \"2025-01-09T10:00:00\"}], \"pagination\": {\"page\": 1, \"per_page\": 20, \"total\": 1, \"pages\": 1, \"has_next\": false, \"has_prev\": false}}"
+  "data": {
+    "list": [
+      {
+        "objectId": 1,
+        "title": "技术讨论",
+        "content": "这是一个技术讨论帖子",
+        "category": "技术讨论",
+        "user": 1,
+        "user_info": {
+          "id": 1,
+          "username": "test_user",
+          "avatar": "https://example.com/avatar.jpg"
+        },
+        "isPinned": true,
+        "public": true,
+        "likes": 10,
+        "replies": 5,
+        "createdAt": "2025-01-09T10:00:00",
+        "updatedAt": "2025-01-09T10:00:00"
+      }
+    ],
+    "pagination": {
+      "page": 1,
+      "per_page": 20,
+      "total": 1,
+      "pages": 1,
+      "has_next": false,
+      "has_prev": false
+    }
+  }
 }
 ```
 
@@ -52,7 +81,24 @@ GET /forum/1
 {
   "code": 200,
   "message": "获取论坛帖子成功",
-  "data": "{\"objectId\": 1, \"title\": \"技术讨论\", \"content\": \"这是一个技术讨论帖子\", \"category\": \"技术讨论\", \"user\": 1, \"user_info\": {\"id\": 1, \"username\": \"test_user\", \"avatar\": \"https://example.com/avatar.jpg\"}, \"isPinned\": true, \"public\": true, \"likes\": 10, \"replies\": 5, \"createdAt\": \"2025-01-09T10:00:00\", \"updatedAt\": \"2025-01-09T10:00:00\"}"
+  "data": {
+    "objectId": 1,
+    "title": "技术讨论",
+    "content": "这是一个技术讨论帖子",
+    "category": "技术讨论",
+    "user": 1,
+    "user_info": {
+      "id": 1,
+      "username": "test_user",
+      "avatar": "https://example.com/avatar.jpg"
+    },
+    "isPinned": true,
+    "public": true,
+    "likes": 10,
+    "replies": 5,
+    "createdAt": "2025-01-09T10:00:00",
+    "updatedAt": "2025-01-09T10:00:00"
+  }
 }
 ```
 
@@ -86,7 +132,24 @@ GET /forum/1
 {
   "code": 201,
   "message": "论坛帖子创建成功",
-  "data": "{\"objectId\": 1, \"title\": \"技术讨论\", \"content\": \"这是一个技术讨论帖子\", \"category\": \"技术讨论\", \"user\": 1, \"user_info\": {\"id\": 1, \"username\": \"test_user\", \"avatar\": \"https://example.com/avatar.jpg\"}, \"isPinned\": false, \"public\": true, \"likes\": 0, \"replies\": 0, \"createdAt\": \"2025-01-09T10:00:00\", \"updatedAt\": \"2025-01-09T10:00:00\"}"
+  "data": {
+    "objectId": 1,
+    "title": "技术讨论",
+    "content": "这是一个技术讨论帖子",
+    "category": "技术讨论",
+    "user": 1,
+    "user_info": {
+      "id": 1,
+      "username": "test_user",
+      "avatar": "https://example.com/avatar.jpg"
+    },
+    "isPinned": false,
+    "public": true,
+    "likes": 0,
+    "replies": 0,
+    "createdAt": "2025-01-09T10:00:00",
+    "updatedAt": "2025-01-09T10:00:00"
+  }
 }
 ```
 
@@ -118,7 +181,24 @@ GET /forum/1
 {
   "code": 200,
   "message": "论坛帖子更新成功",
-  "data": "{\"objectId\": 1, \"title\": \"技术讨论（更新）\", \"content\": \"这是更新后的技术讨论帖子\", \"category\": \"技术讨论\", \"user\": 1, \"user_info\": {\"id\": 1, \"username\": \"test_user\", \"avatar\": \"https://example.com/avatar.jpg\"}, \"isPinned\": true, \"public\": true, \"likes\": 10, \"replies\": 5, \"createdAt\": \"2025-01-09T10:00:00\", \"updatedAt\": \"2025-01-09T11:00:00\"}"
+  "data": {
+    "objectId": 1,
+    "title": "技术讨论（更新）",
+    "content": "这是更新后的技术讨论帖子",
+    "category": "技术讨论",
+    "user": 1,
+    "user_info": {
+      "id": 1,
+      "username": "test_user",
+      "avatar": "https://example.com/avatar.jpg"
+    },
+    "isPinned": true,
+    "public": true,
+    "likes": 10,
+    "replies": 5,
+    "createdAt": "2025-01-09T10:00:00",
+    "updatedAt": "2025-01-09T11:00:00"
+  }
 }
 ```
 
@@ -164,7 +244,30 @@ GET /forum/user/1?page=1&per_page=10
 {
   "code": 200,
   "message": "获取用户论坛帖子成功",
-  "data": "{\"list\": [{\"objectId\": 1, \"title\": \"技术讨论\", \"content\": \"这是一个技术讨论帖子\", \"category\": \"技术讨论\", \"user\": 1, \"isPinned\": true, \"public\": true, \"likes\": 10, \"replies\": 5, \"createdAt\": \"2025-01-09T10:00:00\"}], \"pagination\": {\"page\": 1, \"per_page\": 10, \"total\": 1, \"pages\": 1, \"has_next\": false, \"has_prev\": false}}"
+  "data": {
+    "list": [
+      {
+        "objectId": 1,
+        "title": "技术讨论",
+        "content": "这是一个技术讨论帖子",
+        "category": "技术讨论",
+        "user": 1,
+        "isPinned": true,
+        "public": true,
+        "likes": 10,
+        "replies": 5,
+        "createdAt": "2025-01-09T10:00:00"
+      }
+    ],
+    "pagination": {
+      "page": 1,
+      "per_page": 10,
+      "total": 1,
+      "pages": 1,
+      "has_next": false,
+      "has_prev": false
+    }
+  }
 }
 ```
 
@@ -188,7 +291,24 @@ GET /forum/user/1?page=1&per_page=10
 {
   "code": 200,
   "message": "帖子点赞成功",
-  "data": "{\"objectId\": 1, \"title\": \"技术讨论\", \"content\": \"这是一个技术讨论帖子\", \"category\": \"技术讨论\", \"user\": 1, \"user_info\": {\"id\": 1, \"username\": \"test_user\", \"avatar\": \"https://example.com/avatar.jpg\"}, \"isPinned\": true, \"public\": true, \"likes\": 11, \"replies\": 5, \"createdAt\": \"2025-01-09T10:00:00\", \"updatedAt\": \"2025-01-09T12:00:00\"}"
+  "data": {
+    "objectId": 1,
+    "title": "技术讨论",
+    "content": "这是一个技术讨论帖子",
+    "category": "技术讨论",
+    "user": 1,
+    "user_info": {
+      "id": 1,
+      "username": "test_user",
+      "avatar": "https://example.com/avatar.jpg"
+    },
+    "isPinned": true,
+    "public": true,
+    "likes": 11,
+    "replies": 5,
+    "createdAt": "2025-01-09T10:00:00",
+    "updatedAt": "2025-01-09T12:00:00"
+  }
 }
 ```
 
@@ -210,7 +330,16 @@ GET /forum/stats?user=1
 {
   "code": 200,
   "message": "获取论坛统计成功",
-  "data": "{\"total_posts\": 100, \"total_likes\": 500, \"total_replies\": 200, \"user_stats\": {\"posts\": 5, \"likes\": 25, \"replies\": 10}}"
+  "data": {
+    "total_posts": 100,
+    "total_likes": 500,
+    "total_replies": 200,
+    "user_stats": {
+      "posts": 5,
+      "likes": 25,
+      "replies": 10
+    }
+  }
 }
 ```
 

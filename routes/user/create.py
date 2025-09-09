@@ -118,11 +118,7 @@ def create_user():
         
     except Exception as e:
         db.session.rollback()
-        return internal_error_response(
-            message="创建用户失败",
-            error_code="USER_CREATION_FAILED",
-            details=str(e)
-        )
+        return internal_error_response(message="创建用户失败")
 
 def register_user():
     """注册新用户（客户端/安卓端用，仅需邮箱或手机号 + 密码；可选提供 username）"""
@@ -184,11 +180,7 @@ def register_user():
         )
     except Exception as e:
         db.session.rollback()
-        return internal_error_response(
-            message="用户注册失败",
-            error_code="USER_REGISTRATION_FAILED",
-            details=str(e)
-        )
+        return internal_error_response(message="用户注册失败")
 
 def login():
     """用户登录"""
@@ -220,13 +212,9 @@ def login():
         else:
             from utils.response import unauthorized_response
             return unauthorized_response(
-                message='用户名或密码错误',
-                error_code='INVALID_CREDENTIALS'
+                message='用户名或密码错误'
             )
             
     except Exception as e:
-        return internal_error_response(
-            message="登录失败",
-            error_code="LOGIN_FAILED",
-            details=str(e)
-        ) 
+        return internal_error_response(message="登录失败")
+        

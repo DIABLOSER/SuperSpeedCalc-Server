@@ -29,7 +29,31 @@ GET /history?page=1&per_page=20&user=1&sort_by=score&order=desc
 {
   "code": 200,
   "message": "获取历史记录成功",
-  "data": "{\"list\": [{\"objectId\": 1, \"title\": \"数学挑战\", \"score\": 95, \"user\": 1, \"user_info\": {\"id\": 1, \"username\": \"test_user\", \"avatar\": \"https://example.com/avatar.jpg\"}, \"createdAt\": \"2025-01-09T10:00:00\", \"updatedAt\": \"2025-01-09T10:00:00\"}], \"pagination\": {\"page\": 1, \"per_page\": 20, \"total\": 1, \"pages\": 1, \"has_next\": false, \"has_prev\": false}}"
+  "data": {
+    "list": [
+      {
+        "objectId": 1,
+        "title": "数学挑战",
+        "score": 95,
+        "user": 1,
+        "user_info": {
+          "id": 1,
+          "username": "test_user",
+          "avatar": "https://example.com/avatar.jpg"
+        },
+        "createdAt": "2025-01-09T10:00:00",
+        "updatedAt": "2025-01-09T10:00:00"
+      }
+    ],
+    "pagination": {
+      "page": 1,
+      "per_page": 20,
+      "total": 1,
+      "pages": 1,
+      "has_next": false,
+      "has_prev": false
+    }
+  }
 }
 ```
 
@@ -51,7 +75,19 @@ GET /history/1
 {
   "code": 200,
   "message": "获取历史记录成功",
-  "data": "{\"objectId\": 1, \"title\": \"数学挑战\", \"score\": 95, \"user\": 1, \"user_info\": {\"id\": 1, \"username\": \"test_user\", \"avatar\": \"https://example.com/avatar.jpg\"}, \"createdAt\": \"2025-01-09T10:00:00\", \"updatedAt\": \"2025-01-09T10:00:00\"}"
+  "data": {
+    "objectId": 1,
+    "title": "数学挑战",
+    "score": 95,
+    "user": 1,
+    "user_info": {
+      "id": 1,
+      "username": "test_user",
+      "avatar": "https://example.com/avatar.jpg"
+    },
+    "createdAt": "2025-01-09T10:00:00",
+    "updatedAt": "2025-01-09T10:00:00"
+  }
 }
 ```
 
@@ -79,7 +115,19 @@ GET /history/1
 {
   "code": 201,
   "message": "历史记录创建成功",
-  "data": "{\"objectId\": 1, \"title\": \"数学挑战\", \"score\": 95, \"user\": 1, \"user_info\": {\"id\": 1, \"username\": \"test_user\", \"avatar\": \"https://example.com/avatar.jpg\"}, \"createdAt\": \"2025-01-09T10:00:00\", \"updatedAt\": \"2025-01-09T10:00:00\"}"
+  "data": {
+    "objectId": 1,
+    "title": "数学挑战",
+    "score": 95,
+    "user": 1,
+    "user_info": {
+      "id": 1,
+      "username": "test_user",
+      "avatar": "https://example.com/avatar.jpg"
+    },
+    "createdAt": "2025-01-09T10:00:00",
+    "updatedAt": "2025-01-09T10:00:00"
+  }
 }
 ```
 
@@ -105,7 +153,19 @@ GET /history/1
 {
   "code": 200,
   "message": "历史记录更新成功",
-  "data": "{\"objectId\": 1, \"title\": \"数学挑战（更新）\", \"score\": 98, \"user\": 1, \"user_info\": {\"id\": 1, \"username\": \"test_user\", \"avatar\": \"https://example.com/avatar.jpg\"}, \"createdAt\": \"2025-01-09T10:00:00\", \"updatedAt\": \"2025-01-09T11:00:00\"}"
+  "data": {
+    "objectId": 1,
+    "title": "数学挑战（更新）",
+    "score": 98,
+    "user": 1,
+    "user_info": {
+      "id": 1,
+      "username": "test_user",
+      "avatar": "https://example.com/avatar.jpg"
+    },
+    "createdAt": "2025-01-09T10:00:00",
+    "updatedAt": "2025-01-09T11:00:00"
+  }
 }
 ```
 
@@ -151,7 +211,25 @@ GET /history/user/1?page=1&per_page=10
 {
   "code": 200,
   "message": "获取用户历史记录成功",
-  "data": "{\"list\": [{\"objectId\": 1, \"title\": \"数学挑战\", \"score\": 95, \"user\": 1, \"createdAt\": \"2025-01-09T10:00:00\"}], \"pagination\": {\"page\": 1, \"per_page\": 10, \"total\": 1, \"pages\": 1, \"has_next\": false, \"has_prev\": false}}"
+  "data": {
+    "list": [
+      {
+        "objectId": 1,
+        "title": "数学挑战",
+        "score": 95,
+        "user": 1,
+        "createdAt": "2025-01-09T10:00:00"
+      }
+    ],
+    "pagination": {
+      "page": 1,
+      "per_page": 10,
+      "total": 1,
+      "pages": 1,
+      "has_next": false,
+      "has_prev": false
+    }
+  }
 }
 ```
 
@@ -173,7 +251,18 @@ GET /history/stats?user=1
 {
   "code": 200,
   "message": "获取历史记录统计成功",
-  "data": "{\"total_records\": 100, \"average_score\": 85.5, \"max_score\": 100, \"min_score\": 0, \"user_stats\": {\"total\": 5, \"average\": 90.0, \"max\": 98, \"min\": 85}}"
+  "data": {
+    "total_records": 100,
+    "average_score": 85.5,
+    "max_score": 100,
+    "min_score": 0,
+    "user_stats": {
+      "total": 5,
+      "average": 90.0,
+      "max": 98,
+      "min": 85
+    }
+  }
 }
 ```
 
@@ -196,7 +285,32 @@ GET /history/leaderboard?type=daily&limit=20
 {
   "code": 200,
   "message": "获取排行榜成功",
-  "data": "{\"leaderboard\": [{\"rank\": 1, \"user\": {\"id\": 1, \"username\": \"test_user\", \"avatar\": \"https://example.com/avatar.jpg\"}, \"score\": 100, \"title\": \"数学挑战\"}, {\"rank\": 2, \"user\": {\"id\": 2, \"username\": \"user2\", \"avatar\": \"https://example.com/avatar2.jpg\"}, \"score\": 98, \"title\": \"数学挑战\"}], \"type\": \"daily\", \"total\": 2}"
+  "data": {
+    "leaderboard": [
+      {
+        "rank": 1,
+        "user": {
+          "id": 1,
+          "username": "test_user",
+          "avatar": "https://example.com/avatar.jpg"
+        },
+        "score": 100,
+        "title": "数学挑战"
+      },
+      {
+        "rank": 2,
+        "user": {
+          "id": 2,
+          "username": "user2",
+          "avatar": "https://example.com/avatar2.jpg"
+        },
+        "score": 98,
+        "title": "数学挑战"
+      }
+    ],
+    "type": "daily",
+    "total": 2
+  }
 }
 ```
 

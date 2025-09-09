@@ -29,7 +29,32 @@ GET /releases?page=1&per_page=10&app_name=SuperSpeedCalc&environment=production&
 {
   "code": 200,
   "message": "获取发布记录成功",
-  "data": "{\"list\": [{\"objectId\": 1, \"app_name\": \"SuperSpeedCalc\", \"version_name\": \"1.0.0\", \"version_code\": 1, \"changelog\": \"初始版本发布\", \"download_url\": \"https://example.com/app-v1.0.0.apk\", \"environment\": \"production\", \"status\": \"published\", \"is_update\": true, \"force_update\": false, \"createdAt\": \"2025-01-09T10:00:00\", \"updatedAt\": \"2025-01-09T10:00:00\"}], \"pagination\": {\"page\": 1, \"per_page\": 10, \"total\": 1, \"pages\": 1, \"has_next\": false, \"has_prev\": false}}"
+  "data": {
+    "list": [
+      {
+        "objectId": 1,
+        "app_name": "SuperSpeedCalc",
+        "version_name": "1.0.0",
+        "version_code": 1,
+        "changelog": "初始版本发布",
+        "download_url": "https://example.com/app-v1.0.0.apk",
+        "environment": "production",
+        "status": "published",
+        "is_update": true,
+        "force_update": false,
+        "createdAt": "2025-01-09T10:00:00",
+        "updatedAt": "2025-01-09T10:00:00"
+      }
+    ],
+    "pagination": {
+      "page": 1,
+      "per_page": 10,
+      "total": 1,
+      "pages": 1,
+      "has_next": false,
+      "has_prev": false
+    }
+  }
 }
 ```
 
@@ -51,7 +76,20 @@ GET /releases/1
 {
   "code": 200,
   "message": "获取发布记录成功",
-  "data": "{\"objectId\": 1, \"app_name\": \"SuperSpeedCalc\", \"version_name\": \"1.0.0\", \"version_code\": 1, \"changelog\": \"初始版本发布\", \"download_url\": \"https://example.com/app-v1.0.0.apk\", \"environment\": \"production\", \"status\": \"published\", \"is_update\": true, \"force_update\": false, \"createdAt\": \"2025-01-09T10:00:00\", \"updatedAt\": \"2025-01-09T10:00:00\"}"
+  "data": {
+    "objectId": 1,
+    "app_name": "SuperSpeedCalc",
+    "version_name": "1.0.0",
+    "version_code": 1,
+    "changelog": "初始版本发布",
+    "download_url": "https://example.com/app-v1.0.0.apk",
+    "environment": "production",
+    "status": "published",
+    "is_update": true,
+    "force_update": false,
+    "createdAt": "2025-01-09T10:00:00",
+    "updatedAt": "2025-01-09T10:00:00"
+  }
 }
 ```
 
@@ -91,7 +129,20 @@ GET /releases/1
 {
   "code": 201,
   "message": "发布记录创建成功",
-  "data": "{\"objectId\": 1, \"app_name\": \"SuperSpeedCalc\", \"version_name\": \"1.0.0\", \"version_code\": 1, \"changelog\": \"初始版本发布\", \"download_url\": \"https://example.com/app-v1.0.0.apk\", \"environment\": \"production\", \"status\": \"published\", \"is_update\": true, \"force_update\": false, \"createdAt\": \"2025-01-09T10:00:00\", \"updatedAt\": \"2025-01-09T10:00:00\"}"
+  "data": {
+    "objectId": 1,
+    "app_name": "SuperSpeedCalc",
+    "version_name": "1.0.0",
+    "version_code": 1,
+    "changelog": "初始版本发布",
+    "download_url": "https://example.com/app-v1.0.0.apk",
+    "environment": "production",
+    "status": "published",
+    "is_update": true,
+    "force_update": false,
+    "createdAt": "2025-01-09T10:00:00",
+    "updatedAt": "2025-01-09T10:00:00"
+  }
 }
 ```
 
@@ -129,7 +180,20 @@ GET /releases/1
 {
   "code": 200,
   "message": "发布记录更新成功",
-  "data": "{\"objectId\": 1, \"app_name\": \"SuperSpeedCalc\", \"version_name\": \"1.0.1\", \"version_code\": 2, \"changelog\": \"修复已知问题\", \"download_url\": \"https://example.com/app-v1.0.1.apk\", \"environment\": \"production\", \"status\": \"published\", \"is_update\": true, \"force_update\": true, \"createdAt\": \"2025-01-09T10:00:00\", \"updatedAt\": \"2025-01-09T11:00:00\"}"
+  "data": {
+    "objectId": 1,
+    "app_name": "SuperSpeedCalc",
+    "version_name": "1.0.1",
+    "version_code": 2,
+    "changelog": "修复已知问题",
+    "download_url": "https://example.com/app-v1.0.1.apk",
+    "environment": "production",
+    "status": "published",
+    "is_update": true,
+    "force_update": true,
+    "createdAt": "2025-01-09T10:00:00",
+    "updatedAt": "2025-01-09T11:00:00"
+  }
 }
 ```
 
@@ -174,7 +238,20 @@ GET /releases/latest?app_name=SuperSpeedCalc&environment=production
 {
   "code": 200,
   "message": "获取最新版本成功",
-  "data": "{\"objectId\": 1, \"app_name\": \"SuperSpeedCalc\", \"version_name\": \"1.0.1\", \"version_code\": 2, \"changelog\": \"修复已知问题\", \"download_url\": \"https://example.com/app-v1.0.1.apk\", \"environment\": \"production\", \"status\": \"published\", \"is_update\": true, \"force_update\": true, \"createdAt\": \"2025-01-09T10:00:00\", \"updatedAt\": \"2025-01-09T11:00:00\"}"
+  "data": {
+    "objectId": 1,
+    "app_name": "SuperSpeedCalc",
+    "version_name": "1.0.1",
+    "version_code": 2,
+    "changelog": "修复已知问题",
+    "download_url": "https://example.com/app-v1.0.1.apk",
+    "environment": "production",
+    "status": "published",
+    "is_update": true,
+    "force_update": true,
+    "createdAt": "2025-01-09T10:00:00",
+    "updatedAt": "2025-01-09T11:00:00"
+  }
 }
 ```
 
@@ -198,7 +275,17 @@ GET /releases/check-update?app_name=SuperSpeedCalc&current_version_code=1&enviro
 {
   "code": 200,
   "message": "检查更新成功",
-  "data": "{\"has_update\": true, \"latest_version\": {\"version_name\": \"1.0.1\", \"version_code\": 2, \"changelog\": \"修复已知问题\", \"download_url\": \"https://example.com/app-v1.0.1.apk\", \"is_update\": true, \"force_update\": true}}"
+  "data": {
+    "has_update": true,
+    "latest_version": {
+      "version_name": "1.0.1",
+      "version_code": 2,
+      "changelog": "修复已知问题",
+      "download_url": "https://example.com/app-v1.0.1.apk",
+      "is_update": true,
+      "force_update": true
+    }
+  }
 }
 ```
 
@@ -222,7 +309,9 @@ GET /releases/count?app_name=SuperSpeedCalc&environment=production&status=publis
 {
   "code": 200,
   "message": "获取发布记录数量成功",
-  "data": "{\"count\": 5}"
+  "data": {
+    "count": 5
+  }
 }
 ```
 
@@ -240,7 +329,7 @@ GET /releases/count?app_name=SuperSpeedCalc&environment=production&status=publis
 
 #### 请求示例
 ```bash
-curl -X POST -F "file=@app-v1.0.1.apk" -F "app_name=SuperSpeedCalc" -F "version_name=1.0.1" -F "version_code=2" -F "changelog=修复已知问题" http://localhost:5000/releases/upload
+curl -X POST -F "file=@app-v1.0.1.apk" -F "app_name=SuperSpeedCalc" -F "version_name=1.0.1" -F "version_code=2" -F "changelog=修复已知问题" http://localhost:8000/releases/upload
 ```
 
 #### 响应示例
@@ -248,7 +337,20 @@ curl -X POST -F "file=@app-v1.0.1.apk" -F "app_name=SuperSpeedCalc" -F "version_
 {
   "code": 201,
   "message": "APK上传成功",
-  "data": "{\"objectId\": 1, \"app_name\": \"SuperSpeedCalc\", \"version_name\": \"1.0.1\", \"version_code\": 2, \"changelog\": \"修复已知问题\", \"download_url\": \"http://localhost:5000/uploads/apk/app-v1.0.1.apk\", \"environment\": \"production\", \"status\": \"published\", \"is_update\": true, \"force_update\": false, \"createdAt\": \"2025-01-09T10:00:00\", \"updatedAt\": \"2025-01-09T10:00:00\"}"
+  "data": {
+    "objectId": 1,
+    "app_name": "SuperSpeedCalc",
+    "version_name": "1.0.1",
+    "version_code": 2,
+    "changelog": "修复已知问题",
+    "download_url": "http://localhost:8000/uploads/apk/app-v1.0.1.apk",
+    "environment": "production",
+    "status": "published",
+    "is_update": true,
+    "force_update": false,
+    "createdAt": "2025-01-09T10:00:00",
+    "updatedAt": "2025-01-09T10:00:00"
+  }
 }
 ```
 

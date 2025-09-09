@@ -61,7 +61,7 @@
 
 ## 📝 使用说明
 
-1. **基础URL**: `http://localhost:5000/api`
+1. **基础URL**: `http://localhost:8000`
 2. **请求方式**: 支持 GET、POST、PUT、DELETE
 3. **数据格式**: JSON
 4. **认证方式**: 部分接口需要用户认证
