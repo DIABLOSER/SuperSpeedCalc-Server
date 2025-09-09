@@ -12,7 +12,7 @@ def verify_sms_code():
     try:
         # 添加详细日志
         current_app.logger.info("=" * 50)
-        current_app.logger.info("🔍 开始处理短信验证请求")
+        current_app.logger.info("[INFO] 开始处理短信验证请求")
         current_app.logger.info(f"请求方法: {request.method}")
         current_app.logger.info(f"请求URL: {request.url}")
         current_app.logger.info(f"请求头: {dict(request.headers)}")
@@ -32,14 +32,14 @@ def verify_sms_code():
         current_app.logger.info(f"数据字段检查 - phone: {data.get('phone')}, phone_number: {data.get('phone_number')}, code: {data.get('code')}, verification_code: {data.get('verification_code')}")
         
         if not phone:
-            current_app.logger.warning("❌ 手机号为空")
+            current_app.logger.warning("[ERROR] 手机号为空")
             return bad_request_response(
                 message='手机号是必需的，请使用 phone 或 phone_number 字段',
                 # error_code='MISSING_PHONE'
             )
         
         if not code:
-            current_app.logger.warning("❌ 验证码为空")
+            current_app.logger.warning("[ERROR] 验证码为空")
             return bad_request_response(
                 message='验证码是必需的，请使用 code 或 verification_code 字段',
                 # error_code='MISSING_VERIFICATION_CODE'
@@ -51,13 +51,13 @@ def verify_sms_code():
         current_app.logger.info(f"手机号是否为数字: {phone.isdigit() if phone else False}")
         
         if not phone.isdigit() or len(phone) != 11:
-            current_app.logger.warning(f"❌ 手机号格式不正确: {phone} (长度: {len(phone) if phone else 0}, 是否数字: {phone.isdigit() if phone else False})")
+            current_app.logger.warning(f"[ERROR] 手机号格式不正确: {phone} (长度: {len(phone) if phone else 0}, 是否数字: {phone.isdigit() if phone else False})")
             return bad_request_response(
                 message='手机号格式不正确',
                 # error_code='INVALID_PHONE_FORMAT'
             )
         
-        current_app.logger.info(f"✅ 手机号格式验证通过: {phone}")
+        current_app.logger.info(f"[SUCCESS] 手机号格式验证通过: {phone}")
         
         # 验证验证码格式（简单验证）
         current_app.logger.info(f"开始验证验证码格式: {code}")
@@ -65,16 +65,16 @@ def verify_sms_code():
         current_app.logger.info(f"验证码是否为数字: {code.isdigit() if code else False}")
         
         if not code.isdigit() or len(code) != 6:
-            current_app.logger.warning(f"❌ 验证码格式不正确: {code} (长度: {len(code) if code else 0}, 是否数字: {code.isdigit() if code else False})")
+            current_app.logger.warning(f"[ERROR] 验证码格式不正确: {code} (长度: {len(code) if code else 0}, 是否数字: {code.isdigit() if code else False})")
             return bad_request_response(
                 message='验证码格式不正确',
                 # error_code='INVALID_VERIFICATION_CODE_FORMAT'
             )
         
-        current_app.logger.info(f"✅ 验证码格式验证通过: {code}")
+        current_app.logger.info(f"[SUCCESS] 验证码格式验证通过: {code}")
         
         # 初始化Bmob
-        current_app.logger.info("🔧 开始初始化Bmob")
+        current_app.logger.info("[INIT] 开始初始化Bmob")
         current_app.logger.info(f"BMOB_APPLICATION_ID: {current_app.config.get('BMOB_APPLICATION_ID', 'Not Set')[:10]}...")
         current_app.logger.info(f"BMOB_REST_API_KEY: {current_app.config.get('BMOB_REST_API_KEY', 'Not Set')[:10]}...")
         
@@ -82,27 +82,27 @@ def verify_sms_code():
             current_app.config['BMOB_APPLICATION_ID'],
             current_app.config['BMOB_REST_API_KEY']
         )
-        current_app.logger.info("✅ Bmob对象创建成功")
+        current_app.logger.info("[SUCCESS] Bmob对象创建成功")
         
         # 设置Master Key（如果需要更高权限）
         if current_app.config.get('BMOB_MASTER_KEY'):
-            current_app.logger.info("🔑 设置Bmob Master Key")
+            current_app.logger.info("[INIT] 设置Bmob Master Key")
             current_app.logger.info(f"BMOB_MASTER_KEY: {current_app.config.get('BMOB_MASTER_KEY', 'Not Set')[:10]}...")
             bmob.setMasterKey(current_app.config['BMOB_MASTER_KEY'])
-            current_app.logger.info("✅ Master Key设置成功")
+            current_app.logger.info("[SUCCESS] Master Key设置成功")
         else:
-            current_app.logger.info("ℹ️  未设置Master Key")
+            current_app.logger.info("[INFO] 未设置Master Key")
         
         # 验证短信验证码
-        current_app.logger.info(f"🔍 开始验证短信验证码")
+        current_app.logger.info(f"[VERIFY] 开始验证短信验证码")
         current_app.logger.info(f"调用方法: bmob.verifySmsCode('{phone}', '{code}')")
         
         result = bmob.verifySmsCode(phone, code)
-        current_app.logger.info(f"📋 Bmob验证结果: {result}")
+        current_app.logger.info(f"[RESULT] Bmob验证结果: {result}")
         current_app.logger.info(f"结果类型: {type(result)}")
         
         if result:
-            current_app.logger.info("✅ 短信验证码验证成功")
+            current_app.logger.info("[SUCCESS] 短信验证码验证成功")
             current_app.logger.info("=" * 50)
             return success_response(
                 data={
@@ -114,7 +114,7 @@ def verify_sms_code():
         else:
             # 获取错误信息
             error_msg = bmob.getError() if hasattr(bmob, 'getError') else '验证失败'
-            current_app.logger.warning(f"❌ 短信验证码验证失败: {error_msg}")
+            current_app.logger.warning(f"[ERROR] 短信验证码验证失败: {error_msg}")
             current_app.logger.info("=" * 50)
             return bad_request_response(
                 message=f'短信验证码验证失败: {error_msg}',
