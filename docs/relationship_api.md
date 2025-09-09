@@ -239,10 +239,7 @@ GET /users/1/recommendations?limit=10
 ```json
 {
   "code": 400,
-  "message": "不能关注自己",
-  "data": null,
-  "error_code": "CANNOT_FOLLOW_SELF",
-  "details": "用户不能关注自己"
+  "message": "不能关注自己"
 }
 ```
 

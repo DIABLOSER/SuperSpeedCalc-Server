@@ -269,10 +269,7 @@ GET /replies/stats?post_id=1
 ```json
 {
   "code": 400,
-  "message": "缺少必填字段",
-  "data": null,
-  "error_code": "MISSING_REQUIRED_FIELD",
-  "details": "content 字段是必需的"
+  "message": "缺少必填字段"
 }
 ```
 

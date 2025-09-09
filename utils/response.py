@@ -1,315 +1,104 @@
 """
-统一API响应格式工具
-提供标准化的API响应格式，确保所有接口返回数据的一致性
-使用智能的 code、message、data 格式：
-- 基础只有三个字段：code、message、data
-- 成功时：data 包含所有返回数据（JSON对象格式）
-- 错误时：data 为 null
-- 其他信息（如分页、元数据等）都包含在 data 中
+简化的API响应工具类
+提供统一的响应格式：成功响应和失败响应
 """
 
 from flask import jsonify
-from typing import Any, Dict, Optional, Union, List
-import json
 
 
-class APIResponse:
-    """API响应类，提供统一的响应格式"""
-    
-    @staticmethod
-    def success(
-        data: Any = None,
-        message: str = "操作成功",
-        code: int = 200
-    ) -> tuple:
-        """
-        成功响应
-        
-        Args:
-            data: 响应数据
-            message: 响应消息
-            code: HTTP状态码
-            
-        Returns:
-            tuple: (jsonify对象, HTTP状态码)
-        """
-        response = {
-            "code": code,
-            "message": message,
-            "data": data
-        }
-            
-        return jsonify(response), code
-    
-    @staticmethod
-    def error(
-        message: str = "操作失败",
-        code: int = 400,
-        error_code: Optional[str] = None,
-        details: Optional[Any] = None
-    ) -> tuple:
-        """
-        错误响应
-        
-        Args:
-            message: 错误消息
-            code: HTTP状态码
-            error_code: 错误代码
-            details: 错误详情
-            
-        Returns:
-            tuple: (jsonify对象, HTTP状态码)
-        """
-        response = {
-            "code": code,
-            "message": message,
-            "data": None
-        }
-        
-        # 添加错误代码和详情到响应中
-        if error_code:
-            response["error_code"] = error_code
-        if details is not None:
-            response["details"] = details
-            
-        return jsonify(response), code
-    
-    @staticmethod
-    def created(
-        data: Any = None,
-        message: str = "创建成功"
-    ) -> tuple:
-        """
-        创建成功响应 (201)
-        
-        Args:
-            data: 响应数据
-            message: 响应消息
-            
-        Returns:
-            tuple: (jsonify对象, 201)
-        """
-        return APIResponse.success(data=data, message=message, code=201)
-    
-    @staticmethod
-    def updated(
-        data: Any = None,
-        message: str = "更新成功"
-    ) -> tuple:
-        """
-        更新成功响应 (200)
-        
-        Args:
-            data: 响应数据
-            message: 响应消息
-            
-        Returns:
-            tuple: (jsonify对象, 200)
-        """
-        return APIResponse.success(data=data, message=message, code=200)
-    
-    @staticmethod
-    def deleted(
-        message: str = "删除成功"
-    ) -> tuple:
-        """
-        删除成功响应 (200)
-        
-        Args:
-            message: 响应消息
-            
-        Returns:
-            tuple: (jsonify对象, 200)
-        """
-        return APIResponse.success(data=None, message=message, code=200)
-    
-    @staticmethod
-    def not_found(
-        message: str = "资源不存在",
-        error_code: Optional[str] = None,
-        details: Optional[Any] = None
-    ) -> tuple:
-        """
-        资源不存在响应 (404)
-        
-        Args:
-            message: 错误消息
-            error_code: 错误代码
-            details: 错误详情
-            
-        Returns:
-            tuple: (jsonify对象, 404)
-        """
-        return APIResponse.error(message=message, code=404, error_code=error_code, details=details)
-    
-    @staticmethod
-    def bad_request(
-        message: str = "请求参数错误",
-        error_code: Optional[str] = None,
-        details: Optional[Any] = None
-    ) -> tuple:
-        """
-        请求参数错误响应 (400)
-        
-        Args:
-            message: 错误消息
-            error_code: 错误代码
-            details: 错误详情
-            
-        Returns:
-            tuple: (jsonify对象, 400)
-        """
-        return APIResponse.error(message=message, code=400, error_code=error_code, details=details)
-    
-    @staticmethod
-    def unauthorized(
-        message: str = "未授权访问",
-        error_code: Optional[str] = None,
-        details: Optional[Any] = None
-    ) -> tuple:
-        """
-        未授权响应 (401)
-        
-        Args:
-            message: 错误消息
-            error_code: 错误代码
-            details: 错误详情
-            
-        Returns:
-            tuple: (jsonify对象, 401)
-        """
-        return APIResponse.error(message=message, code=401, error_code=error_code, details=details)
-    
-    @staticmethod
-    def forbidden(
-        message: str = "禁止访问",
-        error_code: Optional[str] = None,
-        details: Optional[Any] = None
-    ) -> tuple:
-        """
-        禁止访问响应 (403)
-        
-        Args:
-            message: 错误消息
-            error_code: 错误代码
-            details: 错误详情
-            
-        Returns:
-            tuple: (jsonify对象, 403)
-        """
-        return APIResponse.error(message=message, code=403, error_code=error_code, details=details)
-    
-    @staticmethod
-    def internal_error(
-        message: str = "服务器内部错误",
-        error_code: Optional[str] = None,
-        details: Optional[Any] = None
-    ) -> tuple:
-        """
-        服务器内部错误响应 (500)
-        
-        Args:
-            message: 错误消息
-            error_code: 错误代码
-            details: 错误详情
-            
-        Returns:
-            tuple: (jsonify对象, 500)
-        """
-        return APIResponse.error(message=message, code=500, error_code=error_code, details=details)
-    
-    @staticmethod
-    def paginated(
-        data: List[Any],
-        page: int,
-        per_page: int,
-        total: int,
-        message: str = "获取成功"
-    ) -> tuple:
-        """
-        分页响应
-        
-        Args:
-            data: 数据列表
-            page: 当前页码
-            per_page: 每页数量
-            total: 总数量
-            message: 响应消息
-            
-        Returns:
-            tuple: (jsonify对象, 200)
-        """
-        pages = (total + per_page - 1) // per_page if per_page else 1
-        
-        pagination_data = {
-            "list": data,
-            "pagination": {
-                "page": page,
-                "per_page": per_page,
-                "total": total,
-                "pages": pages,
-                "has_next": page < pages,
-                "has_prev": page > 1
-            }
-        }
-        
-        return APIResponse.success(
-            data=pagination_data,
-            message=message
-        )
-
-
-# 便捷函数，直接导入使用
 def success_response(data=None, message="操作成功", code=200):
-    """成功响应便捷函数"""
-    return APIResponse.success(data, message, code)
+    """
+    成功响应
+    
+    Args:
+        data: 响应数据
+        message: 响应消息
+        code: HTTP状态码
+    
+    Returns:
+        tuple: (jsonify对象, HTTP状态码)
+    """
+    return jsonify({
+        "code": code,
+        "message": message,
+        "data": data
+    }), code
 
 
-def error_response(message="操作失败", code=400, error_code=None, details=None):
-    """错误响应便捷函数"""
-    return APIResponse.error(message, code, error_code, details)
+def error_response(message="操作失败", code=400):
+    """
+    失败响应
+    
+    Args:
+        message: 错误消息
+        code: HTTP状态码
+    
+    Returns:
+        tuple: (jsonify对象, HTTP状态码)
+    """
+    return jsonify({
+        "code": code,
+        "message": message
+    }), code
 
 
-def created_response(data=None, message="创建成功"):
-    """创建成功响应便捷函数"""
-    return APIResponse.created(data, message)
+# 为了兼容现有代码，提供一些别名函数
+def created_response(data=None, message="创建成功", code=201):
+    """创建成功响应"""
+    return success_response(data=data, message=message, code=code)
 
 
-def updated_response(data=None, message="更新成功"):
-    """更新成功响应便捷函数"""
-    return APIResponse.updated(data, message)
+def bad_request_response(message="请求参数错误", code=400):
+    """客户端错误响应"""
+    return error_response(message=message, code=code)
 
 
-def deleted_response(message="删除成功"):
-    """删除成功响应便捷函数"""
-    return APIResponse.deleted(message)
+def not_found_response(message="资源未找到", code=404):
+    """资源未找到响应"""
+    return error_response(message=message, code=code)
 
 
-def not_found_response(message="资源不存在", error_code=None, details=None):
-    """资源不存在响应便捷函数"""
-    return APIResponse.not_found(message, error_code, details)
+def unauthorized_response(message="未授权访问", code=401):
+    """未授权响应"""
+    return error_response(message=message, code=code)
 
 
-def bad_request_response(message="请求参数错误", error_code=None, details=None):
-    """请求参数错误响应便捷函数"""
-    return APIResponse.bad_request(message, error_code, details)
+def internal_error_response(message="服务器内部错误", code=500):
+    """服务器错误响应"""
+    return error_response(message=message, code=code)
 
 
-def unauthorized_response(message="未授权访问", error_code=None, details=None):
-    """未授权响应便捷函数"""
-    return APIResponse.unauthorized(message, error_code, details)
+def paginated_response(items, pagination, message="获取数据成功", code=200):
+    """
+    分页响应
+    
+    Args:
+        items: 数据列表
+        pagination: 分页信息
+        message: 响应消息
+        code: HTTP状态码
+    
+    Returns:
+        tuple: (jsonify对象, HTTP状态码)
+    """
+    data = {
+        "items": items,
+        "pagination": pagination
+    }
+    return success_response(data=data, message=message, code=code)
 
 
-def forbidden_response(message="禁止访问", error_code=None, details=None):
-    """禁止访问响应便捷函数"""
-    return APIResponse.forbidden(message, error_code, details)
+# 兼容性函数 - 为了保持现有代码的兼容性
+def updated_response(data=None, message="更新成功", code=200):
+    """更新成功响应"""
+    return success_response(data=data, message=message, code=code)
 
 
-def internal_error_response(message="服务器内部错误", error_code=None, details=None):
-    """服务器内部错误响应便捷函数"""
-    return APIResponse.internal_error(message, error_code, details)
+def deleted_response(data=None, message="删除成功", code=200):
+    """删除成功响应"""
+    return success_response(data=data, message=message, code=code)
 
 
-def paginated_response(data, page, per_page, total, message="获取成功"):
-    """分页响应便捷函数"""
-    return APIResponse.paginated(data, page, per_page, total, message)
+def forbidden_response(message="禁止访问", code=403):
+    """禁止访问响应"""
+    return error_response(message=message, code=code)

@@ -217,9 +217,6 @@ GET /history/leaderboard?type=daily&limit=20
 ```json
 {
   "code": 400,
-  "message": "标题不能为空",
-  "data": null,
-  "error_code": "EMPTY_TITLE",
-  "details": "标题字段不能为空"
+  "message": "标题不能为空"
 }
 ```

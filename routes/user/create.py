@@ -50,8 +50,8 @@ def create_user():
     try:
         data = request.get_json()
         
-        # 验证必填字段：username、password，且 email 或 mobile 至少提供一个
-        required_fields = ['username', 'password']
+        # 验证必填字段：username、password、mobile
+        required_fields = ['username', 'password', 'mobile']
         for field in required_fields:
             if field not in data:
                 return bad_request_response(
@@ -59,12 +59,11 @@ def create_user():
                     data={'field': field}
                 )
         
-        email_value = (data.get('email') or '').strip() if isinstance(data.get('email'), str) else data.get('email')
         mobile_value = (data.get('mobile') or '').strip() if isinstance(data.get('mobile'), str) else data.get('mobile')
-        if not email_value and not mobile_value:
+        if not mobile_value:
             return bad_request_response(
-                message='Either email or mobile is required',
-                error_code='MISSING_CONTACT_INFO'
+                message='Mobile is required',
+                error_code='MISSING_MOBILE'
             )
         
         # 检查用户名是否已存在
@@ -74,15 +73,7 @@ def create_user():
                 error_code='DUPLICATE_USERNAME'
             )
         
-        # 可选：检查邮箱是否已存在
-        if email_value:
-            if MyUser.query.filter_by(email=email_value).first():
-                return bad_request_response(
-                    message='Email already exists',
-                    error_code='DUPLICATE_EMAIL'
-                )
-        
-        # 可选：检查手机号是否已存在
+        # 检查手机号是否已存在
         if mobile_value:
             if MyUser.query.filter_by(mobile=mobile_value).first():
                 return bad_request_response(
@@ -105,7 +96,6 @@ def create_user():
         # 创建新用户
         user = MyUser(
             username=data['username'],
-            email=email_value,
             password=generate_password_hash(data['password']),
             avatar=data.get('avatar'),
             bio=data.get('bio'),
@@ -145,21 +135,15 @@ def register_user():
                 error_code='MISSING_PASSWORD'
             )
         
-        email_value = (data.get('email') or '').strip() if isinstance(data.get('email'), str) else data.get('email')
         mobile_value = (data.get('mobile') or '').strip() if isinstance(data.get('mobile'), str) else data.get('mobile')
-        if not email_value and not mobile_value:
+        if not mobile_value:
             return bad_request_response(
-                message='Either email or mobile is required',
-                error_code='MISSING_CONTACT_INFO'
+                message='Mobile is required',
+                error_code='MISSING_MOBILE'
             )
         
         # 唯一性检查
-        if email_value and MyUser.query.filter_by(email=email_value).first():
-            return bad_request_response(
-                message='Email already exists',
-                error_code='DUPLICATE_EMAIL'
-            )
-        if mobile_value and MyUser.query.filter_by(mobile=mobile_value).first():
+        if MyUser.query.filter_by(mobile=mobile_value).first():
             return bad_request_response(
                 message='Mobile already exists',
                 error_code='DUPLICATE_MOBILE'
@@ -180,7 +164,6 @@ def register_user():
         
         user = MyUser(
             username=username_candidate,
-            email=email_value,
             mobile=mobile_value,
             password=generate_password_hash(password),
             avatar=UserInfo.avatar,
@@ -213,7 +196,6 @@ def login():
         from werkzeug.security import check_password_hash
         
         data = request.get_json() or {}
-        email = (data.get('email') or '').strip() if isinstance(data.get('email'), str) else data.get('email')
         mobile = (data.get('mobile') or '').strip() if isinstance(data.get('mobile'), str) else data.get('mobile')
         password = data.get('password')
         
@@ -222,17 +204,13 @@ def login():
                 message='Password is required',
                 error_code='MISSING_PASSWORD'
             )
-        if not email and not mobile:
+        if not mobile:
             return bad_request_response(
-                message='Email or mobile is required',
-                error_code='MISSING_LOGIN_INFO'
+                message='Mobile is required',
+                error_code='MISSING_MOBILE'
             )
         
-        user = None
-        if email:
-            user = MyUser.query.filter_by(email=email).first()
-        elif mobile:
-            user = MyUser.query.filter_by(mobile=mobile).first()
+        user = MyUser.query.filter_by(mobile=mobile).first()
         
         if user and check_password_hash(user.password, password):
             return success_response(

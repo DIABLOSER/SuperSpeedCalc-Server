@@ -258,10 +258,7 @@ GET /posts/user/2/like-stats
 ```json
 {
   "code": 400,
-  "message": "已经点赞过",
-  "data": null,
-  "error_code": "ALREADY_LIKED",
-  "details": "用户已经点赞过该帖子"
+  "message": "已经点赞过"
 }
 ```
 

@@ -15,9 +15,9 @@
 |------|------|------|------|
 | page | int | 否 | 页码，默认1 |
 | per_page | int | 否 | 每页数量，默认10，最大100 |
-| sort_by | string | 否 | 排序字段：username, email, mobile, createdAt |
+| sort_by | string | 否 | 排序字段：username, mobile, createdAt |
 | order | string | 否 | 排序方式：asc/desc，默认asc |
-| keyword | string | 否 | 搜索关键词（用户名、邮箱、手机号） |
+| keyword | string | 否 | 搜索关键词（用户名、手机号） |
 
 #### 请求示例
 ```bash
@@ -34,7 +34,6 @@ GET /users?page=1&per_page=20&sort_by=createdAt&order=desc&keyword=test
       {
         "id": 1,
         "username": "test_user",
-        "email": "test@example.com",
         "mobile": "13800138000",
         "avatar": "https://example.com/avatar.jpg",
         "bio": "用户简介",
@@ -76,7 +75,19 @@ GET /users/1
 {
   "code": 200,
   "message": "获取用户信息成功",
-  "data": "{\"id\": 1, \"username\": \"test_user\", \"email\": \"test@example.com\", \"mobile\": \"13800138000\", \"avatar\": \"https://example.com/avatar.jpg\", \"bio\": \"用户简介\", \"experience\": 100, \"boluo\": 50, \"isActive\": true, \"admin\": false, \"sex\": 1, \"createdAt\": \"2025-01-09T10:00:00\"}"
+  "data": {
+    "id": 1,
+    "username": "test_user",
+    "mobile": "13800138000",
+    "avatar": "https://example.com/avatar.jpg",
+    "bio": "用户简介",
+    "experience": 100,
+    "boluo": 50,
+    "isActive": true,
+    "admin": false,
+    "sex": 1,
+    "createdAt": "2025-01-09T10:00:00"
+  }
 }
 ```
 
@@ -88,7 +99,6 @@ GET /users/1
 {
   "username": "test_user",
   "password": "password123",
-  "email": "test@example.com",
   "mobile": "13800138000",
   "avatar": "https://example.com/avatar.jpg",
   "bio": "用户简介",
@@ -101,8 +111,7 @@ GET /users/1
 |------|------|------|------|
 | username | string | 是 | 用户名，唯一 |
 | password | string | 是 | 密码 |
-| email | string | 否 | 邮箱，唯一 |
-| mobile | string | 否 | 手机号，唯一 |
+| mobile | string | 是 | 手机号，唯一 |
 | avatar | string | 否 | 头像URL |
 | bio | string | 否 | 个人简介 |
 | sex | int | 否 | 性别：1男/2女，默认1 |
@@ -112,7 +121,19 @@ GET /users/1
 {
   "code": 201,
   "message": "用户创建成功",
-  "data": "{\"id\": 1, \"username\": \"test_user\", \"email\": \"test@example.com\", \"mobile\": \"13800138000\", \"avatar\": \"https://example.com/avatar.jpg\", \"bio\": \"用户简介\", \"experience\": 0, \"boluo\": 0, \"isActive\": true, \"admin\": false, \"sex\": 1, \"createdAt\": \"2025-01-09T10:00:00\"}"
+  "data": {
+    "id": 1,
+    "username": "test_user",
+    "mobile": "13800138000",
+    "avatar": "https://example.com/avatar.jpg",
+    "bio": "用户简介",
+    "experience": 0,
+    "boluo": 0,
+    "isActive": true,
+    "admin": false,
+    "sex": 1,
+    "createdAt": "2025-01-09T10:00:00"
+  }
 }
 ```
 
@@ -123,7 +144,6 @@ GET /users/1
 ```json
 {
   "username": "new_username",
-  "email": "new@example.com",
   "mobile": "13900139000",
   "avatar": "https://example.com/new_avatar.jpg",
   "bio": "新的个人简介",
@@ -135,7 +155,6 @@ GET /users/1
 | 参数 | 类型 | 必填 | 说明 |
 |------|------|------|------|
 | username | string | 否 | 用户名 |
-| email | string | 否 | 邮箱 |
 | mobile | string | 否 | 手机号 |
 | avatar | string | 否 | 头像URL |
 | bio | string | 否 | 个人简介 |
@@ -150,7 +169,19 @@ GET /users/1
 {
   "code": 200,
   "message": "用户信息更新成功",
-  "data": "{\"id\": 1, \"username\": \"new_username\", \"email\": \"new@example.com\", \"mobile\": \"13900139000\", \"avatar\": \"https://example.com/new_avatar.jpg\", \"bio\": \"新的个人简介\", \"experience\": 100, \"boluo\": 50, \"isActive\": true, \"admin\": false, \"sex\": 2, \"updatedAt\": \"2025-01-09T11:00:00\"}"
+  "data": {
+    "id": 1,
+    "username": "new_username",
+    "mobile": "13900139000",
+    "avatar": "https://example.com/new_avatar.jpg",
+    "bio": "新的个人简介",
+    "experience": 100,
+    "boluo": 50,
+    "isActive": true,
+    "admin": false,
+    "sex": 2,
+    "updatedAt": "2025-01-09T11:00:00"
+  }
 }
 ```
 
@@ -192,7 +223,15 @@ DELETE /users/1
 {
   "code": 200,
   "message": "登录成功",
-  "data": "{\"user\": {\"id\": 1, \"username\": \"test_user\", \"email\": \"test@example.com\", \"avatar\": \"https://example.com/avatar.jpg\"}, \"token\": \"jwt_token_here\"}"
+  "data": {
+    "user": {
+      "id": 1,
+      "username": "test_user",
+      "mobile": "13800138000",
+      "avatar": "https://example.com/avatar.jpg"
+    },
+    "token": "jwt_token_here"
+  }
 }
 ```
 
@@ -204,7 +243,6 @@ DELETE /users/1
 {
   "username": "new_user",
   "password": "password123",
-  "email": "new@example.com",
   "mobile": "13800138000"
 }
 ```
@@ -214,7 +252,19 @@ DELETE /users/1
 {
   "code": 201,
   "message": "注册成功",
-  "data": "{\"id\": 2, \"username\": \"new_user\", \"email\": \"new@example.com\", \"mobile\": \"13800138000\", \"avatar\": \"https://example.com/avatar.jpg\", \"bio\": \"这个人很懒，什么都没留下\", \"experience\": 0, \"boluo\": 0, \"isActive\": true, \"admin\": false, \"sex\": 1, \"createdAt\": \"2025-01-09T12:00:00\"}"
+  "data": {
+    "id": 2,
+    "username": "new_user",
+    "mobile": "13800138000",
+    "avatar": "https://example.com/avatar.jpg",
+    "bio": "这个人很懒，什么都没留下",
+    "experience": 0,
+    "boluo": 0,
+    "isActive": true,
+    "admin": false,
+    "sex": 1,
+    "createdAt": "2025-01-09T12:00:00"
+  }
 }
 ```
 
@@ -288,9 +338,6 @@ DELETE /users/1
 ```json
 {
   "code": 400,
-  "message": "用户名已存在",
-  "data": null,
-  "error_code": "DUPLICATE_USERNAME",
-  "details": "用户名 'test_user' 已被使用"
+  "message": "用户名已存在"
 }
 ```

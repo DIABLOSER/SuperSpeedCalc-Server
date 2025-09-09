@@ -83,7 +83,7 @@ def delete_multiple_images():
         if file_errors:
             result['file_errors'] = file_errors
         
-        return jsonify(result)
+        return success_response(data=result, message=result['message'])
         
     except Exception as e:
         db.session.rollback()
@@ -129,7 +129,7 @@ def clear_all_images():
         if file_errors:
             result['file_errors'] = file_errors
         
-        return jsonify(result)
+        return success_response(data=result, message=result['message'])
         
     except Exception as e:
         db.session.rollback()

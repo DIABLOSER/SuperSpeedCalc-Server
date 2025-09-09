@@ -41,7 +41,7 @@ python start.py
 
 ## 🔧 API 响应格式
 
-✅ **所有API接口已完全标准化**，使用统一的响应格式：
+✅ **所有API接口已完全标准化**，使用简化的响应格式：
 
 > **标准化完成**：所有接口现在都严格按照 `code + message + data` 格式返回响应，确保前后端交互的一致性。
 
@@ -77,19 +77,15 @@ python start.py
 ```json
 {
   "code": 400,
-  "message": "错误描述",
-  "data": null,
-  "error_code": "ERROR_CODE",
-  "details": "详细错误信息"
+  "message": "错误描述"
 }
 ```
 
 ### 响应格式说明
 - **code**: HTTP状态码（200成功，400客户端错误，500服务器错误）
 - **message**: 中文提示信息
-- **data**: 实际数据（JSON对象），错误时为null
-- **error_code**: 错误代码（仅错误响应）
-- **details**: 详细错误信息（仅错误响应）
+- **data**: 实际数据（JSON对象），仅成功响应包含此字段
+- 错误响应只包含 `code` 和 `message` 字段，简化了错误处理
 
 ## 📚 API 接口文档
 

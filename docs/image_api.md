@@ -222,9 +222,6 @@ GET /images/search?q=avatar&page=1&per_page=10
 ```json
 {
   "code": 400,
-  "message": "不支持的文件类型",
-  "data": null,
-  "error_code": "INVALID_FILE_TYPE",
-  "details": "只支持 png, jpg, jpeg, gif, webp, bmp 格式"
+  "message": "不支持的文件类型"
 }
 ```

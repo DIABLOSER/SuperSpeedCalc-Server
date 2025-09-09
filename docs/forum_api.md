@@ -229,9 +229,6 @@ GET /forum/stats?user=1
 ```json
 {
   "code": 400,
-  "message": "作者不存在",
-  "data": null,
-  "error_code": "AUTHOR_NOT_FOUND",
-  "details": "用户ID 999 不存在"
+  "message": "作者不存在"
 }
 ```

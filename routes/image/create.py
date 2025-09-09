@@ -176,7 +176,7 @@ def upload_multiple_images():
         else:
             result['message'] = f"All {len(uploaded_images)} files uploaded successfully"
         
-        return jsonify(result), 201
+        return created_response(data=result, message=result['message'])
         
     except Exception as e:
         db.session.rollback()

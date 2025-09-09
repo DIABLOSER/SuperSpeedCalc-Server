@@ -20,13 +20,12 @@ def get_users():
         page = max(page or 1, 1)
         per_page = min(max(per_page or 10, 1), 100)
 
-        # 搜索关键词（对 username、email、mobile 模糊匹配）
+        # 搜索关键词（对 username、mobile 模糊匹配）
         keyword = (request.args.get('keyword') or request.args.get('q') or '').strip()
 
         # 允许排序的字段白名单
         allowed_fields = {
             'username': MyUser.username,
-            'email': MyUser.email,
             'mobile': MyUser.mobile,
             'experience': MyUser.experience,
             'boluo': MyUser.boluo,
@@ -46,7 +45,6 @@ def get_users():
             query = query.filter(
                 or_(
                     MyUser.username.ilike(pattern),
-                    MyUser.email.ilike(pattern),
                     MyUser.mobile.ilike(pattern)
                 )
             )

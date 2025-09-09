@@ -268,9 +268,6 @@ curl -X POST -F "file=@app-v1.0.1.apk" -F "app_name=SuperSpeedCalc" -F "version_
 ```json
 {
   "code": 400,
-  "message": "version_code 必须是整数",
-  "data": null,
-  "error_code": "INVALID_VERSION_CODE",
-  "details": "版本代码必须是有效的整数"
+  "message": "version_code 必须是整数"
 }
 ```

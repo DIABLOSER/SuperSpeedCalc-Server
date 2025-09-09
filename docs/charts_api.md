@@ -29,7 +29,31 @@ GET /charts?page=1&per_page=20&sort_by=achievement&order=desc
 {
   "code": 200,
   "message": "获取排行榜成功",
-  "data": "{\"list\": [{\"objectId\": 1, \"title\": \"数学挑战\", \"achievement\": 95, \"user\": 1, \"user_info\": {\"id\": 1, \"username\": \"test_user\", \"avatar\": \"https://example.com/avatar.jpg\"}, \"createdAt\": \"2025-01-09T10:00:00\", \"updatedAt\": \"2025-01-09T10:00:00\"}], \"pagination\": {\"page\": 1, \"per_page\": 20, \"total\": 1, \"pages\": 1, \"has_next\": false, \"has_prev\": false}}"
+  "data": {
+    "list": [
+      {
+        "objectId": 1,
+        "title": "数学挑战",
+        "achievement": 95,
+        "user": 1,
+        "user_info": {
+          "id": 1,
+          "username": "test_user",
+          "avatar": "https://example.com/avatar.jpg"
+        },
+        "createdAt": "2025-01-09T10:00:00",
+        "updatedAt": "2025-01-09T10:00:00"
+      }
+    ],
+    "pagination": {
+      "page": 1,
+      "per_page": 20,
+      "total": 1,
+      "pages": 1,
+      "has_next": false,
+      "has_prev": false
+    }
+  }
 }
 ```
 
@@ -216,9 +240,6 @@ GET /charts/stats?user=1
 ```json
 {
   "code": 400,
-  "message": "用户不存在",
-  "data": null,
-  "error_code": "USER_NOT_FOUND",
-  "details": "用户ID 999 不存在"
+  "message": "用户不存在"
 }
 ```

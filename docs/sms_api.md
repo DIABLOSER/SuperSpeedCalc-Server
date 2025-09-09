@@ -41,7 +41,11 @@ curl -X POST http://localhost:5000/sms/send \
 {
   "code": 200,
   "message": "短信验证码发送成功",
-  "data": "{\"phone\": \"13800138000\", \"template\": \"password_reset\", \"sent_at\": \"2025-01-09T10:00:00\"}"
+  "data": {
+    "phone": "13800138000",
+    "template": "password_reset",
+    "sent_at": "2025-01-09T10:00:00"
+  }
 }
 ```
 
@@ -74,7 +78,11 @@ curl -X POST http://localhost:5000/sms/verify \
 {
   "code": 200,
   "message": "短信验证码验证成功",
-  "data": "{\"phone\": \"13800138000\", \"verified\": true, \"verified_at\": \"2025-01-09T10:00:00\"}"
+  "data": {
+    "phone": "13800138000",
+    "verified": true,
+    "verified_at": "2025-01-09T10:00:00"
+  }
 }
 ```
 
@@ -109,7 +117,11 @@ curl -X POST http://localhost:5000/sms/reset-password \
 {
   "code": 200,
   "message": "密码重置成功",
-  "data": "{\"phone\": \"13800138000\", \"user_id\": 1, \"reset_at\": \"2025-01-09T10:00:00\"}"
+  "data": {
+    "phone": "13800138000",
+    "user_id": 1,
+    "reset_at": "2025-01-09T10:00:00"
+  }
 }
 ```
 
@@ -189,10 +201,7 @@ BMOB_CONFIG = {
 ```json
 {
   "code": 400,
-  "message": "手机号格式不正确",
-  "data": null,
-  "error_code": "INVALID_PHONE",
-  "details": "手机号必须是11位数字"
+  "message": "手机号格式不正确"
 }
 ```
 

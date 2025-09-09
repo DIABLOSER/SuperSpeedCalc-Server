@@ -72,7 +72,7 @@ def upload_apk():
         if release_dict:
             result['release'] = release_dict
 
-        return jsonify(result), 201
+        return created_response(data=result, message=result['message'])
     except Exception as e:
         db.session.rollback()
         return internal_error_response(message=str(e), code=500)

@@ -13,8 +13,8 @@ def update_user(object_id):
         user = MyUser.query.get_or_404(object_id)
         data = request.get_json()
         
-        # 更新允许的字段（已移除 score）
-        allowed_fields = ['avatar', 'bio', 'isActive', 'experience', 'boluo', 'admin', 'sex', 'mobile', 'email', 'username']
+        # 更新允许的字段（已移除 score 和 email）
+        allowed_fields = ['avatar', 'bio', 'isActive', 'experience', 'boluo', 'admin', 'sex', 'mobile', 'username']
         for field in allowed_fields:
             if field in data:
                 if field == 'mobile':
@@ -29,18 +29,6 @@ def update_user(object_id):
                         setattr(user, 'mobile', new_mobile)
                     elif new_mobile == '':
                         setattr(user, 'mobile', None)
-                elif field == 'email':
-                    new_email = (data.get('email') or '').strip() if isinstance(data.get('email'), str) else data.get('email')
-                    if new_email and new_email != user.email:
-                        # 唯一性检查
-                        if MyUser.query.filter_by(email=new_email).first():
-                            return bad_request_response(
-                                message='Email already exists',
-                                error_code='DUPLICATE_EMAIL'
-                            )
-                        setattr(user, 'email', new_email)
-                    elif new_email == '':
-                        setattr(user, 'email', None)
                 elif field == 'username':
                     new_username = (data.get('username') or '').strip() if isinstance(data.get('username'), str) else data.get('username')
                     if not new_username:

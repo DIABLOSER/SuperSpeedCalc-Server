@@ -282,10 +282,7 @@ curl -X POST -F "file=@banner.jpg" http://localhost:5000/banners/upload
 ```json
 {
   "code": 400,
-  "message": "无效的动作类型",
-  "data": null,
-  "error_code": "INVALID_ACTION_TYPE",
-  "details": "支持的动作类型：url, app_page, product"
+  "message": "无效的动作类型"
 }
 ```
 
