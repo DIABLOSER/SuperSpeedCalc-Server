@@ -14,7 +14,7 @@ def delete_history(object_id):
         if not history:
             return not_found_response(
                 message='历史记录不存在',
-                error_code='HISTORY_NOT_FOUND'
+                # error_code='HISTORY_NOT_FOUND'
             )
         
         db.session.delete(history)
@@ -26,6 +26,5 @@ def delete_history(object_id):
         db.session.rollback()
         return internal_error_response(
             message='删除历史记录失败',
-            error_code='HISTORY_DELETE_FAILED',
-            details=str(e)
+            # error_code='HISTORY_DELETE_FAILED'
         )

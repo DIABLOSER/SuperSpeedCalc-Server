@@ -15,7 +15,7 @@ def create_history():
         if not data:
             return bad_request_response(
                 message='请求数据不能为空',
-                error_code='EMPTY_REQUEST_DATA'
+                # error_code='EMPTY_REQUEST_DATA'
             )
         
         title = data.get('title')
@@ -25,19 +25,19 @@ def create_history():
         if not title:
             return bad_request_response(
                 message='标题不能为空',
-                error_code='MISSING_TITLE'
+                # error_code='MISSING_TITLE'
             )
         
         if score is None:
             return bad_request_response(
                 message='分数不能为空',
-                error_code='MISSING_SCORE'
+                # error_code='MISSING_SCORE'
             )
         
         if not user:
             return bad_request_response(
                 message='用户ID不能为空',
-                error_code='MISSING_USER_ID'
+                # error_code='MISSING_USER_ID'
             )
         
         # 验证用户是否存在
@@ -45,7 +45,7 @@ def create_history():
         if not user_obj:
             return not_found_response(
                 message='用户不存在',
-                error_code='USER_NOT_FOUND'
+                # error_code='USER_NOT_FOUND'
             )
         
         # 验证score是否为整数
@@ -54,7 +54,7 @@ def create_history():
         except (ValueError, TypeError):
             return bad_request_response(
                 message='分数必须是整数',
-                error_code='INVALID_SCORE_FORMAT'
+                # error_code='INVALID_SCORE_FORMAT'
             )
         
         # 创建历史记录
@@ -76,6 +76,5 @@ def create_history():
         db.session.rollback()
         return internal_error_response(
             message="创建历史记录失败",
-            error_code="HISTORY_CREATION_FAILED",
-            details=str(e)
+            # error_code="HISTORY_CREATION_FAILED"
         )

@@ -35,14 +35,14 @@ def verify_sms_code():
             current_app.logger.warning("❌ 手机号为空")
             return bad_request_response(
                 message='手机号是必需的，请使用 phone 或 phone_number 字段',
-                error_code='MISSING_PHONE'
+                # error_code='MISSING_PHONE'
             )
         
         if not code:
             current_app.logger.warning("❌ 验证码为空")
             return bad_request_response(
                 message='验证码是必需的，请使用 code 或 verification_code 字段',
-                error_code='MISSING_VERIFICATION_CODE'
+                # error_code='MISSING_VERIFICATION_CODE'
             )
         
         # 验证手机号格式（简单验证）
@@ -54,7 +54,7 @@ def verify_sms_code():
             current_app.logger.warning(f"❌ 手机号格式不正确: {phone} (长度: {len(phone) if phone else 0}, 是否数字: {phone.isdigit() if phone else False})")
             return bad_request_response(
                 message='手机号格式不正确',
-                error_code='INVALID_PHONE_FORMAT'
+                # error_code='INVALID_PHONE_FORMAT'
             )
         
         current_app.logger.info(f"✅ 手机号格式验证通过: {phone}")
@@ -68,7 +68,7 @@ def verify_sms_code():
             current_app.logger.warning(f"❌ 验证码格式不正确: {code} (长度: {len(code) if code else 0}, 是否数字: {code.isdigit() if code else False})")
             return bad_request_response(
                 message='验证码格式不正确',
-                error_code='INVALID_VERIFICATION_CODE_FORMAT'
+                # error_code='INVALID_VERIFICATION_CODE_FORMAT'
             )
         
         current_app.logger.info(f"✅ 验证码格式验证通过: {code}")
@@ -118,7 +118,7 @@ def verify_sms_code():
             current_app.logger.info("=" * 50)
             return bad_request_response(
                 message=f'短信验证码验证失败: {error_msg}',
-                error_code='SMS_VERIFICATION_FAILED'
+                # error_code='SMS_VERIFICATION_FAILED'
             )
             
     except Exception as e:
@@ -129,6 +129,5 @@ def verify_sms_code():
         current_app.logger.error("=" * 50)
         return internal_error_response(
             message=f'服务器内部错误: {str(e)}',
-            error_code='SMS_VERIFICATION_SERVICE_ERROR',
-            details=str(e)
+            # error_code='SMS_VERIFICATION_SERVICE_ERROR'
         )

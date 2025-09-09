@@ -13,7 +13,7 @@ def delete_release(object_id):
         if not item:
             return not_found_response(
                 message='发布记录不存在',
-                error_code='RELEASE_NOT_FOUND'
+                # error_code='RELEASE_NOT_FOUND'
             )
 
         db.session.delete(item)
@@ -23,8 +23,7 @@ def delete_release(object_id):
         db.session.rollback()
         return internal_error_response(
             message='删除失败',
-            error_code='RELEASE_DELETE_FAILED',
-            details=str(e)
+            # error_code='RELEASE_DELETE_FAILED'
         )
 
 

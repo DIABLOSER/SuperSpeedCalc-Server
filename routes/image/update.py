@@ -22,8 +22,7 @@ def update_image(object_id):
         image.updatedAt = datetime.utcnow()
         db.session.commit()
         
-        return success_response(data=image.to_dict()
-        )
+        return success_response(data=image.to_dict())
         
     except Exception as e:
         db.session.rollback()

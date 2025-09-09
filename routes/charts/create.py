@@ -17,8 +17,8 @@ def create_chart():
             if field not in data:
                 return bad_request_response(
                     message=f'{field} is required',
-                    error_code='MISSING_REQUIRED_FIELD',
-                    details={'field': field}
+                    # error_code='MISSING_REQUIRED_FIELD',
+                    # details={'field': field}
                 )
         
         # 验证用户是否存在
@@ -26,7 +26,7 @@ def create_chart():
         if not user:
             return not_found_response(
                 message='用户不存在',
-                error_code='USER_NOT_FOUND'
+                # error_code='USER_NOT_FOUND'
             )
         
         # 创建新图表
@@ -39,8 +39,7 @@ def create_chart():
         db.session.add(chart)
         db.session.commit()
         
-        return success_response(data=chart.to_dict(include_user=True)
-        ), 201
+        return success_response(data=chart.to_dict(include_user=True), code=201)
         
     except Exception as e:
         db.session.rollback()

@@ -37,19 +37,23 @@ def get_histories():
         # 转换为字典列表
         history_list = [history.to_dict(include_user=True) for history in histories]
         
+        pagination_info = {
+            "page": page,
+            "per_page": per_page,
+            "total": pagination.total,
+            "pages": pagination.pages,
+            "has_next": pagination.has_next,
+            "has_prev": pagination.has_prev
+        }
         return paginated_response(
-            data=history_list,
-            page=page,
-            per_page=per_page,
-            total=pagination.total,
+            items=history_list,
+            pagination=pagination_info,
             message='获取历史记录列表成功'
         )
         
     except Exception as e:
         return internal_error_response(
             message="获取历史记录列表失败",
-            error_code="GET_HISTORIES_FAILED",
-            details=str(e)
         )
 
 def get_history(object_id):
@@ -60,7 +64,7 @@ def get_history(object_id):
         if not history:
             return not_found_response(
                 message='历史记录不存在',
-                error_code='HISTORY_NOT_FOUND'
+                # # error_code='HISTORY_NOT_FOUND'
             )
         
         history_dict = history.to_dict(include_user=True)
@@ -73,8 +77,7 @@ def get_history(object_id):
     except Exception as e:
         return internal_error_response(
             message="获取历史记录失败",
-            error_code="GET_HISTORY_FAILED",
-            details=str(e)
+            # # error_code="GET_HISTORY_FAILED"
         )
 
 def get_histories_count():
@@ -97,8 +100,7 @@ def get_histories_count():
     except Exception as e:
         return internal_error_response(
             message="获取历史记录总数失败",
-            error_code="GET_HISTORIES_COUNT_FAILED",
-            details=str(e)
+            # # error_code="GET_HISTORIES_COUNT_FAILED"
         )
 
 def get_score_leaderboard():
@@ -189,19 +191,23 @@ def get_score_leaderboard():
         # 计算分页信息
         total_pages = (total_count + per_page - 1) // per_page
         
+        pagination_info = {
+            "page": page,
+            "per_page": per_page,
+            "total": total_count,
+            "pages": total_pages,
+            "has_next": page < total_pages,
+            "has_prev": page > 1
+        }
         return paginated_response(
-            data=leaderboard_list,
-            page=page,
-            per_page=per_page,
-            total=total_count,
+            items=leaderboard_list,
+            pagination=pagination_info,
             message=f'获取{period}排行榜成功'
         )
         
     except Exception as e:
         return internal_error_response(
             message="获取排行榜失败",
-            error_code="GET_LEADERBOARD_FAILED",
-            details=str(e)
         )
 
 def get_user_score_stats():
@@ -211,7 +217,7 @@ def get_user_score_stats():
         if not user_id:
             return bad_request_response(
                 message='用户ID不能为空',
-                error_code='MISSING_USER_ID'
+                # # error_code='MISSING_USER_ID'
             )
         
         # 验证用户是否存在
@@ -219,7 +225,7 @@ def get_user_score_stats():
         if not user:
             return not_found_response(
                 message='用户不存在',
-                error_code='USER_NOT_FOUND'
+                # # error_code='USER_NOT_FOUND'
             )
         
         now = datetime.utcnow()
@@ -344,6 +350,5 @@ def get_user_score_stats():
     except Exception as e:
         return internal_error_response(
             message="获取用户score统计失败",
-            error_code="GET_USER_STATS_FAILED",
-            details=str(e)
+            # # error_code="GET_USER_STATS_FAILED"
         )

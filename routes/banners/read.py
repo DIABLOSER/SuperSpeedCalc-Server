@@ -66,11 +66,17 @@ def get_banners():
         banners = query.limit(per_page).offset((page - 1) * per_page).all()
         pages = (total + per_page - 1) // per_page if per_page else 1
         
+        pagination_info = {
+            "page": page,
+            "per_page": per_page,
+            "total": total,
+            "pages": pages,
+            "has_next": page < pages,
+            "has_prev": page > 1
+        }
         return paginated_response(
-            data=[banner.to_dict() for banner in banners],
-            page=page,
-            per_page=per_page,
-            total=total,
+            items=[banner.to_dict() for banner in banners],
+            pagination=pagination_info,
             message='获取横幅列表成功'
         )
         
@@ -82,8 +88,7 @@ def get_banner(banner_id):
     try:
         banner = Banner.query.get_or_404(banner_id)
         
-        return success_response(data=banner.to_dict()
-        )
+        return success_response(data=banner.to_dict())
         
     except Exception as e:
         return internal_error_response(message=str(e), code=500)
@@ -117,8 +122,7 @@ def get_banner_stats():
             from models import MyUser
             admin_user = MyUser.query.get(admin_user_id)
             if not admin_user or not admin_user.admin:
-                return internal_error_response(message='Permission denied. Admin access required.'
-                , code=403)
+                return internal_error_response(message='Permission denied. Admin access required.', code=403)
         
         # 统计基本数据
         total_banners = Banner.query.count()

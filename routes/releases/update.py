@@ -13,7 +13,7 @@ def update_release(object_id):
         if not item:
             return not_found_response(
                 message='发布记录不存在',
-                error_code='RELEASE_NOT_FOUND'
+                # error_code='RELEASE_NOT_FOUND'
             )
 
         data = request.get_json() or {}
@@ -28,7 +28,7 @@ def update_release(object_id):
             except Exception:
                 return bad_request_response(
                     message='version_code 必须是整数',
-                    error_code='INVALID_VERSION_CODE'
+                    # error_code='INVALID_VERSION_CODE'
                 )
         if 'changelog' in data:
             item.changelog = data['changelog']
@@ -53,8 +53,7 @@ def update_release(object_id):
         db.session.rollback()
         return internal_error_response(
             message='更新失败',
-            error_code='RELEASE_UPDATE_FAILED',
-            details=str(e)
+            # error_code='RELEASE_UPDATE_FAILED'
         )
 
 

@@ -80,19 +80,23 @@ def get_posts():
         posts = query.limit(per_page).offset((page - 1) * per_page).all()
         pages = (total + per_page - 1) // per_page if per_page else 1
         
+        pagination_info = {
+            "page": page,
+            "per_page": per_page,
+            "total": total,
+            "pages": pages,
+            "has_next": page < pages,
+            "has_prev": page > 1
+        }
         return paginated_response(
-            data=[post.to_dict(include_author=True, user_id=user_id, sync_like_count=True, sync_reply_count=True) for post in posts],
-            page=page,
-            per_page=per_page,
-            total=total,
+            items=[post.to_dict(include_author=True, user_id=user_id, sync_like_count=True, sync_reply_count=True) for post in posts],
+            pagination=pagination_info,
             message="获取帖子列表成功"
         )
         
     except Exception as e:
         return internal_error_response(
             message="获取帖子列表失败",
-            error_code="GET_POSTS_FAILED",
-            details=str(e)
         )
 
 def get_post(post_id):
@@ -106,7 +110,7 @@ def get_post(post_id):
         if not post.is_visible_to_user(user_id):
             return forbidden_response(
                 message="帖子不可见或未审核通过",
-                error_code="POST_NOT_VISIBLE"
+                # error_code="POST_NOT_VISIBLE"
             )
         
         return success_response(
@@ -117,8 +121,7 @@ def get_post(post_id):
     except Exception as e:
         return internal_error_response(
             message="获取帖子详情失败",
-            error_code="GET_POST_FAILED",
-            details=str(e)
+            # error_code="GET_POST_FAILED"
         )
 
 def get_user_posts(user_id):
@@ -173,8 +176,7 @@ def get_user_posts(user_id):
     except Exception as e:
         return internal_error_response(
             message="获取用户帖子列表失败",
-            error_code="GET_USER_POSTS_FAILED",
-            details=str(e)
+            # error_code="GET_USER_POSTS_FAILED"
         )
 
 def get_posts_by_audit_state(audit_state):
@@ -186,8 +188,8 @@ def get_posts_by_audit_state(audit_state):
             from utils.response import bad_request_response
             return bad_request_response(
                 message=f'无效的审核状态。有效状态: {list(valid_states.keys())}',
-                error_code='INVALID_AUDIT_STATE',
-                details={'valid_states': list(valid_states.keys())}
+                # error_code='INVALID_AUDIT_STATE',
+                # details={'valid_states': list(valid_states.keys())}
             )
         
         # 分页参数
@@ -222,6 +224,5 @@ def get_posts_by_audit_state(audit_state):
     except Exception as e:
         return internal_error_response(
             message="获取审核状态帖子列表失败",
-            error_code="GET_POSTS_BY_AUDIT_STATE_FAILED",
-            details=str(e)
+            # error_code="GET_POSTS_BY_AUDIT_STATE_FAILED"
         )

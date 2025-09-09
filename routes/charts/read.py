@@ -44,18 +44,23 @@ def get_charts():
         items = query.limit(per_page).offset((page - 1) * per_page).all()
         total = query.count()
         
+        pages = (total + per_page - 1) // per_page if per_page else 1
+        pagination_info = {
+            "page": page,
+            "per_page": per_page,
+            "total": total,
+            "pages": pages,
+            "has_next": page < pages,
+            "has_prev": page > 1
+        }
         return paginated_response(
-            data=[chart.to_dict(include_user=True) for chart in items],
-            page=page,
-            per_page=per_page,
-            total=total,
+            items=[chart.to_dict(include_user=True) for chart in items],
+            pagination=pagination_info,
             message="图表数据获取成功"
         )
     except Exception as e:
         return internal_error_response(
             message="获取图表数据失败",
-            error_code="CHARTS_FETCH_FAILED",
-            details=str(e)
         )
 
 def get_chart(object_id):
@@ -70,7 +75,7 @@ def get_chart(object_id):
     except Exception as e:
         return not_found_response(
             message="图表不存在",
-            error_code="CHART_NOT_FOUND"
+            # error_code="CHART_NOT_FOUND"
         )
 
 def get_leaderboard():
@@ -98,18 +103,23 @@ def get_leaderboard():
         total = query.count()
         charts = query.limit(per_page).offset((page - 1) * per_page).all()
 
+        pages = (total + per_page - 1) // per_page if per_page else 1
+        pagination_info = {
+            "page": page,
+            "per_page": per_page,
+            "total": total,
+            "pages": pages,
+            "has_next": page < pages,
+            "has_prev": page > 1
+        }
         return paginated_response(
-            data=[chart.to_dict(include_user=True) for chart in charts],
-            page=page,
-            per_page=per_page,
-            total=total,
+            items=[chart.to_dict(include_user=True) for chart in charts],
+            pagination=pagination_info,
             message="排行榜数据获取成功"
         )
     except Exception as e:
         return internal_error_response(
             message="获取排行榜数据失败",
-            error_code="LEADERBOARD_FETCH_FAILED",
-            details=str(e)
         )
 
 def get_rank_by_title_achievement():
@@ -128,19 +138,19 @@ def get_rank_by_title_achievement():
         if not title:
             return bad_request_response(
                 message='title is required',
-                error_code='MISSING_TITLE'
+                # error_code='MISSING_TITLE'
             )
         if not achievement_str:
             return bad_request_response(
                 message='achievement is required',
-                error_code='MISSING_ACHIEVEMENT'
+                # error_code='MISSING_ACHIEVEMENT'
             )
         try:
             achievement = float(achievement_str)
         except ValueError:
             return bad_request_response(
                 message='achievement must be a number',
-                error_code='INVALID_ACHIEVEMENT_FORMAT'
+                # error_code='INVALID_ACHIEVEMENT_FORMAT'
             )
 
         base_query = Charts.query
@@ -172,8 +182,7 @@ def get_rank_by_title_achievement():
     except Exception as e:
         return internal_error_response(
             message="查询排名失败",
-            error_code="RANK_QUERY_FAILED",
-            details=str(e)
+            # error_code="RANK_QUERY_FAILED"
         )
 
 def get_user_rank_by_title():
@@ -190,12 +199,12 @@ def get_user_rank_by_title():
         if not user_id:
             return bad_request_response(
                 message='user is required',
-                error_code='MISSING_USER_ID'
+                # error_code='MISSING_USER_ID'
             )
         if not title:
             return bad_request_response(
                 message='title is required',
-                error_code='MISSING_TITLE'
+                # error_code='MISSING_TITLE'
             )
 
         # 查询用户在指定title下的成绩记录
@@ -204,7 +213,7 @@ def get_user_rank_by_title():
         if not user_chart:
             return not_found_response(
                 message='No record found for this user and title',
-                error_code='USER_RECORD_NOT_FOUND'
+                # error_code='USER_RECORD_NOT_FOUND'
             )
 
         # 获取用户的成绩
@@ -235,6 +244,5 @@ def get_user_rank_by_title():
     except Exception as e:
         return internal_error_response(
             message="查询用户排名失败",
-            error_code="USER_RANK_QUERY_FAILED",
-            details=str(e)
+            # error_code="USER_RANK_QUERY_FAILED"
         ) 

@@ -63,14 +63,14 @@ def create_user():
         if not mobile_value:
             return bad_request_response(
                 message='Mobile is required',
-                error_code='MISSING_MOBILE'
+                # error_code='MISSING_MOBILE'
             )
         
         # 检查用户名是否已存在
         if MyUser.query.filter_by(username=data['username']).first():
             return bad_request_response(
                 message='Username already exists',
-                error_code='DUPLICATE_USERNAME'
+                # error_code='DUPLICATE_USERNAME'
             )
         
         # 检查手机号是否已存在
@@ -78,7 +78,7 @@ def create_user():
             if MyUser.query.filter_by(mobile=mobile_value).first():
                 return bad_request_response(
                     message='Mobile already exists',
-                    error_code='DUPLICATE_MOBILE'
+                    # error_code='DUPLICATE_MOBILE'
                 )
         
         # 解析生日（可选，格式 YYYY-MM-DD）
@@ -89,8 +89,8 @@ def create_user():
             except ValueError:
                 return bad_request_response(
                     message='Invalid birthday format, expected YYYY-MM-DD',
-                    error_code='INVALID_DATE_FORMAT',
-                    details={'field': 'birthday', 'expected_format': 'YYYY-MM-DD'}
+                    # error_code='INVALID_DATE_FORMAT',
+                    # details={'field': 'birthday', 'expected_format': 'YYYY-MM-DD'}
                 )
         
         # 创建新用户
@@ -128,21 +128,21 @@ def register_user():
         if not password:
             return bad_request_response(
                 message='Password is required',
-                error_code='MISSING_PASSWORD'
+                # error_code='MISSING_PASSWORD'
             )
         
         mobile_value = (data.get('mobile') or '').strip() if isinstance(data.get('mobile'), str) else data.get('mobile')
         if not mobile_value:
             return bad_request_response(
                 message='Mobile is required',
-                error_code='MISSING_MOBILE'
+                # error_code='MISSING_MOBILE'
             )
         
         # 唯一性检查
         if MyUser.query.filter_by(mobile=mobile_value).first():
             return bad_request_response(
                 message='Mobile already exists',
-                error_code='DUPLICATE_MOBILE'
+                # error_code='DUPLICATE_MOBILE'
             )
         
         # 生成用户名（安卓端逻辑）
@@ -194,12 +194,12 @@ def login():
         if not password:
             return bad_request_response(
                 message='Password is required',
-                error_code='MISSING_PASSWORD'
+                # error_code='MISSING_PASSWORD'
             )
         if not mobile:
             return bad_request_response(
                 message='Mobile is required',
-                error_code='MISSING_MOBILE'
+                # error_code='MISSING_MOBILE'
             )
         
         user = MyUser.query.filter_by(mobile=mobile).first()

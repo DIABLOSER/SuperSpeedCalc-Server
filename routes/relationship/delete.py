@@ -15,8 +15,7 @@ def unfollow_user(user_id, target_user_id):
         
         # 检查是否尝试取消关注自己
         if user_id == target_user_id:
-            return internal_error_response(message='Cannot unfollow yourself'
-            , code=400)
+            return internal_error_response(message='Cannot unfollow yourself', code=400)
         
         # 查找关注关系
         relationship = UserRelationship.query.filter_by(
@@ -25,8 +24,7 @@ def unfollow_user(user_id, target_user_id):
         ).first()
         
         if not relationship:
-            return internal_error_response(message='Not following this user'
-            , code=400)
+            return internal_error_response(message='Not following this user', code=400)
         
         # 删除关注关系
         db.session.delete(relationship)

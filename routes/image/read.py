@@ -35,18 +35,22 @@ def get_images():
         # 分页
         images = query.paginate(page=page, per_page=per_page, error_out=False)
         
+        pagination_info = {
+            "page": page,
+            "per_page": per_page,
+            "total": images.total,
+            "pages": images.pages,
+            "has_next": images.has_next,
+            "has_prev": images.has_prev
+        }
         return paginated_response(
-            data=[image.to_dict() for image in images.items],
-            page=page,
-            per_page=per_page,
-            total=images.total,
+            items=[image.to_dict() for image in images.items],
+            pagination=pagination_info,
             message="获取图片列表成功"
         )
     except Exception as e:
         return internal_error_response(
             message="获取图片列表失败",
-            error_code="GET_IMAGES_FAILED",
-            details=str(e)
         )
 
 #根据 objectId 获取单个图片
@@ -62,8 +66,7 @@ def get_image(object_id):
     except Exception as e:
         return not_found_response(
             message="图片不存在",
-            error_code="IMAGE_NOT_FOUND",
-            details=str(e)
+            # error_code="IMAGE_NOT_FOUND"
         )
 
 #获取图片统计信息
@@ -84,8 +87,7 @@ def get_image_stats():
     except Exception as e:
         return internal_error_response(
             message="获取图片统计信息失败",
-            error_code="GET_IMAGE_STATS_FAILED",
-            details=str(e)
+            # error_code="GET_IMAGE_STATS_FAILED"
         )
 
 #搜索图片（按文件名）
@@ -100,7 +102,7 @@ def search_images():
             from utils.response import bad_request_response
             return bad_request_response(
                 message="搜索关键词是必需的",
-                error_code="MISSING_SEARCH_QUERY"
+                # error_code="MISSING_SEARCH_QUERY"
             )
         
         # 按文件名搜索
@@ -126,6 +128,5 @@ def search_images():
     except Exception as e:
         return internal_error_response(
             message="搜索图片失败",
-            error_code="SEARCH_IMAGES_FAILED",
-            details=str(e)
+            # error_code="SEARCH_IMAGES_FAILED"
         ) 

@@ -28,8 +28,7 @@ def get_post_replies(post_id):
         
         # 检查帖子是否可见
         if not post.is_visible_to_user(viewer_id):
-            return internal_error_response(message='Post not visible or not approved'
-            , code=403)
+            return internal_error_response(message='Post not visible or not approved', code=403)
         
         # 构建查询
         query = Reply.query.filter_by(post=post_id)
@@ -91,15 +90,13 @@ def get_reply(reply_id):
         
         # 检查帖子是否可见
         if not reply.post_ref.is_visible_to_user(viewer_id):
-            return internal_error_response(message='Post not visible or not approved'
-            , code=403)
+            return internal_error_response(message='Post not visible or not approved', code=403)
         
         include_children = request.args.get('include_children', 'true').lower() == 'true'
         
         include_full_post = request.args.get('include_full_post', 'false').lower() == 'true'
         
-        return success_response(data=reply.to_dict(include_details=True, include_children=include_children, include_full_post=include_full_post)
-        )
+        return success_response(data=reply.to_dict(include_details=True, include_children=include_children, include_full_post=include_full_post))
         
     except Exception as e:
         return internal_error_response(message=str(e), code=500)
@@ -187,8 +184,7 @@ def get_first_level_replies(post_id):
         
         # 检查帖子是否可见
         if not post.is_visible_to_user(viewer_id):
-            return internal_error_response(message='Post not visible or not approved'
-            , code=403)
+            return internal_error_response(message='Post not visible or not approved', code=403)
         
         # 只获取一级评论
         query = Reply.query.filter_by(post=post_id).filter(Reply.parent.is_(None))

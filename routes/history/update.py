@@ -14,7 +14,7 @@ def update_history(object_id):
         if not history:
             return not_found_response(
                 message='历史记录不存在',
-                error_code='HISTORY_NOT_FOUND'
+                # error_code='HISTORY_NOT_FOUND'
             )
         
         data = request.get_json()
@@ -22,7 +22,7 @@ def update_history(object_id):
         if not data:
             return bad_request_response(
                 message='请求数据不能为空',
-                error_code='EMPTY_REQUEST_DATA'
+                # error_code='EMPTY_REQUEST_DATA'
             )
         
         # 更新字段
@@ -30,7 +30,7 @@ def update_history(object_id):
             if not data['title']:
                 return bad_request_response(
                     message='标题不能为空',
-                    error_code='EMPTY_TITLE'
+                    # error_code='EMPTY_TITLE'
                 )
             history.title = data['title']
         
@@ -41,14 +41,14 @@ def update_history(object_id):
             except (ValueError, TypeError):
                 return bad_request_response(
                     message='分数必须是整数',
-                    error_code='INVALID_SCORE'
+                    # error_code='INVALID_SCORE'
                 )
         
         if 'user' in data:
             if not data['user']:
                 return bad_request_response(
                     message='用户ID不能为空',
-                    error_code='EMPTY_USER_ID'
+                    # error_code='EMPTY_USER_ID'
                 )
             history.user = data['user']
         
@@ -63,6 +63,5 @@ def update_history(object_id):
         db.session.rollback()
         return internal_error_response(
             message='更新历史记录失败',
-            error_code='HISTORY_UPDATE_FAILED',
-            details=str(e)
+            # error_code='HISTORY_UPDATE_FAILED'
         )

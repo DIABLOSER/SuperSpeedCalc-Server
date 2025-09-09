@@ -18,7 +18,7 @@ def create_post():
         if not user_id or not content:
             return bad_request_response(
                 message='User ID and content are required',
-                error_code='MISSING_REQUIRED_FIELDS'
+                # error_code='MISSING_REQUIRED_FIELDS'
             )
         
         # 验证用户是否存在
@@ -26,14 +26,14 @@ def create_post():
         if not user:
             return not_found_response(
                 message='User not found',
-                error_code='USER_NOT_FOUND'
+                # error_code='USER_NOT_FOUND'
             )
         
         # 检查内容长度
         if len(content.strip()) == 0:
             return bad_request_response(
                 message='Content cannot be empty',
-                error_code='EMPTY_CONTENT'
+                # error_code='EMPTY_CONTENT'
             )
         
         # 创建帖子
@@ -61,6 +61,5 @@ def create_post():
         db.session.rollback()
         return internal_error_response(
             message="创建帖子失败",
-            error_code="POST_CREATION_FAILED",
-            details=str(e)
+            # error_code="POST_CREATION_FAILED"
         )

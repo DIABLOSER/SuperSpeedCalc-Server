@@ -18,15 +18,13 @@ def update_banner(banner_id):
         if admin_user_id:
             admin_user = MyUser.query.get(admin_user_id)
             if not admin_user or not admin_user.admin:
-                return internal_error_response(message='Permission denied. Admin access required.'
-                , code=403)
+                return internal_error_response(message='Permission denied. Admin access required.', code=403)
         
         # 更新允许的字段
         if 'title' in data:
             title = data['title'].strip() if data['title'] else ''
             if not title:
-                return internal_error_response(message='Title cannot be empty'
-                , code=400)
+                return internal_error_response(message='Title cannot be empty', code=400)
             banner.title = title
         
         if 'show' in data:
@@ -70,13 +68,11 @@ def update_banner_sort_order(banner_id):
         if admin_user_id:
             admin_user = MyUser.query.get(admin_user_id)
             if not admin_user or not admin_user.admin:
-                return internal_error_response(message='Permission denied. Admin access required.'
-                , code=403)
+                return internal_error_response(message='Permission denied. Admin access required.', code=403)
         
         sort_order = data.get('sort_order')
         if sort_order is None:
-            return internal_error_response(message='sort_order is required'
-            , code=400)
+            return internal_error_response(message='sort_order is required', code=400)
         
         old_sort_order = banner.sort_order
         banner.sort_order = int(sort_order)
@@ -105,8 +101,7 @@ def track_banner_view(banner_id):
         
         # 检查横幅是否处于活跃状态
         if not banner.is_active():
-            return internal_error_response(message='Banner is not active'
-            , code=400)
+            return internal_error_response(message='Banner is not active', code=400)
         
         return success_response(
             data={
@@ -126,12 +121,10 @@ def track_banner_click(banner_id):
         
         # 检查横幅是否处于活跃状态且可点击
         if not banner.is_active():
-            return internal_error_response(message='Banner is not active'
-            , code=400)
+            return internal_error_response(message='Banner is not active', code=400)
         
         if not banner.click:
-            return internal_error_response(message='Banner is not clickable'
-            , code=400)
+            return internal_error_response(message='Banner is not clickable', code=400)
         
         return success_response(
             data={

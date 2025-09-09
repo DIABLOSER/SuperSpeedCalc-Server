@@ -4,8 +4,8 @@ class MyUser(BaseModel):
     """用户表 - 存储系统用户信息"""
     __tablename__ = 'my_user'
     
-    # 用户名，最大50字符，唯一且不可为空，用于登录和显示
-    username = db.Column(db.String(50), unique=True, nullable=False)
+    # 用户名，最大50字符，可为空，用于登录和显示
+    username = db.Column(db.String(50))
     
     # 手机号，最大20字符，唯一且可为空
     mobile = db.Column(db.String(20), unique=True)
@@ -18,8 +18,6 @@ class MyUser(BaseModel):
     
     # 用户个人简介，文本类型，可为空，用于个人资料展示
     bio = db.Column(db.Text)
-    
-    
     
     # 用户经验值，整数类型，默认0，用于记录用户的经验积累
     experience = db.Column(db.Integer, default=0)

@@ -22,8 +22,7 @@ def update_chart(object_id):
         chart.updatedAt = datetime.utcnow()
         db.session.commit()
         
-        return success_response(data=chart.to_dict(include_user=True)
-        )
+        return success_response(data=chart.to_dict(include_user=True))
         
     except Exception as e:
         db.session.rollback()

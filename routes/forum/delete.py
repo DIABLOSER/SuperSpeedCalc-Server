@@ -13,8 +13,7 @@ def delete_forum_post(object_id):
         db.session.delete(post)
         db.session.commit()
         
-        return deleted_response(message='Forum post deleted successfully'
-        )
+        return deleted_response(message='Forum post deleted successfully')
         
     except Exception as e:
         db.session.rollback()

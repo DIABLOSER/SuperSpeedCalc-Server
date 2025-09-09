@@ -24,7 +24,7 @@ def send_sms_code():
             current_app.logger.warning("手机号为空")
             return bad_request_response(
                 message='手机号是必需的，请使用 phone 或 phone_number 字段',
-                error_code='MISSING_PHONE'
+                # error_code='MISSING_PHONE'
             )
         
         # 验证手机号格式（简单验证）
@@ -32,7 +32,7 @@ def send_sms_code():
             current_app.logger.warning(f"手机号格式不正确: {phone}")
             return bad_request_response(
                 message='手机号格式不正确',
-                error_code='INVALID_PHONE_FORMAT'
+                # error_code='INVALID_PHONE_FORMAT'
             )
         
         # 初始化Bmob
@@ -64,13 +64,12 @@ def send_sms_code():
             current_app.logger.error(f"短信发送失败: {error_msg}")
             return internal_error_response(
                 message=f'短信验证码发送失败: {error_msg}',
-                error_code='SMS_SEND_FAILED'
+                # error_code='SMS_SEND_FAILED'
             )
             
     except Exception as e:
         current_app.logger.error(f"发送短信验证码异常: {str(e)}")
         return internal_error_response(
             message=f'服务器内部错误: {str(e)}',
-            error_code='SMS_SERVICE_ERROR',
-            details=str(e)
+            # error_code='SMS_SERVICE_ERROR'
         )

@@ -66,8 +66,8 @@ def create_image():
             if field not in data:
                 return bad_request_response(
                     message=f'{field} is required',
-                    error_code='MISSING_REQUIRED_FIELD',
-                    details={'field': field}
+                    # error_code='MISSING_REQUIRED_FIELD',
+                    # details={'field': field}
                 )
         
         # 创建新图片记录
@@ -81,8 +81,7 @@ def create_image():
         db.session.add(image)
         db.session.commit()
         
-        return success_response(data=image.to_dict()
-        ), 201
+        return success_response(data=image.to_dict(), code=201)
         
     except Exception as e:
         db.session.rollback()
@@ -113,8 +112,9 @@ def upload_single_image():
         
         return success_response(
             data=image.to_dict(),
-            message='Image uploaded successfully'
-        ), 201
+            message='Image uploaded successfully',
+            code=201
+        )
         
     except ValueError as e:
         return internal_error_response(message=str(e), code=400)

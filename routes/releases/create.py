@@ -17,8 +17,8 @@ def create_release():
             if data.get(field) in [None, '']:
                 return bad_request_response(
                     message=f'{field} 不能为空',
-                    error_code='MISSING_REQUIRED_FIELD',
-                    details={'field': field}
+                    # error_code='MISSING_REQUIRED_FIELD',
+                    # details={'field': field}
                 )
 
         # 校验类型
@@ -27,7 +27,7 @@ def create_release():
         except Exception:
             return bad_request_response(
                 message='version_code 必须是整数',
-                error_code='INVALID_VERSION_CODE'
+                # error_code='INVALID_VERSION_CODE'
             )
 
         release = AppRelease(
@@ -53,8 +53,7 @@ def create_release():
         db.session.rollback()
         return internal_error_response(
             message='创建失败',
-            error_code='RELEASE_CREATE_FAILED',
-            details=str(e)
+            # error_code='RELEASE_CREATE_FAILED'
         )
 
         

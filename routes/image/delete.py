@@ -27,8 +27,7 @@ def delete_image(object_id):
             # 即使文件删除失败，数据库记录已经删除成功
             print(f"Warning: Failed to delete physical file {file_path}: {file_error}")
         
-        return deleted_response(message='Image deleted successfully'
-        )
+        return deleted_response(message='Image deleted successfully')
         
     except Exception as e:
         db.session.rollback()

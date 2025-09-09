@@ -16,8 +16,7 @@ def follow_user(user_id, target_user_id):
         
         # 检查是否尝试关注自己
         if user_id == target_user_id:
-            return internal_error_response(message='Cannot follow yourself'
-            , code=400)
+            return internal_error_response(message='Cannot follow yourself', code=400)
         
         # 检查是否已经关注
         existing_relationship = UserRelationship.query.filter_by(
@@ -26,8 +25,7 @@ def follow_user(user_id, target_user_id):
         ).first()
         
         if existing_relationship:
-            return internal_error_response(message='Already following this user'
-            , code=400)
+            return internal_error_response(message='Already following this user', code=400)
         
         # 创建关注关系
         relationship = UserRelationship(

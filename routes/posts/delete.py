@@ -16,8 +16,7 @@ def delete_post(post_id):
         is_admin = data.get('is_admin', False)  # 是否为管理员操作
         
         if not user_id:
-            return internal_error_response(message='User ID is required'
-            , code=400)
+            return internal_error_response(message='User ID is required', code=400)
         
         # 权限检查：作者或管理员可以删除帖子
         if user_id == post.user:
@@ -27,12 +26,10 @@ def delete_post(post_id):
             # 验证管理员权限
             admin_user = MyUser.query.get(user_id)
             if not admin_user or not admin_user.admin:
-                return internal_error_response(message='Permission denied. Admin access required.'
-                , code=403)
+                return internal_error_response(message='Permission denied. Admin access required.', code=403)
             delete_reason = f'Deleted by admin: {admin_user.username}'
         else:
-            return internal_error_response(message='Permission denied. Only the author or admin can delete this post.'
-            , code=403)
+            return internal_error_response(message='Permission denied. Only the author or admin can delete this post.', code=403)
         
         # 记录被删除的帖子信息（用于日志）
         post_info = {

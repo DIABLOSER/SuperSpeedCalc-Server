@@ -17,8 +17,8 @@ def create_forum_post():
             if field not in data:
                 return bad_request_response(
                     message=f'{field} is required',
-                    error_code='MISSING_REQUIRED_FIELD',
-                    details={'field': field}
+                    # error_code='MISSING_REQUIRED_FIELD',
+                    # details={'field': field}
                 )
         
         # 验证作者是否存在
@@ -26,7 +26,7 @@ def create_forum_post():
         if not author:
             return not_found_response(
                 message='作者不存在',
-                error_code='AUTHOR_NOT_FOUND'
+                # error_code='AUTHOR_NOT_FOUND'
             )
         
         # 创建新帖子
@@ -42,8 +42,7 @@ def create_forum_post():
         db.session.add(post)
         db.session.commit()
         
-        return success_response(data=post.to_dict(include_user=True)
-        ), 201
+        return success_response(data=post.to_dict(include_user=True)), 201
         
     except Exception as e:
         db.session.rollback()

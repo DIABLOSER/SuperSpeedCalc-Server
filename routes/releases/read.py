@@ -30,18 +30,22 @@ def get_releases():
         pagination = query.paginate(page=page, per_page=per_page, error_out=False)
         items = [x.to_dict() for x in pagination.items]
 
+        pagination_info = {
+            "page": page,
+            "per_page": per_page,
+            "total": pagination.total,
+            "pages": pagination.pages,
+            "has_next": pagination.has_next,
+            "has_prev": pagination.has_prev
+        }
         return paginated_response(
-            data=items,
-            page=page,
-            per_page=per_page,
-            total=pagination.total,
+            items=items,
+            pagination=pagination_info,
             message='获取发布记录成功'
         )
     except Exception as e:
         return internal_error_response(
             message='获取失败',
-            error_code='RELEASE_GET_FAILED',
-            details=str(e)
         )
 
 
@@ -51,7 +55,7 @@ def get_release(object_id):
         if not item:
             return not_found_response(
                 message='发布记录不存在',
-                error_code='RELEASE_NOT_FOUND'
+                # error_code='RELEASE_NOT_FOUND'
             )
         return success_response(
             data=item.to_dict(),
@@ -60,8 +64,6 @@ def get_release(object_id):
     except Exception as e:
         return internal_error_response(
             message='获取失败',
-            error_code='RELEASE_GET_FAILED',
-            details=str(e)
         )
 
 
@@ -86,8 +88,6 @@ def get_releases_count():
     except Exception as e:
         return internal_error_response(
             message='获取失败',
-            error_code='RELEASE_GET_FAILED',
-            details=str(e)
         )
 
 

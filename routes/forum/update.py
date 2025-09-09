@@ -22,8 +22,7 @@ def update_forum_post(object_id):
         post.updatedAt = datetime.utcnow()
         db.session.commit()
         
-        return success_response(data=post.to_dict(include_user=True)
-        )
+        return success_response(data=post.to_dict(include_user=True))
         
     except Exception as e:
         db.session.rollback()

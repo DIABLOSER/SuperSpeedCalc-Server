@@ -13,8 +13,7 @@ def delete_chart(object_id):
         db.session.delete(chart)
         db.session.commit()
         
-        return deleted_response(message='Chart deleted successfully'
-        )
+        return deleted_response(message='Chart deleted successfully')
         
     except Exception as e:
         db.session.rollback()

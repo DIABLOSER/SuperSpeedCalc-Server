@@ -17,8 +17,7 @@ def delete_banner(banner_id):
         if admin_user_id:
             admin_user = MyUser.query.get(admin_user_id)
             if not admin_user or not admin_user.admin:
-                return internal_error_response(message='Permission denied. Admin access required.'
-                , code=403)
+                return internal_error_response(message='Permission denied. Admin access required.', code=403)
         
         # 记录被删除的横幅信息
         banner_info = {
@@ -33,8 +32,7 @@ def delete_banner(banner_id):
         db.session.delete(banner)
         db.session.commit()
         
-        return created_response(data=banner_info
-        , message='Banner deleted successfully')
+        return created_response(data=banner_info, message='Banner deleted successfully')
         
     except Exception as e:
         db.session.rollback()
