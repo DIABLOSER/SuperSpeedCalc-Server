@@ -57,12 +57,12 @@ GET /banners?page=1&per_page=20&status=active
 ```
 
 ### 2. 获取单个横幅
-**GET** `/banners/{id}`
+**GET** `/banners/{banner_id}`
 
 #### 请求参数
 | 参数 | 类型 | 必填 | 说明 |
 |------|------|------|------|
-| id | int | 是 | 横幅ID |
+| banner_id | string | 是 | 横幅ID |
 
 #### 请求示例
 ```bash
@@ -77,33 +77,99 @@ GET /banners/1
   "data": {
     "objectId": 1,
     "title": "欢迎横幅",
-    "image_url": "https://example.com/banner1.jpg",
-    "action_type": "url",
-    "action_value": "https://example.com",
-    "status": "active",
+    "show": true,
+    "click": true,
+    "content": "横幅内容描述",
+    "action": "https://example.com",
+    "imageurl": "https://example.com/banner1.jpg",
     "sort_order": 1,
-    "start_date": "2025-01-09T00:00:00",
-    "end_date": "2025-12-31T23:59:59",
     "createdAt": "2025-01-09T10:00:00",
     "updatedAt": "2025-01-09T10:00:00"
   }
 }
 ```
 
-### 3. 创建横幅
+### 3. 获取活跃横幅列表
+**GET** `/banners/active`
+
+#### 请求参数
+| 参数 | 类型 | 必填 | 说明 |
+|------|------|------|------|
+| limit | int | 否 | 限制返回数量 |
+
+#### 请求示例
+```bash
+GET /banners/active?limit=5
+```
+
+#### 响应示例
+```json
+{
+  "code": 200,
+  "message": "获取活跃横幅列表成功",
+  "data": {
+    "banners": [
+      {
+        "objectId": 1,
+        "title": "欢迎横幅",
+        "show": true,
+        "click": true,
+        "content": "横幅内容描述",
+        "action": "https://example.com",
+        "imageurl": "https://example.com/banner1.jpg",
+        "sort_order": 1,
+        "createdAt": "2025-01-09T10:00:00",
+        "updatedAt": "2025-01-09T10:00:00"
+      }
+    ],
+    "total": 1,
+    "action_types": ["url", "app", "page"]
+  }
+}
+```
+
+### 4. 获取横幅统计信息
+**GET** `/banners/stats`
+
+#### 请求参数
+| 参数 | 类型 | 必填 | 说明 |
+|------|------|------|------|
+| admin_user_id | string | 是 | 管理员用户ID |
+
+#### 请求示例
+```bash
+GET /banners/stats?admin_user_id=1
+```
+
+#### 响应示例
+```json
+{
+  "code": 200,
+  "message": "获取横幅统计成功",
+  "data": {
+    "overview": {
+      "total_banners": 10,
+      "active_banners": 5,
+      "visible_banners": 8
+    }
+  }
+}
+```
+
+### 5. 创建横幅
 **POST** `/banners`
 
 #### 请求体
 ```json
 {
   "title": "欢迎横幅",
-  "image_url": "https://example.com/banner1.jpg",
-  "action_type": "url",
-  "action_value": "https://example.com",
-  "status": "active",
+  "show": true,
+  "click": true,
+  "content": "横幅内容描述",
+  "action": "https://example.com",
+  "imageurl": "https://example.com/banner1.jpg",
   "sort_order": 1,
-  "start_date": "2025-01-09T00:00:00",
-  "end_date": "2025-12-31T23:59:59"
+  "admin_user_id": "1"
 }
 ```
 
@@ -111,13 +177,13 @@ GET /banners/1
 | 参数 | 类型 | 必填 | 说明 |
 |------|------|------|------|
 | title | string | 是 | 横幅标题 |
-| image_url | string | 是 | 图片URL |
-| action_type | string | 是 | 动作类型：url/app_page/product |
-| action_value | string | 是 | 动作值（URL、页面ID或产品ID） |
-| status | string | 否 | 状态：active/inactive，默认active |
-| sort_order | int | 否 | 排序顺序，默认0 |
-| start_date | datetime | 否 | 开始时间 |
-| end_date | datetime | 否 | 结束时间 |
+| show | bool | 否 | 是否显示，默认true |
+| click | bool | 否 | 是否可点击，默认true |
+| content | string | 否 | 横幅内容描述 |
+| action | string | 否 | 动作值 |
+| imageurl | string | 否 | 横幅图片URL |
+| sort_order | int | 否 | 排序权重，默认0 |
+| admin_user_id | string | 否 | 管理员用户ID |
 
 #### 响应示例
 ```json
@@ -140,8 +206,96 @@ GET /banners/1
 }
 ```
 
-### 4. 更新横幅
-**PUT** `/banners/{id}`
+### 6. 更新横幅排序权重
+**POST** `/banners/{banner_id}/sort-order`
+
+#### 请求参数
+| 参数 | 类型 | 必填 | 说明 |
+|------|------|------|------|
+| banner_id | string | 是 | 横幅ID |
+
+#### 请求体
+```json
+{
+  "sort_order": 5,
+  "admin_user_id": "1"
+}
+```
+
+#### 请求示例
+```bash
+curl -X POST http://localhost:8000/banners/1/sort-order \
+  -H "Content-Type: application/json" \
+  -d '{"sort_order": 5, "admin_user_id": "1"}'
+```
+
+#### 响应示例
+```json
+{
+  "code": 200,
+  "message": "Banner sort order updated from 1 to 5",
+  "data": {
+    "objectId": 1,
+    "title": "欢迎横幅",
+    "old_sort_order": 1,
+    "new_sort_order": 5
+  }
+}
+```
+
+### 7. 记录横幅展示
+**POST** `/banners/{banner_id}/view`
+
+#### 请求参数
+| 参数 | 类型 | 必填 | 说明 |
+|------|------|------|------|
+| banner_id | string | 是 | 横幅ID |
+
+#### 请求示例
+```bash
+POST /banners/1/view
+```
+
+#### 响应示例
+```json
+{
+  "code": 200,
+  "message": "Banner view tracked",
+  "data": {
+    "banner_id": 1,
+    "title": "欢迎横幅"
+  }
+}
+```
+
+### 8. 记录横幅点击
+**POST** `/banners/{banner_id}/click`
+
+#### 请求参数
+| 参数 | 类型 | 必填 | 说明 |
+|------|------|------|------|
+| banner_id | string | 是 | 横幅ID |
+
+#### 请求示例
+```bash
+POST /banners/1/click
+```
+
+#### 响应示例
+```json
+{
+  "code": 200,
+  "message": "Banner click tracked",
+  "data": {
+    "banner_id": 1,
+    "title": "欢迎横幅",
+    "action": "https://example.com"
+  }
+}
+```
+
+### 9. 更新横幅
+**PUT** `/banners/{banner_id}`
 
 #### 请求体
 ```json

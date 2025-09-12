@@ -15,14 +15,16 @@
 |------|------|------|------|
 | page | int | 否 | 页码，默认1 |
 | per_page | int | 否 | 每页数量，默认20 |
-| user | int | 否 | 用户ID筛选 |
-| category | string | 否 | 分类筛选 |
-| status | string | 否 | 状态筛选：draft, published, archived |
-| audit_state | string | 否 | 审核状态：pending, approved, rejected |
+| user_id | string | 否 | 用户ID筛选 |
+| keyword | string | 否 | 搜索关键词 |
+| visible_only | bool | 否 | 只显示可见帖子，默认true |
+| approved_only | bool | 否 | 只显示已审核帖子，默认true |
+| sort_by | string | 否 | 排序字段：createdAt, updatedAt, likeCount, replyCount |
+| order | string | 否 | 排序方式：asc/desc，默认desc |
 
 #### 请求示例
 ```bash
-GET /posts?page=1&per_page=20&status=published&audit_state=approved
+GET /posts?page=1&per_page=20&visible_only=true&approved_only=true
 ```
 
 #### 响应示例
@@ -31,22 +33,21 @@ GET /posts?page=1&per_page=20&status=published&audit_state=approved
   "code": 200,
   "message": "获取帖子列表成功",
   "data": {
-    "list": [
+    "items": [
       {
         "objectId": 1,
-        "title": "我的第一篇帖子",
         "content": "这是帖子内容",
-        "user": 1,
+        "user": "1",
         "user_info": {
-          "id": 1,
+          "objectId": "1",
           "username": "test_user",
           "avatar": "https://example.com/avatar.jpg"
         },
-        "category": "技术",
-        "status": "published",
+        "visible": true,
         "audit_state": "approved",
-        "likes": 10,
-        "views": 100,
+        "likeCount": 10,
+        "replyCount": 5,
+        "is_liked_by_user": false,
         "createdAt": "2025-01-09T10:00:00",
         "updatedAt": "2025-01-09T10:00:00"
       }
@@ -64,16 +65,17 @@ GET /posts?page=1&per_page=20&status=published&audit_state=approved
 ```
 
 ### 2. 获取单个帖子
-**GET** `/posts/{id}`
+**GET** `/posts/{post_id}`
 
 #### 请求参数
 | 参数 | 类型 | 必填 | 说明 |
 |------|------|------|------|
-| id | int | 是 | 帖子ID |
+| post_id | string | 是 | 帖子ID |
+| user_id | string | 否 | 当前查看用户ID（用于权限控制） |
 
 #### 请求示例
 ```bash
-GET /posts/1
+GET /posts/1?user_id=2
 ```
 
 #### 响应示例
@@ -102,28 +104,130 @@ GET /posts/1
 }
 ```
 
-### 3. 创建帖子
+### 3. 获取用户帖子列表
+**GET** `/posts/user/{user_id}`
+
+#### 请求参数
+| 参数 | 类型 | 必填 | 说明 |
+|------|------|------|------|
+| user_id | string | 是 | 用户ID |
+| page | int | 否 | 页码，默认1 |
+| per_page | int | 否 | 每页数量，默认20 |
+| viewer_id | string | 否 | 当前查看用户ID（用于权限控制） |
+
+#### 请求示例
+```bash
+GET /posts/user/1?page=1&per_page=20&viewer_id=2
+```
+
+#### 响应示例
+```json
+{
+  "code": 200,
+  "message": "获取用户帖子列表成功",
+  "data": {
+    "user": {
+      "objectId": "1",
+      "username": "test_user",
+      "avatar": "https://example.com/avatar.jpg"
+    },
+    "posts": [
+      {
+        "objectId": 1,
+        "content": "这是帖子内容",
+        "user": "1",
+        "visible": true,
+        "audit_state": "approved",
+        "likeCount": 10,
+        "replyCount": 5,
+        "is_liked_by_user": false,
+        "createdAt": "2025-01-09T10:00:00",
+        "updatedAt": "2025-01-09T10:00:00"
+      }
+    ],
+    "pagination": {
+      "page": 1,
+      "per_page": 20,
+      "total": 1,
+      "pages": 1
+    }
+  }
+}
+```
+
+### 4. 获取审核状态帖子列表
+**GET** `/posts/audit/{audit_state}`
+
+#### 请求参数
+| 参数 | 类型 | 必填 | 说明 |
+|------|------|------|------|
+| audit_state | string | 是 | 审核状态：pending, approved, rejected |
+| page | int | 否 | 页码，默认1 |
+| per_page | int | 否 | 每页数量，默认20 |
+
+#### 请求示例
+```bash
+GET /posts/audit/pending?page=1&per_page=20
+```
+
+#### 响应示例
+```json
+{
+  "code": 200,
+  "message": "获取审核状态帖子列表成功",
+  "data": {
+    "audit_state": "pending",
+    "audit_state_name": "待审核",
+    "posts": [
+      {
+        "objectId": 1,
+        "content": "这是待审核的帖子内容",
+        "user": "1",
+        "user_info": {
+          "objectId": "1",
+          "username": "test_user",
+          "avatar": "https://example.com/avatar.jpg"
+        },
+        "visible": true,
+        "audit_state": "pending",
+        "likeCount": 0,
+        "replyCount": 0,
+        "createdAt": "2025-01-09T10:00:00",
+        "updatedAt": "2025-01-09T10:00:00"
+      }
+    ],
+    "pagination": {
+      "page": 1,
+      "per_page": 20,
+      "total": 1,
+      "pages": 1
+    }
+  }
+}
+```
+
+### 5. 创建帖子
 **POST** `/posts`
 
 #### 请求体
 ```json
 {
-  "title": "我的第一篇帖子",
   "content": "这是帖子内容",
-  "user": 1,
-  "category": "技术",
-  "status": "published"
+  "user": "1",
+  "visible": true,
+  "audit_state": "pending",
+  "images": []
 }
 ```
 
 #### 请求参数说明
 | 参数 | 类型 | 必填 | 说明 |
 |------|------|------|------|
-| title | string | 是 | 帖子标题 |
 | content | string | 是 | 帖子内容 |
-| user | int | 是 | 作者用户ID |
-| category | string | 否 | 分类 |
-| status | string | 否 | 状态：draft/published/archived，默认draft |
+| user | string | 是 | 作者用户ID |
+| visible | bool | 否 | 是否可见，默认true |
+| audit_state | string | 否 | 审核状态：pending, approved, rejected，默认pending |
+| images | array | 否 | 图片列表，默认空数组 |
 
 #### 响应示例
 ```json

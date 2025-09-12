@@ -15,9 +15,10 @@
 |------|------|------|------|
 | page | int | 否 | 页码，默认1 |
 | per_page | int | 否 | 每页数量，默认10，最大100 |
-| sort_by | string | 否 | 排序字段：username, mobile, createdAt |
+| sort_by | string | 否 | 排序字段：username, mobile, experience, boluo, isActive, admin, sex, birthday, createdAt, updatedAt |
 | order | string | 否 | 排序方式：asc/desc，默认asc |
 | keyword | string | 否 | 搜索关键词（用户名、手机号） |
+| q | string | 否 | 搜索关键词的别名（与keyword相同） |
 
 #### 请求示例
 ```bash
@@ -30,9 +31,9 @@ GET /users?page=1&per_page=20&sort_by=createdAt&order=desc&keyword=test
   "code": 200,
   "message": "获取用户列表成功",
   "data": {
-    "list": [
+    "items": [
       {
-        "id": 1,
+        "objectId": "user_object_id_here",
         "username": "test_user",
         "mobile": "13800138000",
         "avatar": "https://example.com/avatar.jpg",
@@ -63,11 +64,11 @@ GET /users?page=1&per_page=20&sort_by=createdAt&order=desc&keyword=test
 #### 请求参数
 | 参数 | 类型 | 必填 | 说明 |
 |------|------|------|------|
-| id | int | 是 | 用户ID |
+| object_id | string | 是 | 用户ID（objectId） |
 
 #### 请求示例
 ```bash
-GET /users/1
+GET /users/user_object_id_here
 ```
 
 #### 响应示例
@@ -76,7 +77,7 @@ GET /users/1
   "code": 200,
   "message": "获取用户信息成功",
   "data": {
-    "id": 1,
+    "objectId": "user_object_id_here",
     "username": "test_user",
     "mobile": "13800138000",
     "avatar": "https://example.com/avatar.jpg",
@@ -122,7 +123,7 @@ GET /users/1
   "code": 201,
   "message": "用户创建成功",
   "data": {
-    "id": 1,
+    "objectId": "user_object_id_here",
     "username": "test_user",
     "mobile": "13800138000",
     "avatar": "https://example.com/avatar.jpg",
@@ -138,7 +139,7 @@ GET /users/1
 ```
 
 ### 4. 更新用户信息
-**PUT** `/users/{id}`
+**PUT** `/users/{object_id}`
 
 #### 请求体
 ```json
@@ -170,7 +171,7 @@ GET /users/1
   "code": 200,
   "message": "用户信息更新成功",
   "data": {
-    "id": 1,
+    "objectId": "user_object_id_here",
     "username": "new_username",
     "mobile": "13900139000",
     "avatar": "https://example.com/new_avatar.jpg",
@@ -186,24 +187,23 @@ GET /users/1
 ```
 
 ### 5. 删除用户
-**DELETE** `/users/{id}`
+**DELETE** `/users/{object_id}`
 
 #### 请求参数
 | 参数 | 类型 | 必填 | 说明 |
 |------|------|------|------|
-| id | int | 是 | 用户ID |
+| object_id | string | 是 | 用户ID（objectId） |
 
 #### 请求示例
 ```bash
-DELETE /users/1
+DELETE /users/user_object_id_here
 ```
 
 #### 响应示例
 ```json
 {
   "code": 200,
-  "message": "用户删除成功",
-  "data": null
+  "message": "用户删除成功"
 }
 ```
 
@@ -213,10 +213,16 @@ DELETE /users/1
 #### 请求体
 ```json
 {
-  "username": "test_user",
+  "mobile": "13800138000",
   "password": "password123"
 }
 ```
+
+#### 请求参数说明
+| 参数 | 类型 | 必填 | 说明 |
+|------|------|------|------|
+| mobile | string | 是 | 手机号 |
+| password | string | 是 | 密码 |
 
 #### 响应示例
 ```json
@@ -224,13 +230,17 @@ DELETE /users/1
   "code": 200,
   "message": "登录成功",
   "data": {
-    "user": {
-      "id": 1,
-      "username": "test_user",
-      "mobile": "13800138000",
-      "avatar": "https://example.com/avatar.jpg"
-    },
-    "token": "jwt_token_here"
+    "objectId": "user_id_here",
+    "username": "快乐小熊123456",
+    "mobile": "13800138000",
+    "avatar": "https://example.com/avatar.jpg",
+    "bio": "这个人很懒，什么都没留下",
+    "experience": 0,
+    "boluo": 0,
+    "isActive": true,
+    "admin": false,
+    "sex": 1,
+    "createdAt": "2025-01-09T10:00:00"
   }
 }
 ```
@@ -241,20 +251,29 @@ DELETE /users/1
 #### 请求体
 ```json
 {
-  "username": "new_user",
   "password": "password123",
   "mobile": "13800138000"
 }
 ```
 
+#### 请求参数说明
+| 参数 | 类型 | 必填 | 说明 |
+|------|------|------|------|
+| password | string | 是 | 密码 |
+| mobile | string | 是 | 手机号，唯一 |
+
+**注意**：
+- `username` 字段由系统自动生成（格式：形容词+名词+时间戳后6位）
+- 支持 `phone_number` 字段作为 `mobile` 的别名（向后兼容）
+
 #### 响应示例
 ```json
 {
   "code": 201,
-  "message": "注册成功",
+  "message": "用户注册成功",
   "data": {
-    "id": 2,
-    "username": "new_user",
+    "objectId": "user_id_here",
+    "username": "快乐小熊123456",
     "mobile": "13800138000",
     "avatar": "https://example.com/avatar.jpg",
     "bio": "这个人很懒，什么都没留下",
@@ -269,7 +288,7 @@ DELETE /users/1
 ```
 
 ### 8. 更新密码
-**PUT** `/users/{id}/password`
+**POST** `/users/{object_id}/password`
 
 #### 请求体
 ```json
@@ -284,41 +303,127 @@ DELETE /users/1
 {
   "code": 200,
   "message": "密码更新成功",
-  "data": null
+  "data": {
+    "id": "user_object_id_here",
+    "username": "快乐小熊123456",
+    "updatedAt": "2025-01-09T12:00:00"
+  }
 }
 ```
 
 ### 9. 手机号密码重置
-**POST** `/users/reset-password`
+**POST** `/users/reset-password` 或 **POST** `/users/reset_password`
 
 #### 请求体
 ```json
 {
   "mobile": "13800138000",
-  "sms_code": "123456",
   "new_password": "new_password123"
 }
 ```
+
+#### 请求参数说明
+| 参数 | 类型 | 必填 | 说明 |
+|------|------|------|------|
+| mobile | string | 是 | 手机号（支持 phone_number 别名） |
+| new_password | string | 是 | 新密码（至少6个字符） |
+
+**注意**：
+- 短信验证码验证在客户端完成
+- 支持 `phone_number` 字段作为 `mobile` 的别名
 
 #### 响应示例
 ```json
 {
   "code": 200,
-  "message": "密码重置成功",
-  "data": null
+  "message": "密码更新成功",
+  "data": {
+    "id": "user_object_id_here",
+    "username": "快乐小熊123456",
+    "mobile": "13800138000",
+    "updatedAt": "2025-01-09T12:00:00"
+  }
 }
 ```
 
-### 10. 获取用户数量
+### 10. 更新用户经验值
+**POST** `/users/{object_id}/experience`
+
+#### 请求体
+```json
+{
+  "exp_change": 10
+}
+```
+
+#### 请求参数说明
+| 参数 | 类型 | 必填 | 说明 |
+|------|------|------|------|
+| exp_change | int | 是 | 经验值变化量（正数增加，负数减少） |
+
+#### 响应示例
+```json
+{
+  "code": 200,
+  "message": "经验值更新成功，增加了 10 点",
+  "data": {
+    "objectId": "user_object_id_here",
+    "username": "快乐小熊123456",
+    "mobile": "13800138000",
+    "experience": 110,
+    "boluo": 50,
+    "isActive": true,
+    "admin": false,
+    "sex": 1,
+    "updatedAt": "2025-01-09T12:00:00"
+  }
+}
+```
+
+### 11. 更新用户菠萝币
+**POST** `/users/{object_id}/boluo`
+
+#### 请求体
+```json
+{
+  "boluo_change": 5
+}
+```
+
+#### 请求参数说明
+| 参数 | 类型 | 必填 | 说明 |
+|------|------|------|------|
+| boluo_change | int | 是 | 菠萝币变化量（正数增加，负数减少） |
+
+#### 响应示例
+```json
+{
+  "code": 200,
+  "message": "菠萝币更新成功，增加了 5 个",
+  "data": {
+    "objectId": "user_object_id_here",
+    "username": "快乐小熊123456",
+    "mobile": "13800138000",
+    "experience": 100,
+    "boluo": 55,
+    "isActive": true,
+    "admin": false,
+    "sex": 1,
+    "updatedAt": "2025-01-09T12:00:00"
+  }
+}
+```
+
+### 12. 获取用户数量
 **GET** `/users/count`
 
 #### 响应示例
 ```json
 {
   "code": 200,
-  "message": "获取用户数量成功",
+  "message": "获取用户总数成功",
   "data": {
-    "count": 100
+    "total_users": 100
   }
 }
 ```

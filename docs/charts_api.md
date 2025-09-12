@@ -7,7 +7,7 @@
 
 ## 接口列表
 
-### 1. 获取排行榜列表
+### 1. 获取图表列表
 **GET** `/charts`
 
 #### 请求参数
@@ -15,31 +15,39 @@
 |------|------|------|------|
 | page | int | 否 | 页码，默认1 |
 | per_page | int | 否 | 每页数量，默认20，最大100 |
-| user | int | 否 | 用户ID筛选 |
+| user | string | 否 | 用户ID筛选（objectId） |
 | sort_by | string | 否 | 排序字段：objectId, title, achievement, user, createdAt, updatedAt |
 | order | string | 否 | 排序方式：asc/desc，默认desc |
 
 #### 请求示例
 ```bash
-GET /charts?page=1&per_page=20&sort_by=achievement&order=desc
+GET /charts?page=1&per_page=20&user=user_object_id_here&sort_by=achievement&order=desc
 ```
 
 #### 响应示例
 ```json
 {
   "code": 200,
-  "message": "获取排行榜成功",
+  "message": "图表数据获取成功",
   "data": {
-    "list": [
+    "items": [
       {
-        "objectId": 1,
+        "objectId": "chart_object_id_here",
         "title": "数学挑战",
-        "achievement": 95,
-        "user": 1,
-        "user_info": {
-          "id": 1,
-          "username": "test_user",
-          "avatar": "https://example.com/avatar.jpg"
+        "achievement": 95.5,
+        "user": {
+          "objectId": "user_object_id_here",
+          "username": "快乐小熊123456",
+          "avatar": "https://example.com/avatar.jpg",
+          "bio": "这个人很懒，什么都没留下",
+          "experience": 100,
+          "boluo": 50,
+          "isActive": true,
+          "admin": false,
+          "sex": 1,
+          "birthday": "1990-01-01",
+          "createdAt": "2025-01-09T10:00:00",
+          "updatedAt": "2025-01-09T10:00:00"
         },
         "createdAt": "2025-01-09T10:00:00",
         "updatedAt": "2025-01-09T10:00:00"
@@ -57,33 +65,41 @@ GET /charts?page=1&per_page=20&sort_by=achievement&order=desc
 }
 ```
 
-### 2. 获取单个排行榜记录
-**GET** `/charts/{id}`
+### 2. 获取单个图表
+**GET** `/charts/{object_id}`
 
 #### 请求参数
 | 参数 | 类型 | 必填 | 说明 |
 |------|------|------|------|
-| id | int | 是 | 排行榜记录ID |
+| object_id | string | 是 | 图表ID（objectId） |
 
 #### 请求示例
 ```bash
-GET /charts/1
+GET /charts/chart_object_id_here
 ```
 
 #### 响应示例
 ```json
 {
   "code": 200,
-  "message": "获取排行榜记录成功",
+  "message": "图表详情获取成功",
   "data": {
-    "objectId": 1,
+    "objectId": "chart_object_id_here",
     "title": "数学挑战",
-    "achievement": 95,
-    "user": 1,
-    "user_info": {
-      "id": 1,
-      "username": "test_user",
-      "avatar": "https://example.com/avatar.jpg"
+    "achievement": 95.5,
+    "user": {
+      "objectId": "user_object_id_here",
+      "username": "快乐小熊123456",
+      "avatar": "https://example.com/avatar.jpg",
+      "bio": "这个人很懒，什么都没留下",
+      "experience": 100,
+      "boluo": 50,
+      "isActive": true,
+      "admin": false,
+      "sex": 1,
+      "birthday": "1990-01-01",
+      "createdAt": "2025-01-09T10:00:00",
+      "updatedAt": "2025-01-09T10:00:00"
     },
     "createdAt": "2025-01-09T10:00:00",
     "updatedAt": "2025-01-09T10:00:00"
@@ -91,39 +107,47 @@ GET /charts/1
 }
 ```
 
-### 3. 创建排行榜记录
+### 3. 创建图表
 **POST** `/charts`
 
 #### 请求体
 ```json
 {
   "title": "数学挑战",
-  "achievement": 95,
-  "user": 1
+  "achievement": 95.5,
+  "user": "user_object_id_here"
 }
 ```
 
 #### 请求参数说明
 | 参数 | 类型 | 必填 | 说明 |
 |------|------|------|------|
-| title | string | 是 | 挑战标题 |
-| achievement | int | 否 | 成就分数，默认0 |
-| user | int | 是 | 用户ID |
+| title | string | 是 | 图表标题 |
+| achievement | float | 否 | 成就分数，默认0.0 |
+| user | string | 是 | 用户ID（objectId） |
 
 #### 响应示例
 ```json
 {
   "code": 201,
-  "message": "排行榜记录创建成功",
+  "message": "操作成功",
   "data": {
-    "objectId": 1,
+    "objectId": "chart_object_id_here",
     "title": "数学挑战",
-    "achievement": 95,
-    "user": 1,
-    "user_info": {
-      "id": 1,
-      "username": "test_user",
-      "avatar": "https://example.com/avatar.jpg"
+    "achievement": 95.5,
+    "user": {
+      "objectId": "user_object_id_here",
+      "username": "快乐小熊123456",
+      "avatar": "https://example.com/avatar.jpg",
+      "bio": "这个人很懒，什么都没留下",
+      "experience": 100,
+      "boluo": 50,
+      "isActive": true,
+      "admin": false,
+      "sex": 1,
+      "birthday": "1990-01-01",
+      "createdAt": "2025-01-09T10:00:00",
+      "updatedAt": "2025-01-09T10:00:00"
     },
     "createdAt": "2025-01-09T10:00:00",
     "updatedAt": "2025-01-09T10:00:00"
@@ -131,8 +155,8 @@ GET /charts/1
 }
 ```
 
-### 4. 更新排行榜记录
-**PUT** `/charts/{id}`
+### 4. 更新图表
+**PUT** `/charts/{object_id}`
 
 #### 请求体
 ```json
@@ -169,56 +193,69 @@ GET /charts/1
 }
 ```
 
-### 5. 删除排行榜记录
-**DELETE** `/charts/{id}`
+### 5. 删除图表
+**DELETE** `/charts/{object_id}`
 
 #### 请求参数
 | 参数 | 类型 | 必填 | 说明 |
 |------|------|------|------|
-| id | int | 是 | 排行榜记录ID |
+| object_id | string | 是 | 图表ID（objectId） |
 
 #### 请求示例
 ```bash
-DELETE /charts/1
+DELETE /charts/chart_object_id_here
 ```
 
 #### 响应示例
 ```json
 {
   "code": 200,
-  "message": "排行榜记录删除成功",
-  "data": null
+  "message": "Chart deleted successfully"
 }
 ```
 
-### 6. 获取用户排行榜记录
-**GET** `/charts/user/{user_id}`
+### 6. 获取排行榜
+**GET** `/charts/leaderboard`
 
 #### 请求参数
 | 参数 | 类型 | 必填 | 说明 |
 |------|------|------|------|
-| user_id | int | 是 | 用户ID |
+| title | string | 否 | 筛选特定标题的排行榜 |
 | page | int | 否 | 页码，默认1 |
-| per_page | int | 否 | 每页数量，默认20 |
+| per_page | int | 否 | 每页数量，默认10，最大100 |
 
 #### 请求示例
 ```bash
-GET /charts/user/1?page=1&per_page=10
+GET /charts/leaderboard?title=数学挑战&page=1&per_page=10
 ```
 
 #### 响应示例
 ```json
 {
   "code": 200,
-  "message": "获取用户排行榜记录成功",
+  "message": "排行榜数据获取成功",
   "data": {
-    "list": [
+    "items": [
       {
-        "objectId": 1,
+        "objectId": "chart_object_id_here",
         "title": "数学挑战",
-        "achievement": 95,
-        "user": 1,
-        "createdAt": "2025-01-09T10:00:00"
+        "achievement": 95.5,
+        "user": {
+          "objectId": "user_object_id_here",
+          "username": "快乐小熊123456",
+          "avatar": "https://example.com/avatar.jpg",
+          "bio": "这个人很懒，什么都没留下",
+          "experience": 100,
+          "boluo": 50,
+          "isActive": true,
+          "admin": false,
+          "sex": 1,
+          "birthday": "1990-01-01",
+          "createdAt": "2025-01-09T10:00:00",
+          "updatedAt": "2025-01-09T10:00:00"
+        },
+        "createdAt": "2025-01-09T10:00:00",
+        "updatedAt": "2025-01-09T10:00:00"
       }
     ],
     "pagination": {
@@ -233,68 +270,160 @@ GET /charts/user/1?page=1&per_page=10
 }
 ```
 
-### 7. 获取排行榜统计
-**GET** `/charts/stats`
+### 7. 根据成绩查询排名
+**GET** `/charts/rank`
 
 #### 请求参数
 | 参数 | 类型 | 必填 | 说明 |
 |------|------|------|------|
-| user | int | 否 | 用户ID筛选 |
+| title | string | 是 | 图表标题 |
+| achievement | float | 是 | 成绩值 |
+| scope | string | 否 | 查询范围：global（全局）或title（同标题），默认global |
 
 #### 请求示例
 ```bash
-GET /charts/stats?user=1
+GET /charts/rank?title=数学挑战&achievement=95.5&scope=title
 ```
 
 #### 响应示例
 ```json
 {
   "code": 200,
-  "message": "获取排行榜统计成功",
+  "message": "排名查询成功",
   "data": {
-    "total_records": 100,
-    "average_achievement": 85.5,
-    "max_achievement": 100,
-    "min_achievement": 0,
-    "user_stats": {
-      "total": 5,
-      "average": 90.0,
-      "max": 98,
-      "min": 85
+    "title": "数学挑战",
+    "achievement": 95.5,
+    "scope": "title",
+    "rank": 3,
+    "lower_count": 2,
+    "ties_count": 1,
+    "total": 10,
+    "sample": {
+      "objectId": "chart_object_id_here",
+      "title": "数学挑战",
+      "achievement": 95.5,
+      "user": {
+        "objectId": "user_object_id_here",
+        "username": "快乐小熊123456",
+        "avatar": "https://example.com/avatar.jpg",
+        "bio": "这个人很懒，什么都没留下",
+        "experience": 100,
+        "boluo": 50,
+        "isActive": true,
+        "admin": false,
+        "sex": 1,
+        "birthday": "1990-01-01",
+        "createdAt": "2025-01-09T10:00:00",
+        "updatedAt": "2025-01-09T10:00:00"
+      },
+      "createdAt": "2025-01-09T10:00:00",
+      "updatedAt": "2025-01-09T10:00:00"
     }
   }
 }
 ```
 
-### 8. 更新成就分数
-**PUT** `/charts/{id}/achievement`
+### 8. 查询用户排名
+**GET** `/charts/user-rank`
+
+#### 请求参数
+| 参数 | 类型 | 必填 | 说明 |
+|------|------|------|------|
+| user | string | 是 | 用户ID（objectId） |
+| title | string | 是 | 图表标题 |
+
+#### 请求示例
+```bash
+GET /charts/user-rank?user=user_object_id_here&title=数学挑战
+```
+
+#### 响应示例
+```json
+{
+  "code": 200,
+  "message": "用户排名查询成功",
+  "data": {
+    "user_info": {
+      "objectId": "user_object_id_here",
+      "username": "快乐小熊123456",
+      "avatar": "https://example.com/avatar.jpg",
+      "bio": "这个人很懒，什么都没留下",
+      "experience": 100,
+      "boluo": 50,
+      "isActive": true,
+      "admin": false,
+      "sex": 1,
+      "birthday": "1990-01-01",
+      "createdAt": "2025-01-09T10:00:00",
+      "updatedAt": "2025-01-09T10:00:00"
+    },
+    "achievement": 95.5,
+    "rank": 3,
+    "title": "数学挑战",
+    "total_records": 10,
+    "ties_count": 1,
+    "record": {
+      "objectId": "chart_object_id_here",
+      "title": "数学挑战",
+      "achievement": 95.5,
+      "user": {
+        "objectId": "user_object_id_here",
+        "username": "快乐小熊123456",
+        "avatar": "https://example.com/avatar.jpg",
+        "bio": "这个人很懒，什么都没留下",
+        "experience": 100,
+        "boluo": 50,
+        "isActive": true,
+        "admin": false,
+        "sex": 1,
+        "birthday": "1990-01-01",
+        "createdAt": "2025-01-09T10:00:00",
+        "updatedAt": "2025-01-09T10:00:00"
+      },
+      "createdAt": "2025-01-09T10:00:00",
+      "updatedAt": "2025-01-09T10:00:00"
+    }
+  }
+}
+```
+
+### 9. 更新成就分数
+**POST** `/charts/{object_id}/achievement`
 
 #### 请求体
 ```json
 {
-  "achievement": 100
+  "achievement": 100.5
 }
 ```
 
 #### 请求参数说明
 | 参数 | 类型 | 必填 | 说明 |
 |------|------|------|------|
-| achievement | int | 是 | 新的成就分数 |
+| achievement | float | 是 | 新的成就分数 |
 
 #### 响应示例
 ```json
 {
   "code": 200,
-  "message": "成就更新成功",
+  "message": "Achievement updated successfully",
   "data": {
-    "objectId": 1,
+    "objectId": "chart_object_id_here",
     "title": "数学挑战",
-    "achievement": 100,
-    "user": 1,
-    "user_info": {
-      "id": 1,
-      "username": "test_user",
-      "avatar": "https://example.com/avatar.jpg"
+    "achievement": 100.5,
+    "user": {
+      "objectId": "user_object_id_here",
+      "username": "快乐小熊123456",
+      "avatar": "https://example.com/avatar.jpg",
+      "bio": "这个人很懒，什么都没留下",
+      "experience": 100,
+      "boluo": 50,
+      "isActive": true,
+      "admin": false,
+      "sex": 1,
+      "birthday": "1990-01-01",
+      "createdAt": "2025-01-09T10:00:00",
+      "updatedAt": "2025-01-09T10:00:00"
     },
     "createdAt": "2025-01-09T10:00:00",
     "updatedAt": "2025-01-09T12:00:00"

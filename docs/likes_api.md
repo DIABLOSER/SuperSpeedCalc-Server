@@ -43,7 +43,7 @@ curl -X POST http://localhost:8000/posts/1/like \
 ```
 
 ### 2. 取消点赞
-**DELETE** `/posts/{post_id}/unlike`
+**DELETE** `/posts/{post_id}/like`
 
 #### 请求体
 ```json
@@ -59,7 +59,7 @@ curl -X POST http://localhost:8000/posts/1/like \
 
 #### 请求示例
 ```bash
-curl -X DELETE http://localhost:8000/posts/1/unlike \
+curl -X DELETE http://localhost:8000/posts/1/like \
   -H "Content-Type: application/json" \
   -d '{"user_id": 2}'
 ```
@@ -68,8 +68,13 @@ curl -X DELETE http://localhost:8000/posts/1/unlike \
 ```json
 {
   "code": 200,
-  "message": "取消点赞成功",
-  "data": null
+  "message": "Post unliked successfully",
+  "data": {
+    "post_id": 1,
+    "likeCount": 9,
+    "user_id": 2,
+    "is_liked_by_user": false
+  }
 }
 ```
 
@@ -79,10 +84,10 @@ curl -X DELETE http://localhost:8000/posts/1/unlike \
 #### 请求参数
 | 参数 | 类型 | 必填 | 说明 |
 |------|------|------|------|
-| post_id | int | 是 | 帖子ID |
+| post_id | string | 是 | 帖子ID |
 | page | int | 否 | 页码，默认1 |
 | per_page | int | 否 | 每页数量，默认20 |
-| viewer_id | int | 否 | 查看者用户ID（用于权限控制） |
+| viewer_id | string | 否 | 当前查看用户ID（用于权限控制） |
 
 #### 请求示例
 ```bash
@@ -117,18 +122,19 @@ GET /posts/1/likers?page=1&per_page=20&viewer_id=1
 ```
 
 ### 4. 获取用户点赞的帖子列表
-**GET** `/posts/liked-by/{user_id}`
+**GET** `/posts/user/{user_id}/liked`
 
 #### 请求参数
 | 参数 | 类型 | 必填 | 说明 |
 |------|------|------|------|
-| user_id | int | 是 | 用户ID |
+| user_id | string | 是 | 用户ID |
 | page | int | 否 | 页码，默认1 |
 | per_page | int | 否 | 每页数量，默认20 |
+| viewer_id | string | 否 | 当前查看用户ID（用于权限控制） |
 
 #### 请求示例
 ```bash
-GET /posts/liked-by/2?page=1&per_page=20
+GET /posts/user/2/liked?page=1&per_page=20&viewer_id=1
 ```
 
 #### 响应示例
@@ -190,6 +196,32 @@ GET /posts/1/like-status/2
   "data": {
     "is_liked": true,
     "liked_at": "2025-01-09T10:00:00"
+  }
+}
+```
+
+### 5. 同步所有帖子点赞数量
+**POST** `/posts/admin/sync-like-counts`
+
+#### 请求参数
+| 参数 | 类型 | 必填 | 说明 |
+|------|------|------|------|
+| admin_user_id | string | 是 | 管理员用户ID |
+
+#### 请求示例
+```bash
+POST /posts/admin/sync-like-counts?admin_user_id=1
+```
+
+#### 响应示例
+```json
+{
+  "code": 200,
+  "message": "Synchronized like counts for 5 posts",
+  "data": {
+    "total_posts": 10,
+    "updated_posts": 5,
+    "admin_user": "1"
   }
 }
 ```

@@ -16,7 +16,7 @@
 | page | int | 否 | 页码，默认1 |
 | per_page | int | 否 | 每页数量，默认20 |
 | category | string | 否 | 分类筛选 |
-| user | int | 否 | 用户ID筛选 |
+| user | string | 否 | 用户ID筛选 |
 | isPinned | bool | 否 | 是否置顶 |
 | public | bool | 否 | 是否公开 |
 
@@ -29,24 +29,24 @@ GET /forum?page=1&per_page=20&category=技术讨论&isPinned=true
 ```json
 {
   "code": 200,
-  "message": "获取论坛帖子成功",
+  "message": "获取论坛帖子列表成功",
   "data": {
-    "list": [
+    "items": [
       {
         "objectId": 1,
-        "title": "技术讨论",
         "content": "这是一个技术讨论帖子",
         "category": "技术讨论",
-        "user": 1,
+        "user": "1",
         "user_info": {
-          "id": 1,
+          "objectId": "1",
           "username": "test_user",
           "avatar": "https://example.com/avatar.jpg"
         },
         "isPinned": true,
         "public": true,
-        "likes": 10,
-        "replies": 5,
+        "likeCount": 10,
+        "replyCount": 5,
+        "viewCount": 100,
         "createdAt": "2025-01-09T10:00:00",
         "updatedAt": "2025-01-09T10:00:00"
       }
@@ -63,13 +63,151 @@ GET /forum?page=1&per_page=20&category=技术讨论&isPinned=true
 }
 ```
 
-### 2. 获取单个论坛帖子
-**GET** `/forum/{id}`
+### 2. 获取论坛分类列表
+**GET** `/forum/categories`
 
 #### 请求参数
 | 参数 | 类型 | 必填 | 说明 |
 |------|------|------|------|
-| id | int | 是 | 帖子ID |
+| page | int | 否 | 页码，默认1 |
+| per_page | int | 否 | 每页数量，默认50 |
+
+#### 请求示例
+```bash
+GET /forum/categories?page=1&per_page=50
+```
+
+#### 响应示例
+```json
+{
+  "code": 200,
+  "message": "获取论坛分类列表成功",
+  "data": {
+    "items": ["技术讨论", "产品反馈", "用户交流"],
+    "pagination": {
+      "page": 1,
+      "per_page": 50,
+      "total": 3,
+      "pages": 1,
+      "has_next": false,
+      "has_prev": false
+    }
+  }
+}
+```
+
+### 3. 获取热门帖子
+**GET** `/forum/popular`
+
+#### 请求参数
+| 参数 | 类型 | 必填 | 说明 |
+|------|------|------|------|
+| page | int | 否 | 页码，默认1 |
+| per_page | int | 否 | 每页数量，默认10 |
+| sort_by | string | 否 | 排序方式：viewCount/likeCount，默认viewCount |
+
+#### 请求示例
+```bash
+GET /forum/popular?page=1&per_page=10&sort_by=viewCount
+```
+
+#### 响应示例
+```json
+{
+  "code": 200,
+  "message": "获取热门帖子列表成功",
+  "data": {
+    "items": [
+      {
+        "objectId": 1,
+        "content": "热门技术讨论帖子",
+        "category": "技术讨论",
+        "user": "1",
+        "user_info": {
+          "objectId": "1",
+          "username": "test_user",
+          "avatar": "https://example.com/avatar.jpg"
+        },
+        "isPinned": false,
+        "public": true,
+        "likeCount": 50,
+        "replyCount": 20,
+        "viewCount": 1000,
+        "createdAt": "2025-01-09T10:00:00",
+        "updatedAt": "2025-01-09T10:00:00"
+      }
+    ],
+    "pagination": {
+      "page": 1,
+      "per_page": 10,
+      "total": 1,
+      "pages": 1,
+      "has_next": false,
+      "has_prev": false
+    }
+  }
+}
+```
+
+### 4. 获取公开帖子
+**GET** `/forum/public`
+
+#### 请求参数
+| 参数 | 类型 | 必填 | 说明 |
+|------|------|------|------|
+| page | int | 否 | 页码，默认1 |
+| per_page | int | 否 | 每页数量，默认20 |
+
+#### 请求示例
+```bash
+GET /forum/public?page=1&per_page=20
+```
+
+#### 响应示例
+```json
+{
+  "code": 200,
+  "message": "获取公开帖子列表成功",
+  "data": {
+    "items": [
+      {
+        "objectId": 1,
+        "content": "公开的技术讨论帖子",
+        "category": "技术讨论",
+        "user": "1",
+        "user_info": {
+          "objectId": "1",
+          "username": "test_user",
+          "avatar": "https://example.com/avatar.jpg"
+        },
+        "isPinned": false,
+        "public": true,
+        "likeCount": 10,
+        "replyCount": 5,
+        "viewCount": 100,
+        "createdAt": "2025-01-09T10:00:00",
+        "updatedAt": "2025-01-09T10:00:00"
+      }
+    ],
+    "pagination": {
+      "page": 1,
+      "per_page": 20,
+      "total": 1,
+      "pages": 1,
+      "has_next": false,
+      "has_prev": false
+    }
+  }
+}
+```
+
+### 5. 获取单个论坛帖子
+**GET** `/forum/{object_id}`
+
+#### 请求参数
+| 参数 | 类型 | 必填 | 说明 |
+|------|------|------|------|
+| object_id | string | 是 | 帖子ID |
 
 #### 请求示例
 ```bash
@@ -102,30 +240,69 @@ GET /forum/1
 }
 ```
 
-### 3. 创建论坛帖子
+### 6. 点赞论坛帖子
+**POST** `/forum/{object_id}/like`
+
+#### 请求参数
+| 参数 | 类型 | 必填 | 说明 |
+|------|------|------|------|
+| object_id | string | 是 | 帖子ID |
+
+#### 请求示例
+```bash
+POST /forum/1/like
+```
+
+#### 响应示例
+```json
+{
+  "code": 200,
+  "message": "Post liked successfully",
+  "data": {
+    "objectId": 1,
+    "content": "这是一个技术讨论帖子",
+    "category": "技术讨论",
+    "user": "1",
+    "user_info": {
+      "objectId": "1",
+      "username": "test_user",
+      "avatar": "https://example.com/avatar.jpg"
+    },
+    "isPinned": true,
+    "public": true,
+    "likeCount": 11,
+    "replyCount": 5,
+    "viewCount": 100,
+    "createdAt": "2025-01-09T10:00:00",
+    "updatedAt": "2025-01-09T10:00:00"
+  }
+}
+```
+
+### 7. 创建论坛帖子
 **POST** `/forum`
 
 #### 请求体
 ```json
 {
-  "title": "技术讨论",
   "content": "这是一个技术讨论帖子",
   "category": "技术讨论",
-  "user": 1,
+  "user": "1",
   "isPinned": false,
-  "public": true
+  "public": true,
+  "images": []
 }
 ```
 
 #### 请求参数说明
 | 参数 | 类型 | 必填 | 说明 |
 |------|------|------|------|
-| title | string | 否 | 帖子标题 |
 | content | string | 是 | 帖子内容 |
 | category | string | 否 | 分类 |
-| user | int | 是 | 作者用户ID |
+| user | string | 是 | 作者用户ID |
 | isPinned | bool | 否 | 是否置顶，默认false |
 | public | bool | 否 | 是否公开，默认true |
+| images | array | 否 | 图片列表，默认空数组 |
 
 #### 响应示例
 ```json

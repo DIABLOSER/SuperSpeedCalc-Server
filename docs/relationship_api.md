@@ -1,75 +1,91 @@
 # 用户关系 API
 
 ## 基础信息
-- **基础路径**: `/users`
+- **基础路径**: `/relationship`
 - **数据表**: `user_relationships`
 - **主要功能**: 用户关注/取消关注、粉丝列表、互关列表
 
 ## 接口列表
 
 ### 1. 关注用户
-**POST** `/users/{user_id}/follow/{target_user_id}`
+**POST** `/relationship/{user_id}/follow/{target_user_id}`
 
 #### 请求参数
 | 参数 | 类型 | 必填 | 说明 |
 |------|------|------|------|
-| user_id | int | 是 | 关注者用户ID |
-| target_user_id | int | 是 | 被关注者用户ID |
+| user_id | string | 是 | 关注者用户ID |
+| target_user_id | string | 是 | 被关注者用户ID |
 
 #### 请求示例
 ```bash
-POST /users/1/follow/2
-```
-
-#### 响应示例
-```json
-{
-  "code": 201,
-  "message": "关注成功",
-  "data": {
-    "follower": 1,
-    "followed": 2,
-    "created_at": "2025-01-09T10:00:00"
-  }
-}
-```
-
-### 2. 取消关注
-**DELETE** `/users/{user_id}/unfollow/{target_user_id}`
-
-#### 请求参数
-| 参数 | 类型 | 必填 | 说明 |
-|------|------|------|------|
-| user_id | int | 是 | 关注者用户ID |
-| target_user_id | int | 是 | 被关注者用户ID |
-
-#### 请求示例
-```bash
-DELETE /users/1/unfollow/2
+POST /relationship/1/follow/2
 ```
 
 #### 响应示例
 ```json
 {
   "code": 200,
-  "message": "取消关注成功",
-  "data": null
+  "message": "test_user is now following user2",
+  "data": {
+    "follower": {
+      "objectId": "1",
+      "username": "test_user"
+    },
+    "followed": {
+      "objectId": "2",
+      "username": "user2"
+    },
+    "relationship_id": "abc123",
+    "createdAt": "2025-01-09T10:00:00"
+  }
 }
 ```
 
-### 3. 获取粉丝列表
-**GET** `/users/{user_id}/followers`
+### 2. 取消关注
+**DELETE** `/relationship/{user_id}/follow/{target_user_id}`
 
 #### 请求参数
 | 参数 | 类型 | 必填 | 说明 |
 |------|------|------|------|
-| user_id | int | 是 | 用户ID |
+| user_id | string | 是 | 关注者用户ID |
+| target_user_id | string | 是 | 被关注者用户ID |
+
+#### 请求示例
+```bash
+DELETE /relationship/1/follow/2
+```
+
+#### 响应示例
+```json
+{
+  "code": 200,
+  "message": "test_user has unfollowed user2",
+  "data": {
+    "follower": {
+      "objectId": "1",
+      "username": "test_user"
+    },
+    "unfollowed": {
+      "objectId": "2",
+      "username": "user2"
+    }
+  }
+}
+```
+
+### 3. 获取粉丝列表
+**GET** `/relationship/{user_id}/followers`
+
+#### 请求参数
+| 参数 | 类型 | 必填 | 说明 |
+|------|------|------|------|
+| user_id | string | 是 | 用户ID |
 | page | int | 否 | 页码，默认1 |
 | per_page | int | 否 | 每页数量，默认20 |
 
 #### 请求示例
 ```bash
-GET /users/1/followers?page=1&per_page=20
+GET /relationship/1/followers?page=1&per_page=20
 ```
 
 #### 响应示例
@@ -78,13 +94,17 @@ GET /users/1/followers?page=1&per_page=20
   "code": 200,
   "message": "获取粉丝列表成功",
   "data": {
-    "list": [
+    "user": {
+      "objectId": "1",
+      "username": "test_user",
+      "avatar": "https://example.com/avatar.jpg"
+    },
+    "followers": [
       {
-        "id": 2,
+        "objectId": "2",
         "username": "user2",
         "avatar": "https://example.com/avatar2.jpg",
-        "bio": "用户2的简介",
-        "followed_at": "2025-01-09T10:00:00"
+        "bio": "用户2的简介"
       }
     ],
     "pagination": {
@@ -100,18 +120,18 @@ GET /users/1/followers?page=1&per_page=20
 ```
 
 ### 4. 获取关注列表
-**GET** `/users/{user_id}/following`
+**GET** `/relationship/{user_id}/following`
 
 #### 请求参数
 | 参数 | 类型 | 必填 | 说明 |
 |------|------|------|------|
-| user_id | int | 是 | 用户ID |
+| user_id | string | 是 | 用户ID |
 | page | int | 否 | 页码，默认1 |
 | per_page | int | 否 | 每页数量，默认20 |
 
 #### 请求示例
 ```bash
-GET /users/1/following?page=1&per_page=20
+GET /relationship/1/following?page=1&per_page=20
 ```
 
 #### 响应示例
@@ -120,13 +140,17 @@ GET /users/1/following?page=1&per_page=20
   "code": 200,
   "message": "获取关注列表成功",
   "data": {
-    "list": [
+    "user": {
+      "objectId": "1",
+      "username": "test_user",
+      "avatar": "https://example.com/avatar.jpg"
+    },
+    "following": [
       {
-        "id": 3,
+        "objectId": "3",
         "username": "user3",
         "avatar": "https://example.com/avatar3.jpg",
-        "bio": "用户3的简介",
-        "followed_at": "2025-01-09T10:00:00"
+        "bio": "用户3的简介"
       }
     ],
     "pagination": {
@@ -142,18 +166,18 @@ GET /users/1/following?page=1&per_page=20
 ```
 
 ### 5. 获取互关列表
-**GET** `/users/{user_id}/mutual`
+**GET** `/relationship/{user_id}/mutual`
 
 #### 请求参数
 | 参数 | 类型 | 必填 | 说明 |
 |------|------|------|------|
-| user_id | int | 是 | 用户ID |
+| user_id | string | 是 | 用户ID |
 | page | int | 否 | 页码，默认1 |
 | per_page | int | 否 | 每页数量，默认20 |
 
 #### 请求示例
 ```bash
-GET /users/1/mutual?page=1&per_page=20
+GET /relationship/1/mutual?page=1&per_page=20
 ```
 
 #### 响应示例
@@ -162,13 +186,18 @@ GET /users/1/mutual?page=1&per_page=20
   "code": 200,
   "message": "获取互关列表成功",
   "data": {
-    "list": [
+    "user": {
+      "objectId": "1",
+      "username": "test_user",
+      "avatar": "https://example.com/avatar.jpg"
+    },
+    "mutual_followers": [
       {
-        "id": 4,
+        "objectId": "4",
         "username": "user4",
         "avatar": "https://example.com/avatar4.jpg",
         "bio": "用户4的简介",
-        "followed_at": "2025-01-09T10:00:00"
+        "experience": 100
       }
     ],
     "pagination": {
@@ -210,17 +239,54 @@ GET /users/1/follow-status/2
 }
 ```
 
-### 7. 获取用户关系统计
-**GET** `/users/{user_id}/relationship-stats`
+### 6. 检查关注关系
+**GET** `/relationship/{user_id}/follow/{target_user_id}`
 
 #### 请求参数
 | 参数 | 类型 | 必填 | 说明 |
 |------|------|------|------|
-| user_id | int | 是 | 用户ID |
+| user_id | string | 是 | 用户ID |
+| target_user_id | string | 是 | 目标用户ID |
 
 #### 请求示例
 ```bash
-GET /users/1/relationship-stats
+GET /relationship/1/follow/2
+```
+
+#### 响应示例
+```json
+{
+  "code": 200,
+  "message": "获取关注关系成功",
+  "data": {
+    "user": {
+      "objectId": "1",
+      "username": "test_user"
+    },
+    "target_user": {
+      "objectId": "2",
+      "username": "user2"
+    },
+    "relationship": {
+      "is_following": true,
+      "is_followed_by": false,
+      "mutual": false
+    }
+  }
+}
+```
+
+### 7. 获取用户关系统计
+**GET** `/relationship/{user_id}/relationship-stats`
+
+#### 请求参数
+| 参数 | 类型 | 必填 | 说明 |
+|------|------|------|------|
+| user_id | string | 是 | 用户ID |
+
+#### 请求示例
+```bash
+GET /relationship/1/relationship-stats
 ```
 
 #### 响应示例

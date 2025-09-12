@@ -1,14 +1,14 @@
 # 图片管理 API
 
 ## 基础信息
-- **基础路径**: `/images`
+- **基础路径**: `/image`
 - **数据表**: `image`
 - **主要功能**: 图片上传、管理、搜索、统计
 
 ## 接口列表
 
 ### 1. 获取图片列表
-**GET** `/images`
+**GET** `/image`
 
 #### 请求参数
 | 参数 | 类型 | 必填 | 说明 |
@@ -20,7 +20,7 @@
 
 #### 请求示例
 ```bash
-GET /images?page=1&per_page=20&sort_by=createdAt&order=desc
+GET /image?page=1&per_page=20&sort_by=createdAt&order=desc
 ```
 
 #### 响应示例
@@ -29,14 +29,13 @@ GET /images?page=1&per_page=20&sort_by=createdAt&order=desc
   "code": 200,
   "message": "获取图片列表成功",
   "data": {
-    "list": [
+    "items": [
       {
         "objectId": 1,
         "fileName": "20250109_100000_abc12345.jpg",
-        "originalName": "avatar.jpg",
         "fileSize": 102400,
-        "filePath": "/uploads/images/20250109_100000_abc12345.jpg",
-        "url": "http://localhost:8000/uploads/images/20250109_100000_abc12345.jpg",
+        "path": "uploads/images/20250109_100000_abc12345.jpg",
+        "url": "/uploads/images/20250109_100000_abc12345.jpg",
         "createdAt": "2025-01-09T10:00:00",
         "updatedAt": "2025-01-09T10:00:00"
       }
@@ -54,16 +53,16 @@ GET /images?page=1&per_page=20&sort_by=createdAt&order=desc
 ```
 
 ### 2. 获取单个图片信息
-**GET** `/images/{id}`
+**GET** `/image/{object_id}`
 
 #### 请求参数
 | 参数 | 类型 | 必填 | 说明 |
 |------|------|------|------|
-| id | int | 是 | 图片ID |
+| object_id | string | 是 | 图片ID |
 
 #### 请求示例
 ```bash
-GET /images/1
+GET /image/1
 ```
 
 #### 响应示例
@@ -74,10 +73,9 @@ GET /images/1
   "data": {
     "objectId": 1,
     "fileName": "20250109_100000_abc12345.jpg",
-    "originalName": "avatar.jpg",
     "fileSize": 102400,
-    "filePath": "/uploads/images/20250109_100000_abc12345.jpg",
-    "url": "http://localhost:8000/uploads/images/20250109_100000_abc12345.jpg",
+    "path": "uploads/images/20250109_100000_abc12345.jpg",
+    "url": "/uploads/images/20250109_100000_abc12345.jpg",
     "createdAt": "2025-01-09T10:00:00",
     "updatedAt": "2025-01-09T10:00:00"
   }
@@ -85,7 +83,7 @@ GET /images/1
 ```
 
 ### 3. 上传单张图片
-**POST** `/images/upload`
+**POST** `/image/upload`
 
 #### 请求参数
 | 参数 | 类型 | 必填 | 说明 |
@@ -97,7 +95,7 @@ GET /images/1
 
 #### 请求示例
 ```bash
-curl -X POST -F "file=@avatar.jpg" http://localhost:8000/images/upload
+curl -X POST -F "file=@avatar.jpg" http://localhost:8000/image/upload
 ```
 
 #### 响应示例
@@ -119,7 +117,7 @@ curl -X POST -F "file=@avatar.jpg" http://localhost:8000/images/upload
 ```
 
 ### 4. 批量上传图片
-**POST** `/images/upload/batch`
+**POST** `/image/upload/multiple`
 
 #### 请求参数
 | 参数 | 类型 | 必填 | 说明 |
@@ -128,7 +126,7 @@ curl -X POST -F "file=@avatar.jpg" http://localhost:8000/images/upload
 
 #### 请求示例
 ```bash
-curl -X POST -F "files=@image1.jpg" -F "files=@image2.jpg" http://localhost:8000/images/upload/batch
+curl -X POST -F "files=@image1.jpg" -F "files=@image2.jpg" http://localhost:8000/image/upload/multiple
 ```
 
 #### 响应示例

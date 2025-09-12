@@ -7,56 +7,64 @@
 
 ## 接口列表
 
-### 1. 获取回复列表
-**GET** `/replies`
+### 1. 获取帖子回复列表
+**GET** `/replies/post/{post_id}`
 
 #### 请求参数
 | 参数 | 类型 | 必填 | 说明 |
 |------|------|------|------|
+| post_id | string | 是 | 帖子ID |
 | page | int | 否 | 页码，默认1 |
 | per_page | int | 否 | 每页数量，默认20 |
-| post_id | int | 否 | 帖子ID筛选 |
-| user | int | 否 | 用户ID筛选 |
-| parent_id | int | 否 | 父回复ID筛选（用于获取子回复） |
+| level | int | 否 | 层级筛选：1=一级评论，2=二级评论，None=所有 |
+| include_children | bool | 否 | 是否包含子回复，默认false |
+| viewer_id | string | 否 | 当前查看用户ID（用于权限控制） |
 
 #### 请求示例
 ```bash
-GET /replies?page=1&per_page=20&post_id=1&parent_id=null
+GET /replies/post/1?page=1&per_page=20&level=1&include_children=true
 ```
 
 #### 响应示例
 ```json
 {
   "code": 200,
-  "message": "获取回复列表成功",
+  "message": "获取帖子回复成功",
   "data": {
-    "list": [
+    "post": {
+      "objectId": "1",
+      "content_preview": "这是帖子内容...",
+      "replyCount": 2,
+      "actual_reply_count": 2
+    },
+    "replies": [
       {
         "objectId": 1,
         "content": "这是一条评论",
-        "post_id": 1,
-        "user": 1,
+        "post": "1",
+        "user": "1",
         "user_info": {
-          "id": 1,
+          "objectId": "1",
           "username": "test_user",
           "avatar": "https://example.com/avatar.jpg"
         },
-        "parent_id": null,
+        "parent": null,
+        "recipient": null,
         "children": [
           {
             "objectId": 2,
             "content": "这是对评论的回复",
-            "user": 2,
+            "user": "2",
             "user_info": {
-              "id": 2,
+              "objectId": "2",
               "username": "user2",
               "avatar": "https://example.com/avatar2.jpg"
             },
-            "parent_id": 1,
+            "parent": "1",
+            "recipient": "1",
             "createdAt": "2025-01-09T10:05:00"
           }
         ],
-        "likes": 5,
         "createdAt": "2025-01-09T10:00:00",
         "updatedAt": "2025-01-09T10:00:00"
       }
@@ -74,16 +82,19 @@ GET /replies?page=1&per_page=20&post_id=1&parent_id=null
 ```
 
 ### 2. 获取单个回复
-**GET** `/replies/{id}`
+**GET** `/replies/{reply_id}`
 
 #### 请求参数
 | 参数 | 类型 | 必填 | 说明 |
 |------|------|------|------|
-| id | int | 是 | 回复ID |
+| reply_id | string | 是 | 回复ID |
+| viewer_id | string | 否 | 当前查看用户ID（用于权限控制） |
+| include_children | bool | 否 | 是否包含子回复，默认true |
+| include_full_post | bool | 否 | 是否包含完整帖子信息，默认false |
 
 #### 请求示例
 ```bash
-GET /replies/1
+GET /replies/1?viewer_id=2&include_children=true&include_full_post=false
 ```
 
 #### 响应示例
@@ -123,7 +134,148 @@ GET /replies/1
 }
 ```
 
-### 3. 创建回复
+### 3. 获取用户回复列表
+**GET** `/replies/user/{user_id}`
+
+#### 请求参数
+| 参数 | 类型 | 必填 | 说明 |
+|------|------|------|------|
+| user_id | string | 是 | 用户ID |
+| page | int | 否 | 页码，默认1 |
+| per_page | int | 否 | 每页数量，默认20 |
+| viewer_id | string | 否 | 当前查看用户ID（用于权限控制） |
+| level | int | 否 | 层级筛选：1=一级评论，2=二级评论，None=所有 |
+
+#### 请求示例
+```bash
+GET /replies/user/1?page=1&per_page=20&viewer_id=2&level=1
+```
+
+#### 响应示例
+```json
+{
+  "code": 200,
+  "message": "获取用户回复成功",
+  "data": {
+    "user": {
+      "objectId": "1",
+      "username": "test_user",
+      "avatar": "https://example.com/avatar.jpg"
+    },
+    "replies": [
+      {
+        "objectId": 1,
+        "content": "这是一条评论",
+        "post": "1",
+        "user": "1",
+        "user_info": {
+          "objectId": "1",
+          "username": "test_user",
+          "avatar": "https://example.com/avatar.jpg"
+        },
+        "parent": null,
+        "recipient": null,
+        "post_info": {
+          "objectId": "1",
+          "content": "这是帖子内容",
+          "user": "1",
+          "user_info": {
+            "objectId": "1",
+            "username": "test_user",
+            "avatar": "https://example.com/avatar.jpg"
+          }
+        },
+        "createdAt": "2025-01-09T10:00:00",
+        "updatedAt": "2025-01-09T10:00:00"
+      }
+    ],
+    "pagination": {
+      "page": 1,
+      "per_page": 20,
+      "total": 1,
+      "pages": 1
+    },
+    "stats": {
+      "total_replies": 5
+    }
+  }
+}
+```
+
+### 4. 获取一级回复列表
+**GET** `/replies/post/{post_id}/first-level`
+
+#### 请求参数
+| 参数 | 类型 | 必填 | 说明 |
+|------|------|------|------|
+| post_id | string | 是 | 帖子ID |
+| page | int | 否 | 页码，默认1 |
+| per_page | int | 否 | 每页数量，默认10 |
+| viewer_id | string | 否 | 当前查看用户ID（用于权限控制） |
+
+#### 请求示例
+```bash
+GET /replies/post/1/first-level?page=1&per_page=10&viewer_id=2
+```
+
+#### 响应示例
+```json
+{
+  "code": 200,
+  "message": "获取一级回复成功",
+  "data": {
+    "post": {
+      "objectId": "1",
+      "content_preview": "这是帖子内容...",
+      "replyCount": 2
+    },
+    "first_level_replies": [
+      {
+        "objectId": 1,
+        "content": "这是一级评论",
+        "post": "1",
+        "user": "1",
+        "user_info": {
+          "objectId": "1",
+          "username": "test_user",
+          "avatar": "https://example.com/avatar.jpg"
+        },
+        "parent": null,
+        "recipient": null,
+        "children": [
+          {
+            "objectId": 2,
+            "content": "这是对一级评论的回复",
+            "user": "2",
+            "user_info": {
+              "objectId": "2",
+              "username": "user2",
+              "avatar": "https://example.com/avatar2.jpg"
+            },
+            "parent": "1",
+            "recipient": "1",
+            "createdAt": "2025-01-09T10:05:00"
+          }
+        ],
+        "createdAt": "2025-01-09T10:00:00",
+        "updatedAt": "2025-01-09T10:00:00"
+      }
+    ],
+    "pagination": {
+      "page": 1,
+      "per_page": 10,
+      "total": 1,
+      "pages": 1
+    },
+    "stats": {
+      "first_level_count": 1,
+      "second_level_count": 1
+    }
+  }
+}
+```
+
+### 5. 创建回复
 **POST** `/replies`
 
 #### 请求体

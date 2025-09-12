@@ -30,7 +30,7 @@ GET /releases?page=1&per_page=10&app_name=SuperSpeedCalc&environment=production&
   "code": 200,
   "message": "获取发布记录成功",
   "data": {
-    "list": [
+    "items": [
       {
         "objectId": 1,
         "app_name": "SuperSpeedCalc",
@@ -59,12 +59,12 @@ GET /releases?page=1&per_page=10&app_name=SuperSpeedCalc&environment=production&
 ```
 
 ### 2. 获取单个发布记录
-**GET** `/releases/{id}`
+**GET** `/releases/{object_id}`
 
 #### 请求参数
 | 参数 | 类型 | 必填 | 说明 |
 |------|------|------|------|
-| id | int | 是 | 发布记录ID |
+| object_id | string | 是 | 发布记录ID |
 
 #### 请求示例
 ```bash
@@ -147,7 +147,7 @@ GET /releases/1
 ```
 
 ### 4. 更新发布记录
-**PUT** `/releases/{id}`
+**PUT** `/releases/{object_id}`
 
 #### 请求体
 ```json
@@ -198,12 +198,12 @@ GET /releases/1
 ```
 
 ### 5. 删除发布记录
-**DELETE** `/releases/{id}`
+**DELETE** `/releases/{object_id}`
 
 #### 请求参数
 | 参数 | 类型 | 必填 | 说明 |
 |------|------|------|------|
-| id | int | 是 | 发布记录ID |
+| object_id | string | 是 | 发布记录ID |
 
 #### 请求示例
 ```bash
@@ -219,77 +219,7 @@ DELETE /releases/1
 }
 ```
 
-### 6. 获取最新版本
-**GET** `/releases/latest`
-
-#### 请求参数
-| 参数 | 类型 | 必填 | 说明 |
-|------|------|------|------|
-| app_name | string | 否 | 应用名称 |
-| environment | string | 否 | 环境，默认production |
-
-#### 请求示例
-```bash
-GET /releases/latest?app_name=SuperSpeedCalc&environment=production
-```
-
-#### 响应示例
-```json
-{
-  "code": 200,
-  "message": "获取最新版本成功",
-  "data": {
-    "objectId": 1,
-    "app_name": "SuperSpeedCalc",
-    "version_name": "1.0.1",
-    "version_code": 2,
-    "changelog": "修复已知问题",
-    "download_url": "https://example.com/app-v1.0.1.apk",
-    "environment": "production",
-    "status": "published",
-    "is_update": true,
-    "force_update": true,
-    "createdAt": "2025-01-09T10:00:00",
-    "updatedAt": "2025-01-09T11:00:00"
-  }
-}
-```
-
-### 7. 检查更新
-**GET** `/releases/check-update`
-
-#### 请求参数
-| 参数 | 类型 | 必填 | 说明 |
-|------|------|------|------|
-| app_name | string | 是 | 应用名称 |
-| current_version_code | int | 是 | 当前版本代码 |
-| environment | string | 否 | 环境，默认production |
-
-#### 请求示例
-```bash
-GET /releases/check-update?app_name=SuperSpeedCalc&current_version_code=1&environment=production
-```
-
-#### 响应示例
-```json
-{
-  "code": 200,
-  "message": "检查更新成功",
-  "data": {
-    "has_update": true,
-    "latest_version": {
-      "version_name": "1.0.1",
-      "version_code": 2,
-      "changelog": "修复已知问题",
-      "download_url": "https://example.com/app-v1.0.1.apk",
-      "is_update": true,
-      "force_update": true
-    }
-  }
-}
-```
-
-### 8. 获取发布记录数量
+### 6. 获取发布记录数量
 **GET** `/releases/count`
 
 #### 请求参数
@@ -315,41 +245,34 @@ GET /releases/count?app_name=SuperSpeedCalc&environment=production&status=publis
 }
 ```
 
-### 9. 上传APK文件
-**POST** `/releases/upload`
+### 7. 上传APK文件
+**POST** `/releases/upload-apk`
 
 #### 请求参数
 | 参数 | 类型 | 必填 | 说明 |
 |------|------|------|------|
 | file | file | 是 | APK文件 |
-| app_name | string | 是 | 应用名称 |
-| version_name | string | 是 | 版本名称 |
-| version_code | int | 是 | 版本代码 |
-| changelog | string | 否 | 更新日志 |
+| release_id | string | 否 | 发布记录ID（可选，用于绑定到指定发布记录） |
 
 #### 请求示例
 ```bash
-curl -X POST -F "file=@app-v1.0.1.apk" -F "app_name=SuperSpeedCalc" -F "version_name=1.0.1" -F "version_code=2" -F "changelog=修复已知问题" http://localhost:8000/releases/upload
+curl -X POST -F "file=@app-v1.0.1.apk" http://localhost:8000/releases/upload-apk
 ```
 
 #### 响应示例
 ```json
 {
   "code": 201,
-  "message": "APK上传成功",
+  "message": "APK uploaded successfully",
   "data": {
-    "objectId": 1,
-    "app_name": "SuperSpeedCalc",
-    "version_name": "1.0.1",
-    "version_code": 2,
-    "changelog": "修复已知问题",
-    "download_url": "http://localhost:8000/uploads/apk/app-v1.0.1.apk",
-    "environment": "production",
-    "status": "published",
-    "is_update": true,
-    "force_update": false,
-    "createdAt": "2025-01-09T10:00:00",
-    "updatedAt": "2025-01-09T10:00:00"
+    "success": true,
+    "data": {
+      "fileName": "1704787200000.apk",
+      "path": "uploads/apk/1704787200000.apk",
+      "url": "/uploads/apk/1704787200000.apk",
+      "fileSize": 1024000
+    },
+    "message": "APK uploaded successfully"
   }
 }
 ```
