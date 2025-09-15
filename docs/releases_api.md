@@ -153,10 +153,13 @@ GET /releases/1
 #### 请求体
 ```json
 {
+  "title": "SuperSpeedCalc",
   "version_name": "1.0.1",
   "version_code": 2,
   "content": "修复已知问题",
   "download_url": "https://example.com/app-v1.0.1.apk",
+  "environment": "production",
+  "is_test": false,
   "is_update": true,
   "force_update": true
 }
