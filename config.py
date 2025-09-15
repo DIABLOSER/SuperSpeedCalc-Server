@@ -30,7 +30,7 @@ class DevelopmentConfig(Config):
     
     # 开发环境数据库
     SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or \
-        'sqlite:///instance/app_development.db'
+        'sqlite:///development/app_development.db'
     
     # 详细日志配置
     LOG_LEVEL = logging.DEBUG
@@ -44,7 +44,7 @@ class ProductionConfig(Config):
     
     # 生产环境数据库
     SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or \
-        'sqlite:///instance/app_production.db'
+        'sqlite:///production/app_production.db'
     
     # 生产环境日志配置
     LOG_LEVEL = logging.INFO
