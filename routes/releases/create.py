@@ -12,27 +12,20 @@ def create_release():
     try:
         data = request.get_json() or {}
 
-        required_fields = ['title', 'version_name', 'version_code']
-        for field in required_fields:
-            if data.get(field) in [None, '']:
+        # 校验 version_code 类型（如果提供）
+        version_code = None
+        if data.get('version_code') is not None:
+            try:
+                version_code = int(data.get('version_code'))
+            except Exception:
                 return bad_request_response(
-                    message=f'{field} 不能为空',
-                    # error_code='MISSING_REQUIRED_FIELD',
-                    # details={'field': field}
+                    message='version_code 必须是整数',
+                    # error_code='INVALID_VERSION_CODE'
                 )
 
-        # 校验类型
-        try:
-            version_code = int(data.get('version_code'))
-        except Exception:
-            return bad_request_response(
-                message='version_code 必须是整数',
-                # error_code='INVALID_VERSION_CODE'
-            )
-
         release = AppRelease(
-            title=str(data.get('title')).strip(),
-            version_name=str(data.get('version_name')).strip(),
+            title=data.get('title').strip() if data.get('title') else None,
+            version_name=data.get('version_name').strip() if data.get('version_name') else None,
             version_code=version_code,
             content=data.get('content'),
             download_url=data.get('download_url'),

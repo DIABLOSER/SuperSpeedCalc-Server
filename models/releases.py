@@ -6,13 +6,13 @@ class AppRelease(BaseModel):
     __tablename__ = 'app_releases'
 
     # 应用名称
-    title = db.Column(db.String(100), nullable=False)
+    title = db.Column(db.String(100), nullable=True)
 
     # 版本号（展示用，如 1.2.3）
-    version_name = db.Column(db.String(50), nullable=False)
+    version_name = db.Column(db.String(50), nullable=True)
 
     # 版本代码（整数，自增或手动维护例如版本1.2.3则版本号为123）
-    version_code = db.Column(db.Integer, nullable=False)
+    version_code = db.Column(db.Integer, nullable=True)
 
     # 更新内容
     content = db.Column(db.Text)

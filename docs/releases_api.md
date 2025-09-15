@@ -110,12 +110,14 @@ GET /releases/1
 }
 ```
 
+**注意**: 所有字段都是可选的，可以只提供需要的字段。
+
 #### 请求参数说明
 | 参数 | 类型 | 必填 | 说明 |
 |------|------|------|------|
-| title | string | 是 | 应用名称 |
-| version_name | string | 是 | 版本名称（如1.0.0） |
-| version_code | int | 是 | 版本代码（数字） |
+| title | string | 否 | 应用名称 |
+| version_name | string | 否 | 版本名称（如1.0.0） |
+| version_code | int | 否 | 版本代码（数字） |
 | content | string | 否 | 更新日志 |
 | download_url | string | 否 | 下载链接 |
 | environment | string | 否 | 环境：production/development/testing，默认production |

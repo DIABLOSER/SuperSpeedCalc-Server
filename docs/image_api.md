@@ -311,6 +311,62 @@ GET /images/search?q=avatar&page=1&per_page=10
 }
 ```
 
+### 10. 批量删除图片
+**POST** `/images/batch/delete`
+
+#### 请求体
+```json
+{
+  "image_ids": [1, 2, 3]
+}
+```
+
+#### 请求参数说明
+| 参数 | 类型 | 必填 | 说明 |
+|------|------|------|------|
+| image_ids | array | 是 | 要删除的图片ID列表 |
+
+#### 请求示例
+```bash
+curl -X POST http://localhost:8000/images/batch/delete \
+  -H "Content-Type: application/json" \
+  -d '{"image_ids": [1, 2, 3]}'
+```
+
+#### 响应示例
+```json
+{
+  "code": 200,
+  "message": "批量删除成功",
+  "data": {
+    "deleted_count": 3,
+    "deleted_ids": [1, 2, 3]
+  }
+}
+```
+
+### 11. 清空所有图片
+**DELETE** `/images/clear`
+
+#### 请求参数
+无
+
+#### 请求示例
+```bash
+curl -X DELETE http://localhost:8000/images/clear
+```
+
+#### 响应示例
+```json
+{
+  "code": 200,
+  "message": "清空成功",
+  "data": {
+    "deleted_count": 50
+  }
+}
+```
+
 ## 错误响应
 
 ### 常见错误码

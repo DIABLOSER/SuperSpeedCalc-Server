@@ -11,7 +11,7 @@ from utils.response import (
 # 用户信息类
 class UserInfo:
     #在这里配置默认值
-    avatar = "https://example.com/avatar.jpg"
+    avatar = "https://q.qlogo.cn/headimg_dl?dst_uin=765618041&spec=640&img_type=jpg"
     bio = "这个人很懒，什么都没留下"
     experience = 0
     boluo = 0

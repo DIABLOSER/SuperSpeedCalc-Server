@@ -572,6 +572,38 @@ GET /posts/stats?user=1
 - `POST_UPDATE_FAILED`: 帖子更新失败
 - `POST_DELETE_FAILED`: 帖子删除失败
 
+### 11. 同步所有帖子点赞数
+**POST** `/posts/admin/sync-like-counts`
+
+#### 请求参数
+无
+
+#### 请求示例
+```bash
+curl -X POST http://localhost:8000/posts/admin/sync-like-counts
+```
+
+#### 响应示例
+```json
+{
+  "code": 200,
+  "message": "同步点赞数成功",
+  "data": {
+    "synced_posts": 50,
+    "total_likes": 150
+  }
+}
+```
+
+## 错误码说明
+
+### 常见错误码
+- `POST_NOT_FOUND`: 帖子不存在
+- `ACCESS_DENIED`: 访问被拒绝
+- `POST_CREATE_FAILED`: 帖子创建失败
+- `POST_UPDATE_FAILED`: 帖子更新失败
+- `POST_DELETE_FAILED`: 帖子删除失败
+
 ### 错误响应示例
 ```json
 {
