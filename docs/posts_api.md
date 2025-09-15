@@ -256,7 +256,7 @@ GET /posts/audit/pending?page=1&per_page=20
 ```
 
 ### 4. 更新帖子
-**PUT** `/posts/{id}`
+**PUT** `/posts/{post_id}`
 
 #### 请求体
 ```json
@@ -303,7 +303,7 @@ GET /posts/audit/pending?page=1&per_page=20
 ```
 
 ### 5. 删除帖子
-**DELETE** `/posts/{id}`
+**DELETE** `/posts/{post_id}`
 
 #### 请求参数
 | 参数 | 类型 | 必填 | 说明 |
@@ -346,7 +346,7 @@ GET /posts/user/1?page=1&per_page=10&status=published
   "code": 200,
   "message": "获取用户帖子成功",
   "data": {
-    "list": [
+    "items": [
       {
         "objectId": 1,
         "title": "我的第一篇帖子",
@@ -393,7 +393,7 @@ GET /posts/audit/pending?page=1&per_page=20
   "code": 200,
   "message": "获取审核帖子成功",
   "data": {
-    "list": [
+    "items": [
       {
         "objectId": 1,
         "title": "我的第一篇帖子",
@@ -425,7 +425,7 @@ GET /posts/audit/pending?page=1&per_page=20
 ```
 
 ### 8. 审核帖子
-**PUT** `/posts/{id}/audit`
+**PUT** `/posts/{post_id}/audit`
 
 #### 请求体
 ```json
@@ -490,7 +490,7 @@ GET /posts/search?q=技术&page=1&per_page=10&category=技术
   "code": 200,
   "message": "搜索帖子成功",
   "data": {
-    "list": [
+    "items": [
       {
         "objectId": 1,
         "title": "我的第一篇帖子",

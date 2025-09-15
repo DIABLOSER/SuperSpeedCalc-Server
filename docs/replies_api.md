@@ -323,7 +323,7 @@ GET /replies/post/1/first-level?page=1&per_page=10&viewer_id=2
 ```
 
 ### 4. 更新回复
-**PUT** `/replies/{id}`
+**PUT** `/replies/{reply_id}`
 
 #### 请求体
 ```json
@@ -362,7 +362,7 @@ GET /replies/post/1/first-level?page=1&per_page=10&viewer_id=2
 ```
 
 ### 5. 删除回复
-**DELETE** `/replies/{id}`
+**DELETE** `/replies/{reply_id}`
 
 #### 请求参数
 | 参数 | 类型 | 必填 | 说明 |
@@ -405,7 +405,7 @@ GET /replies/post/1?page=1&per_page=20&include_children=true
   "code": 200,
   "message": "获取帖子回复成功",
   "data": {
-    "list": [
+    "items": [
       {
         "objectId": 1,
         "content": "这是一条评论",
@@ -468,7 +468,7 @@ GET /replies/user/1?page=1&per_page=20
   "code": 200,
   "message": "获取用户回复成功",
   "data": {
-    "list": [
+    "items": [
       {
         "objectId": 1,
         "content": "这是一条评论",
@@ -492,7 +492,7 @@ GET /replies/user/1?page=1&per_page=20
 ```
 
 ### 8. 获取回复的子回复
-**GET** `/replies/{id}/children`
+**GET** `/replies/{reply_id}/children`
 
 #### 请求参数
 | 参数 | 类型 | 必填 | 说明 |
@@ -512,7 +512,7 @@ GET /replies/1/children?page=1&per_page=20
   "code": 200,
   "message": "获取子回复成功",
   "data": {
-    "list": [
+    "items": [
       {
         "objectId": 2,
         "content": "这是对评论的回复",
@@ -541,7 +541,7 @@ GET /replies/1/children?page=1&per_page=20
 ```
 
 ### 9. 回复点赞
-**POST** `/replies/{id}/like`
+**POST** `/replies/{reply_id}/like`
 
 #### 请求体
 ```json

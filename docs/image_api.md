@@ -1,7 +1,7 @@
 # 图片管理 API
 
 ## 基础信息
-- **基础路径**: `/image`
+- **基础路径**: `/images`
 - **数据表**: `image`
 - **主要功能**: 图片上传、管理、搜索、统计
 
@@ -53,7 +53,7 @@ GET /image?page=1&per_page=20&sort_by=createdAt&order=desc
 ```
 
 ### 2. 获取单个图片信息
-**GET** `/image/{object_id}`
+**GET** `/images/{object_id}`
 
 #### 请求参数
 | 参数 | 类型 | 必填 | 说明 |
@@ -62,7 +62,7 @@ GET /image?page=1&per_page=20&sort_by=createdAt&order=desc
 
 #### 请求示例
 ```bash
-GET /image/1
+GET /images/1
 ```
 
 #### 响应示例
@@ -83,7 +83,7 @@ GET /image/1
 ```
 
 ### 3. 上传单张图片
-**POST** `/image/upload`
+**POST** `/images/upload`
 
 #### 请求参数
 | 参数 | 类型 | 必填 | 说明 |
@@ -95,7 +95,7 @@ GET /image/1
 
 #### 请求示例
 ```bash
-curl -X POST -F "file=@avatar.jpg" http://localhost:8000/image/upload
+curl -X POST -F "file=@avatar.jpg" http://localhost:8000/images/upload
 ```
 
 #### 响应示例
@@ -117,7 +117,7 @@ curl -X POST -F "file=@avatar.jpg" http://localhost:8000/image/upload
 ```
 
 ### 4. 批量上传图片
-**POST** `/image/upload/multiple`
+**POST** `/images/upload/multiple`
 
 #### 请求参数
 | 参数 | 类型 | 必填 | 说明 |
@@ -126,7 +126,7 @@ curl -X POST -F "file=@avatar.jpg" http://localhost:8000/image/upload
 
 #### 请求示例
 ```bash
-curl -X POST -F "files=@image1.jpg" -F "files=@image2.jpg" http://localhost:8000/image/upload/multiple
+curl -X POST -F "files=@image1.jpg" -F "files=@image2.jpg" http://localhost:8000/images/upload/multiple
 ```
 
 #### 响应示例
@@ -159,7 +159,7 @@ curl -X POST -F "files=@image1.jpg" -F "files=@image2.jpg" http://localhost:8000
 ```
 
 ### 5. 更新图片信息
-**PUT** `/images/{id}`
+**PUT** `/images/{object_id}`
 
 #### 请求体
 ```json
@@ -192,7 +192,7 @@ curl -X POST -F "files=@image1.jpg" -F "files=@image2.jpg" http://localhost:8000
 ```
 
 ### 6. 删除图片
-**DELETE** `/images/{id}`
+**DELETE** `/images/{object_id}`
 
 #### 请求参数
 | 参数 | 类型 | 必填 | 说明 |
@@ -234,7 +234,7 @@ GET /images/search?q=avatar&page=1&per_page=10
   "code": 200,
   "message": "搜索图片成功",
   "data": {
-    "list": [
+    "items": [
       {
         "objectId": 1,
         "fileName": "20250109_100000_abc12345.jpg",
@@ -279,7 +279,7 @@ GET /images/search?q=avatar&page=1&per_page=10
 ```
 
 ### 9. 更新图片URL
-**PUT** `/images/{id}/url`
+**PUT** `/images/{object_id}/url`
 
 #### 请求体
 ```json

@@ -18,8 +18,8 @@ def update_release(object_id):
 
         data = request.get_json() or {}
 
-        if 'app_name' in data and data['app_name'] is not None:
-            item.app_name = str(data['app_name']).strip()
+        if 'title' in data and data['title'] is not None:
+            item.title = str(data['title']).strip()
         if 'version_name' in data and data['version_name'] is not None:
             item.version_name = str(data['version_name']).strip()
         if 'version_code' in data and data['version_code'] is not None:
@@ -30,14 +30,14 @@ def update_release(object_id):
                     message='version_code 必须是整数',
                     # error_code='INVALID_VERSION_CODE'
                 )
-        if 'changelog' in data:
-            item.changelog = data['changelog']
+        if 'content' in data:
+            item.content = data['content']
         if 'download_url' in data:
             item.download_url = data['download_url']
         if 'environment' in data and data['environment']:
             item.environment = data['environment']
-        if 'status' in data and data['status']:
-            item.status = data['status']
+        if 'is_test' in data:
+            item.is_test = bool(data['is_test'])
         if 'is_update' in data:
             item.is_update = bool(data['is_update'])
         if 'force_update' in data:

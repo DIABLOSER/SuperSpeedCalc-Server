@@ -59,7 +59,7 @@ GET /users?page=1&per_page=20&sort_by=createdAt&order=desc&keyword=test
 ```
 
 ### 2. 获取单个用户
-**GET** `/users/{id}`
+**GET** `/users/{object_id}`
 
 #### 请求参数
 | 参数 | 类型 | 必填 | 说明 |

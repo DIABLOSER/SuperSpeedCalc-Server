@@ -29,7 +29,7 @@ GET /banners?page=1&per_page=20&status=active
   "code": 200,
   "message": "获取横幅列表成功",
   "data": {
-    "list": [
+    "items": [
       {
         "objectId": 1,
         "title": "欢迎横幅",
@@ -343,7 +343,7 @@ POST /banners/1/click
 ```
 
 ### 5. 删除横幅
-**DELETE** `/banners/{id}`
+**DELETE** `/banners/{banner_id}`
 
 #### 请求参数
 | 参数 | 类型 | 必填 | 说明 |
@@ -403,7 +403,7 @@ GET /banners/active?limit=5
 ```
 
 ### 7. 更新横幅排序
-**PUT** `/banners/{id}/sort`
+**PUT** `/banners/{banner_id}/sort`
 
 #### 请求体
 ```json

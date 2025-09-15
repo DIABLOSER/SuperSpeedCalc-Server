@@ -12,7 +12,7 @@ def create_release():
     try:
         data = request.get_json() or {}
 
-        required_fields = ['app_name', 'version_name', 'version_code']
+        required_fields = ['title', 'version_name', 'version_code']
         for field in required_fields:
             if data.get(field) in [None, '']:
                 return bad_request_response(
@@ -31,13 +31,13 @@ def create_release():
             )
 
         release = AppRelease(
-            app_name=str(data.get('app_name')).strip(),
+            title=str(data.get('title')).strip(),
             version_name=str(data.get('version_name')).strip(),
             version_code=version_code,
-            changelog=data.get('changelog'),
+            content=data.get('content'),
             download_url=data.get('download_url'),
             environment=(data.get('environment') or 'production'),
-            status=(data.get('status') or 'published'),
+            is_test=bool(data.get('is_test', False)),
             is_update=bool(data.get('is_update', False)),
             force_update=bool(data.get('force_update', False)),
         )

@@ -100,7 +100,7 @@ GET /posts/1/likers?page=1&per_page=20&viewer_id=1
   "code": 200,
   "message": "获取点赞用户列表成功",
   "data": {
-    "list": [
+    "items": [
       {
         "id": 2,
         "username": "user2",
@@ -143,7 +143,7 @@ GET /posts/user/2/liked?page=1&per_page=20&viewer_id=1
   "code": 200,
   "message": "获取用户点赞帖子成功",
   "data": {
-    "list": [
+    "items": [
       {
         "objectId": 1,
         "title": "我的第一篇帖子",
@@ -324,7 +324,7 @@ GET /posts/popular?page=1&per_page=20&period=week
   "code": 200,
   "message": "获取热门帖子成功",
   "data": {
-    "list": [
+    "items": [
       {
         "objectId": 1,
         "title": "我的第一篇帖子",

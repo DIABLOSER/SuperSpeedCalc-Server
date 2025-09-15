@@ -331,7 +331,7 @@ POST /forum/1/like
 ```
 
 ### 4. 更新论坛帖子
-**PUT** `/forum/{id}`
+**PUT** `/forum/{object_id}`
 
 #### 请求体
 ```json
@@ -380,7 +380,7 @@ POST /forum/1/like
 ```
 
 ### 5. 删除论坛帖子
-**DELETE** `/forum/{id}`
+**DELETE** `/forum/{object_id}`
 
 #### 请求参数
 | 参数 | 类型 | 必填 | 说明 |
@@ -422,7 +422,7 @@ GET /forum/user/1?page=1&per_page=10
   "code": 200,
   "message": "获取用户论坛帖子成功",
   "data": {
-    "list": [
+    "items": [
       {
         "objectId": 1,
         "title": "技术讨论",
@@ -449,7 +449,7 @@ GET /forum/user/1?page=1&per_page=10
 ```
 
 ### 7. 点赞论坛帖子
-**POST** `/forum/{id}/like`
+**POST** `/forum/{object_id}/like`
 
 #### 请求体
 ```json

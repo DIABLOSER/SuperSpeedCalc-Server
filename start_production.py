@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """
-SuperSpeedCalc Server 启动脚本
+SuperSpeedCalc Server 生产环境启动脚本
+端口: 8001 (生产环境)
 """
 
 import os
@@ -23,7 +24,7 @@ def check_dependencies():
 
 def main():
     """主函数"""
-    print("🚀 SuperSpeedCalc Server 启动脚本")
+    print("🚀 SuperSpeedCalc Server 生产环境启动脚本")
     print("=" * 40)
     
     # 检查依赖
@@ -31,10 +32,10 @@ def main():
         return
     
     # 设置环境变量
-    os.environ.setdefault('FLASK_ENV', 'development')
+    os.environ.setdefault('FLASK_ENV', 'production')
     
     # 创建应用
-    app = create_app('development')
+    app = create_app('production')
     
     # 初始化数据库
     print("📦 初始化数据库...")
@@ -42,7 +43,7 @@ def main():
     
     # 配置详细日志
     app.logger.info("=" * 50)
-    app.logger.info("🚀 SuperSpeedCalc Server 启动")
+    app.logger.info("🚀 SuperSpeedCalc Server 生产环境启动")
     app.logger.info("=" * 50)
     app.logger.info(f"环境: {os.environ.get('FLASK_ENV', 'development')}")
     app.logger.info(f"调试模式: {app.debug}")
@@ -50,20 +51,21 @@ def main():
     app.logger.info(f"SQLAlchemy Echo: {app.config.get('SQLALCHEMY_ECHO')}")
     app.logger.info("=" * 50)
     
-    print("\n🌟 服务器启动中...")
-    print("📍 访问地址: http://localhost:8000")
-    print("🔍 健康检查: http://localhost:8000/health")
+    print("\n🌟 生产服务器启动中...")
+    print("📍 访问地址: http://localhost:8001")
+    print("🔍 健康检查: http://localhost:8001/health")
     print("📚 API 文档请查看 README.md")
-    print("📝 详细日志将输出到控制台和 logs/app.log 文件")
+    print("💾 数据库文件: instance/app_production.db")
+    print("📝 详细日志将输出到控制台和 logs/app_production.log 文件")
     print("\n按 Ctrl+C 停止服务器")
     print("=" * 40)
     
-    # 启动服务器
+    # 启动服务器 (生产环境端口 8001)
     try:
-        app.run(host='0.0.0.0', port=8000, debug=True)
+        app.run(host='0.0.0.0', port=8001, debug=True)
     except KeyboardInterrupt:
-        app.logger.info("👋 服务器已停止")
-        print("\n👋 服务器已停止")
+        app.logger.info("👋 生产服务器已停止")
+        print("\n👋 生产服务器已停止")
 
 if __name__ == '__main__':
     main() 

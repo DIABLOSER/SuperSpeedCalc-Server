@@ -45,6 +45,7 @@ def generate_android_style_username():
     timestamp_part = str(int(time.time() * 1000) % 1000000).zfill(6)
     return f"{adjective}{noun}{timestamp_part}"
 
+# 创建用户
 def create_user():
     """创建新用户（后台管理用，支持完整字段）"""
     try:
@@ -121,7 +122,7 @@ def create_user():
         return internal_error_response(message="创建用户失败")
 
 def register_user():
-    """注册新用户（客户端/安卓端用，仅需邮箱或手机号 + 密码；可选提供 username）"""
+    """注册新用户（客户端/安卓端用，仅需邮箱或手机号 + 密码）"""
     try:
         data = request.get_json() or {}
         password = data.get('password')
@@ -137,7 +138,7 @@ def register_user():
                 message='Mobile is required',
                 # error_code='MISSING_MOBILE'
             )
-        
+    
         # 唯一性检查
         if MyUser.query.filter_by(mobile=mobile_value).first():
             return bad_request_response(

@@ -28,15 +28,28 @@ class DevelopmentConfig(Config):
     DEBUG = True
     SQLALCHEMY_ECHO = True
     
+    # 开发环境数据库
+    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or \
+        'sqlite:///instance/app_development.db'
+    
     # 详细日志配置
     LOG_LEVEL = logging.DEBUG
     LOG_FORMAT = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-    LOG_FILE = 'app.log'
+    LOG_FILE = 'logs/app_development.log'
 
 class ProductionConfig(Config):
     """生产环境配置"""
     DEBUG = False
     SQLALCHEMY_ECHO = False
+    
+    # 生产环境数据库
+    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or \
+        'sqlite:///instance/app_production.db'
+    
+    # 生产环境日志配置
+    LOG_LEVEL = logging.INFO
+    LOG_FORMAT = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+    LOG_FILE = 'logs/app_production.log'
 
 config = {
     'development': DevelopmentConfig,

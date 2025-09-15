@@ -15,13 +15,12 @@
 |------|------|------|------|
 | page | int | 否 | 页码，默认1 |
 | per_page | int | 否 | 每页数量，默认10 |
-| app_name | string | 否 | 应用名称筛选 |
+| title | string | 否 | 应用名称筛选 |
 | environment | string | 否 | 环境筛选：production, development, testing |
-| status | string | 否 | 状态筛选：published, draft, archived |
 
 #### 请求示例
 ```bash
-GET /releases?page=1&per_page=10&app_name=SuperSpeedCalc&environment=production&status=published
+GET /releases?page=1&per_page=10&title=SuperSpeedCalc&environment=production
 ```
 
 #### 响应示例
@@ -33,13 +32,13 @@ GET /releases?page=1&per_page=10&app_name=SuperSpeedCalc&environment=production&
     "items": [
       {
         "objectId": 1,
-        "app_name": "SuperSpeedCalc",
+        "title": "SuperSpeedCalc",
         "version_name": "1.0.0",
-        "version_code": 1,
-        "changelog": "初始版本发布",
+        "version_code": 100,
+        "content": "初始版本发布",
         "download_url": "https://example.com/app-v1.0.0.apk",
         "environment": "production",
-        "status": "published",
+        "is_test": false,
         "is_update": true,
         "force_update": false,
         "createdAt": "2025-01-09T10:00:00",
@@ -78,13 +77,13 @@ GET /releases/1
   "message": "获取发布记录成功",
   "data": {
     "objectId": 1,
-    "app_name": "SuperSpeedCalc",
+    "title": "SuperSpeedCalc",
     "version_name": "1.0.0",
     "version_code": 1,
-    "changelog": "初始版本发布",
+    "content": "初始版本发布",
     "download_url": "https://example.com/app-v1.0.0.apk",
     "environment": "production",
-    "status": "published",
+    "is_test": false,
     "is_update": true,
     "force_update": false,
     "createdAt": "2025-01-09T10:00:00",
@@ -99,13 +98,13 @@ GET /releases/1
 #### 请求体
 ```json
 {
-  "app_name": "SuperSpeedCalc",
+  "title": "SuperSpeedCalc",
   "version_name": "1.0.0",
   "version_code": 1,
-  "changelog": "初始版本发布",
+  "content": "初始版本发布",
   "download_url": "https://example.com/app-v1.0.0.apk",
   "environment": "production",
-  "status": "published",
+  "is_test": false,
   "is_update": true,
   "force_update": false
 }
@@ -114,13 +113,13 @@ GET /releases/1
 #### 请求参数说明
 | 参数 | 类型 | 必填 | 说明 |
 |------|------|------|------|
-| app_name | string | 是 | 应用名称 |
+| title | string | 是 | 应用名称 |
 | version_name | string | 是 | 版本名称（如1.0.0） |
 | version_code | int | 是 | 版本代码（数字） |
-| changelog | string | 否 | 更新日志 |
+| content | string | 否 | 更新日志 |
 | download_url | string | 否 | 下载链接 |
 | environment | string | 否 | 环境：production/development/testing，默认production |
-| status | string | 否 | 状态：published/draft/archived，默认published |
+| is_test | bool | 否 | 是否为测试版本，默认false |
 | is_update | bool | 否 | 是否为更新，默认false |
 | force_update | bool | 否 | 是否强制更新，默认false |
 
@@ -131,13 +130,13 @@ GET /releases/1
   "message": "发布记录创建成功",
   "data": {
     "objectId": 1,
-    "app_name": "SuperSpeedCalc",
+    "title": "SuperSpeedCalc",
     "version_name": "1.0.0",
     "version_code": 1,
-    "changelog": "初始版本发布",
+    "content": "初始版本发布",
     "download_url": "https://example.com/app-v1.0.0.apk",
     "environment": "production",
-    "status": "published",
+    "is_test": false,
     "is_update": true,
     "force_update": false,
     "createdAt": "2025-01-09T10:00:00",
@@ -154,9 +153,8 @@ GET /releases/1
 {
   "version_name": "1.0.1",
   "version_code": 2,
-  "changelog": "修复已知问题",
+  "content": "修复已知问题",
   "download_url": "https://example.com/app-v1.0.1.apk",
-  "status": "published",
   "is_update": true,
   "force_update": true
 }
@@ -165,13 +163,12 @@ GET /releases/1
 #### 请求参数说明
 | 参数 | 类型 | 必填 | 说明 |
 |------|------|------|------|
-| app_name | string | 否 | 应用名称 |
+| title | string | 否 | 应用名称 |
 | version_name | string | 否 | 版本名称 |
 | version_code | int | 否 | 版本代码 |
-| changelog | string | 否 | 更新日志 |
+| content | string | 否 | 更新日志 |
 | download_url | string | 否 | 下载链接 |
 | environment | string | 否 | 环境 |
-| status | string | 否 | 状态 |
 | is_update | bool | 否 | 是否为更新 |
 | force_update | bool | 否 | 是否强制更新 |
 
@@ -182,13 +179,12 @@ GET /releases/1
   "message": "发布记录更新成功",
   "data": {
     "objectId": 1,
-    "app_name": "SuperSpeedCalc",
+    "title": "SuperSpeedCalc",
     "version_name": "1.0.1",
     "version_code": 2,
-    "changelog": "修复已知问题",
+    "content": "修复已知问题",
     "download_url": "https://example.com/app-v1.0.1.apk",
     "environment": "production",
-    "status": "published",
     "is_update": true,
     "force_update": true,
     "createdAt": "2025-01-09T10:00:00",
@@ -225,13 +221,12 @@ DELETE /releases/1
 #### 请求参数
 | 参数 | 类型 | 必填 | 说明 |
 |------|------|------|------|
-| app_name | string | 否 | 应用名称筛选 |
+| title | string | 否 | 应用名称筛选 |
 | environment | string | 否 | 环境筛选 |
-| status | string | 否 | 状态筛选 |
 
 #### 请求示例
 ```bash
-GET /releases/count?app_name=SuperSpeedCalc&environment=production&status=published
+GET /releases/count?title=SuperSpeedCalc&environment=production
 ```
 
 #### 响应示例

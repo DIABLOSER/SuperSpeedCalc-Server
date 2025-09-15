@@ -57,8 +57,10 @@ def create_app(config_name='default'):
     
     # 初始化扩展
     db.init_app(app)
-    #部署到服务器需要注释这行
-    CORS(app)
+    
+    # CORS 配置 - 仅在本地开发环境启用，部署到服务器时禁用
+    if app.config.get('DEBUG', False) and app.config.get('ENV') != 'production':
+        CORS(app)
     
     # 添加请求日志中间件
     @app.before_request

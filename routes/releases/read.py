@@ -9,21 +9,18 @@ from sqlalchemy import desc
 
 
 def get_releases():
-    """获取发布记录列表（可筛选 app_name、environment、status）"""
+    """获取发布记录列表（可筛选 title、environment）"""
     try:
         page = request.args.get('page', 1, type=int)
         per_page = request.args.get('per_page', 10, type=int)
-        app_name = request.args.get('app_name')
+        title = request.args.get('title')
         environment = request.args.get('environment')
-        status = request.args.get('status')
 
         query = AppRelease.query
-        if app_name:
-            query = query.filter(AppRelease.app_name == app_name)
+        if title:
+            query = query.filter(AppRelease.title == title)
         if environment:
             query = query.filter(AppRelease.environment == environment)
-        if status:
-            query = query.filter(AppRelease.status == status)
 
         query = query.order_by(desc(AppRelease.createdAt))
 
@@ -69,17 +66,14 @@ def get_release(object_id):
 
 def get_releases_count():
     try:
-        app_name = request.args.get('app_name')
+        title = request.args.get('title')
         environment = request.args.get('environment')
-        status = request.args.get('status')
 
         query = AppRelease.query
-        if app_name:
-            query = query.filter(AppRelease.app_name == app_name)
+        if title:
+            query = query.filter(AppRelease.title == title)
         if environment:
             query = query.filter(AppRelease.environment == environment)
-        if status:
-            query = query.filter(AppRelease.status == status)
 
         return success_response(
             data={'count': query.count()},
