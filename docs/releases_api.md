@@ -116,11 +116,11 @@ GET /releases/1
 | 参数 | 类型 | 必填 | 说明 |
 |------|------|------|------|
 | title | string | 否 | 应用名称 |
-| version_name | string | 否 | 版本名称（如1.0.0） |
+| version_name | string | 否 | 版本名称（如1.0.0），可选 |
 | version_code | int | 否 | 版本代码（数字） |
 | content | string | 否 | 更新日志 |
 | download_url | string | 否 | 下载链接 |
-| environment | string | 否 | 环境：production/development/testing，默认production |
+| environment | string | 否 | 环境：production/development/testing |
 | is_test | bool | 否 | 是否为测试版本，默认false |
 | is_update | bool | 否 | 是否为更新，默认false |
 | force_update | bool | 否 | 是否强制更新，默认false |
@@ -169,7 +169,7 @@ GET /releases/1
 | 参数 | 类型 | 必填 | 说明 |
 |------|------|------|------|
 | title | string | 否 | 应用名称 |
-| version_name | string | 否 | 版本名称 |
+| version_name | string | 否 | 版本名称，可选 |
 | version_code | int | 否 | 版本代码 |
 | content | string | 否 | 更新日志 |
 | download_url | string | 否 | 下载链接 |

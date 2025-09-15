@@ -20,8 +20,8 @@ def update_release(object_id):
 
         if 'title' in data and data['title'] is not None:
             item.title = str(data['title']).strip()
-        if 'version_name' in data and data['version_name'] is not None:
-            item.version_name = str(data['version_name']).strip()
+        if 'version_name' in data:
+            item.version_name = data['version_name']
         if 'version_code' in data and data['version_code'] is not None:
             try:
                 item.version_code = int(data['version_code'])
@@ -34,7 +34,7 @@ def update_release(object_id):
             item.content = data['content']
         if 'download_url' in data:
             item.download_url = data['download_url']
-        if 'environment' in data and data['environment']:
+        if 'environment' in data:
             item.environment = data['environment']
         if 'is_test' in data:
             item.is_test = bool(data['is_test'])

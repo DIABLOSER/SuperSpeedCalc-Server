@@ -18,10 +18,10 @@ class AppRelease(BaseModel):
     content = db.Column(db.Text)
 
     # 下载链接
-    download_url = db.Column(db.String(255))
+    download_url = db.Column(db.String(255), nullable=True)
 
     # 发布环境（例如 测试，taptap，正式）
-    environment = db.Column(db.Text)
+    environment = db.Column(db.Text, nullable=True)
 
 
     #是否测试（测试版本，不对外发布）

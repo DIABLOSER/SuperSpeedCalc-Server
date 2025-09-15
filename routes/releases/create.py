@@ -13,23 +13,14 @@ def create_release():
         data = request.get_json() or {}
 
         # 校验 version_code 类型（如果提供）
-        version_code = None
-        if data.get('version_code') is not None:
-            try:
-                version_code = int(data.get('version_code'))
-            except Exception:
-                return bad_request_response(
-                    message='version_code 必须是整数',
-                    # error_code='INVALID_VERSION_CODE'
-                )
 
         release = AppRelease(
             title=data.get('title').strip() if data.get('title') else None,
-            version_name=data.get('version_name').strip() if data.get('version_name') else None,
-            version_code=version_code,
+            version_name=data.get('version_name'),
+            version_code=data.get('version_code'),
             content=data.get('content'),
             download_url=data.get('download_url'),
-            environment=(data.get('environment') or 'production'),
+            environment=data.get('environment'),
             is_test=bool(data.get('is_test', False)),
             is_update=bool(data.get('is_update', False)),
             force_update=bool(data.get('force_update', False)),
