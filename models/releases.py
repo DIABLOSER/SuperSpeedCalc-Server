@@ -23,7 +23,6 @@ class AppRelease(BaseModel):
     # 发布环境（例如 测试，taptap，正式）
     environment = db.Column(db.Text, nullable=True)
 
-
     #是否测试（测试版本，不对外发布）
     is_test = db.Column(db.Boolean, default=False)
 
