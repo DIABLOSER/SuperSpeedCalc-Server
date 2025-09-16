@@ -211,9 +211,10 @@ def get_user_rank_by_title():
         user_chart = Charts.query.filter_by(user=user_id, title=title).first()
         
         if not user_chart:
-            return not_found_response(
+            return success_response(
+                data=None,
                 message='No record found for this user and title',
-                # error_code='USER_RECORD_NOT_FOUND'
+                code=200
             )
 
         # 获取用户的成绩
