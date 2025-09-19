@@ -140,20 +140,38 @@ SuperSpeedCalc-Server/
 - ✅ **基础接口测试通过** - 用户列表接口返回正确格式
 - ✅ **用户模型更新** - 用户名字段可为空，手机号唯一且可为空
 - ✅ **500错误修复** - 所有接口跨行return语句问题已解决
+- ✅ **点赞功能测试通过** - 点赞/取消点赞功能完全正常
+- ✅ **评论功能测试通过** - 一级评论和二级回复功能完全正常
+- ✅ **社交功能验证** - 用户关系、帖子管理、互动功能全部测试通过
 
 ### 快速测试
 ```bash
-# 测试环境 (端口 8000)
+# 基础功能测试
 curl "http://localhost:8000/users?page=1&per_page=5"
-curl -X POST "http://localhost:8000/banners" \
-  -H "Content-Type: application/json" \
-  -d '{"title": "测试横幅", "show": true, "click": true}'
+curl "http://localhost:8000/posts?page=1&per_page=5"
 
-# 正式环境 (端口 8001)
-curl "http://localhost:8001/users?page=1&per_page=5"
-curl -X POST "http://localhost:8001/banners" \
+# 社交功能测试
+# 点赞帖子
+curl -X POST "http://localhost:8000/posts/{post_id}/like" \
   -H "Content-Type: application/json" \
-  -d '{"title": "正式横幅", "show": true, "click": true}'
+  -d '{"user_id": "user123"}'
+
+# 取消点赞
+curl -X DELETE "http://localhost:8000/posts/{post_id}/like" \
+  -H "Content-Type: application/json" \
+  -d '{"user_id": "user123"}'
+
+# 创建评论
+curl -X POST "http://localhost:8000/replies/" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "content": "这是一条评论",
+    "post": "post123",
+    "user": "user123"
+  }'
+
+# 获取帖子评论
+curl "http://localhost:8000/replies/post/{post_id}"
 
 # 预期响应格式
 {

@@ -562,11 +562,26 @@ curl -X POST "http://localhost:8000/posts/abc123/like" \
 }
 ```
 
+#### 错误响应
+```json
+{
+  "code": 400,
+  "message": "User has already liked this post"
+}
+```
+
+```json
+{
+  "code": 404,
+  "message": "User not found"
+}
+```
+
 ### 9. 取消点赞帖子
 **DELETE** `/posts/{post_id}/like`
 
 #### 📝 功能说明
-取消对指定帖子的点赞。
+取消对指定帖子的点赞。用户只能取消自己之前的点赞。
 
 #### 🔧 请求参数
 | 参数 | 类型 | 必填 | 说明 |
@@ -595,6 +610,14 @@ curl -X DELETE "http://localhost:8000/posts/abc123/like" \
     "user_id": "user456",
     "is_liked_by_user": false
   }
+}
+```
+
+#### 错误响应
+```json
+{
+  "code": 400,
+  "message": "User has not liked this post"
 }
 ```
 

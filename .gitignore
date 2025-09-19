@@ -121,6 +121,16 @@ dmypy.json
 # Database
 *.db
 app.db
+instance/
+*.sqlite
+*.sqlite3
+app_development.db
+app_production.db
+
+# Uploads and user files
+uploads/
+logs/
+*.log
 
 # IDE
 .vscode/
@@ -130,4 +140,10 @@ app.db
 
 # OS
 .DS_Store
-Thumbs.db 
+Thumbs.db
+
+# Test scripts
+test_likes_replies.py
+simple_test.py
+comprehensive_test.py
+测试总结.md 
