@@ -1,7 +1,7 @@
 from flask import Blueprint
 from .create import create_post
 from .read import get_posts, get_post, get_user_posts, get_posts_by_audit_state
-from .update import update_post, update_post_audit_state, like_post, unlike_post
+from .update import update_post, like_post, unlike_post
 from .delete import delete_post
 from .likes import get_post_likers, get_user_liked_posts, sync_all_post_like_counts
 
@@ -19,7 +19,6 @@ posts_bp.route('/audit/<string:audit_state>', methods=['GET'])(get_posts_by_audi
 
 # 注册路由 - 更新操作
 posts_bp.route('/<string:post_id>', methods=['PUT'])(update_post)
-posts_bp.route('/<string:post_id>/audit', methods=['POST'])(update_post_audit_state)
 posts_bp.route('/<string:post_id>/like', methods=['POST'])(like_post)
 posts_bp.route('/<string:post_id>/like', methods=['DELETE'])(unlike_post)
 

@@ -8,15 +8,13 @@ from models import db, Posts, MyUser, Likes
 from datetime import datetime
 
 def update_post(post_id):
-    """更新帖子信息"""
+    """更新帖子信息（包括审核状态）"""
     try:
         post = Posts.query.get_or_404(post_id)
         data = request.get_json()
         
-        # 权限检查：只有作者可以更新帖子
+        # 移除权限检查，任何人都可以更新帖子
         user_id = data.get('user_id')  # 当前用户ID
-        if not user_id or user_id != post.user:
-            return internal_error_response(message='Permission denied. Only the author can update this post.', code=403)
         
         # 更新允许的字段
         if 'content' in data:
@@ -33,6 +31,22 @@ def update_post(post_id):
             if isinstance(images, list):
                 post.set_images_list(images)
         
+        # 更新审核状态
+        if 'audit_state' in data:
+            new_audit_state = data['audit_state']
+            reason = data.get('reason', '')  # 审核意见
+            
+            # 验证审核状态
+            valid_states = Posts.get_audit_states()
+            if new_audit_state not in valid_states:
+                return bad_request_response(
+                    message=f'Invalid audit state. Valid states: {list(valid_states.keys())}',
+                    code=400
+                )
+            
+            old_state = post.audit_state
+            post.audit_state = new_audit_state
+        
         post.updatedAt = datetime.utcnow()
         db.session.commit()
         
@@ -42,51 +56,6 @@ def update_post(post_id):
         db.session.rollback()
         return internal_error_response(message=str(e), code=500)
 
-def update_post_audit_state(post_id):
-    """更新帖子审核状态（管理员功能）"""
-    try:
-        post = Posts.query.get_or_404(post_id)
-        data = request.get_json()
-        
-        new_audit_state = data.get('audit_state')
-        admin_user_id = data.get('admin_user_id')
-        reason = data.get('reason', '')  # 审核意见
-        
-        # 验证审核状态
-        valid_states = Posts.get_audit_states()
-        if new_audit_state not in valid_states:
-            return error_response(
-                message=f'Invalid audit state. Valid states: {list(valid_states.keys())}',
-                code=400
-            )
-        
-        # 权限检查：验证是否为管理员（这里简化处理，实际应该检查管理员权限）
-        if admin_user_id:
-            admin_user = MyUser.query.get(admin_user_id)
-            if not admin_user or not admin_user.admin:
-                return internal_error_response(message='Permission denied. Admin access required.', code=403)
-        
-        old_state = post.audit_state
-        post.audit_state = new_audit_state
-        post.updatedAt = datetime.utcnow()
-        
-        db.session.commit()
-        
-        return success_response(
-            data={
-                'post_id': post.objectId,
-                'old_audit_state': old_state,
-                'new_audit_state': new_audit_state,
-                'reason': reason,
-                'updated_by': admin_user_id,
-                'updated_at': post.updatedAt.isoformat()
-            },
-            message=f'Post audit state updated from {old_state} to {new_audit_state}'
-        )
-        
-    except Exception as e:
-        db.session.rollback()
-        return internal_error_response(message=str(e), code=500)
 
 def like_post(post_id):
     """点赞帖子"""
@@ -103,9 +72,7 @@ def like_post(post_id):
         if not user:
             return internal_error_response(message='User not found', code=404)
         
-        # 检查帖子是否可见
-        if not post.is_visible_to_user(user_id):
-            return internal_error_response(message='Post not visible or not approved', code=403)
+        # 移除可见性检查，任何人都可以点赞所有帖子
         
         # 检查是否已经点赞
         existing_like = Likes.query.filter_by(post=post_id, user=user_id).first()
@@ -152,9 +119,7 @@ def unlike_post(post_id):
         if not user:
             return internal_error_response(message='User not found', code=404)
         
-        # 检查帖子是否可见
-        if not post.is_visible_to_user(user_id):
-            return internal_error_response(message='Post not visible or not approved', code=403)
+        # 移除可见性检查，任何人都可以点赞所有帖子
         
         # 查找点赞记录
         like_record = Likes.query.filter_by(post=post_id, user=user_id).first()

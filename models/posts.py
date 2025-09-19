@@ -212,13 +212,7 @@ class Posts(BaseModel):
             'second_level_reply_count': self.get_second_level_reply_count()
         }
         
-        # 兼容旧版本API的字段（保持向后兼容）
-        result['author_info'] = result.get('user')  # 使用新的user字段
-        result['author_data'] = result.get('user')  # 保持向后兼容
-        result['actual_like_count'] = result['stats']['actual_like_count']
-        result['actual_reply_count'] = result['stats']['actual_reply_count']
-        result['first_level_reply_count'] = result['stats']['first_level_reply_count']
-        result['second_level_reply_count'] = result['stats']['second_level_reply_count']
+        # 移除向后兼容字段，只保留stats中的统计信息
         
         return result
     

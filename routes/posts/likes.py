@@ -22,9 +22,7 @@ def get_post_likers(post_id):
         # 当前查看用户ID（用于权限控制）
         viewer_id = request.args.get('viewer_id')
         
-        # 检查帖子是否可见
-        if not post.is_visible_to_user(viewer_id):
-            return internal_error_response(message='Post not visible or not approved', code=403)
+        # 移除可见性检查，任何人都可以查看所有帖子的点赞列表
         
         # 查询点赞用户
         query = Likes.query.filter_by(post=post_id).order_by(desc(Likes.createdAt))
@@ -72,7 +70,9 @@ def get_user_liked_posts(user_id):
     """获取用户点赞的帖子列表"""
     try:
         # 检查用户是否存在
-        user = MyUser.query.get_or_404(user_id)
+        user = MyUser.query.get(user_id)
+        if not user:
+            return not_found_response(message="用户不存在")
         
         # 分页参数
         page = request.args.get('page', default=1, type=int)
@@ -87,12 +87,7 @@ def get_user_liked_posts(user_id):
         query = Likes.query.filter_by(user=user_id).order_by(desc(Likes.createdAt))
         query = query.join(Posts, Likes.post == Posts.objectId)
         
-        # 如果不是本人查看，只显示公开且已审核的帖子
-        if viewer_id != user_id:
-            query = query.filter(
-                Posts.visible == True,
-                Posts.audit_state == 'approved'
-            )
+        # 移除权限限制，任何人都可以查看所有帖子
         
         total = query.count()
         likes = query.limit(per_page).offset((page - 1) * per_page).all()

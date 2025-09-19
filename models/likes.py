@@ -52,7 +52,7 @@ class Likes(BaseModel):
                 'replyCount': self.post_ref.replyCount,
                 'images': self.post_ref.get_images_list(),
                 'createdAt': self.post_ref.createdAt.isoformat() if self.post_ref.createdAt else None,
-                'author_info': {
+                'user': {
                     'objectId': self.post_ref.user_ref.objectId,
                     'username': self.post_ref.user_ref.username,
                     'avatar': self.post_ref.user_ref.avatar
@@ -61,10 +61,7 @@ class Likes(BaseModel):
         else:
             result['post_data'] = None
         
-        # 兼容旧版本API的字段（保持向后兼容）
-        if include_details:
-            result['user_info'] = result['user_data']
-            result['post_info'] = result['post_data']
+        # 移除向后兼容字段
         
         return result
     

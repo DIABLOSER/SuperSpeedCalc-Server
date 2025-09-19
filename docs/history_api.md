@@ -166,9 +166,8 @@ GET /history/history_object_id_here
     "objectId": 1,
     "title": "数学挑战（更新）",
     "score": 98,
-    "user": 1,
-    "user_info": {
-      "id": 1,
+    "user": {
+      "objectId": "1",
       "username": "test_user",
       "avatar": "https://example.com/avatar.jpg"
     },

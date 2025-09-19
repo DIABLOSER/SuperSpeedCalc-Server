@@ -37,29 +37,17 @@ def get_posts():
         
         query = Posts.query
         
-        # 应用可见性筛选
+        # 应用可见性筛选（移除权限限制，任何人都可以查看所有帖子）
         if visible_only or approved_only:
             conditions = []
             
             if visible_only:
-                if user_id:
-                    # 对于已登录用户：显示公开的帖子 + 自己的所有帖子
-                    conditions.append(
-                        or_(Posts.visible == True, Posts.user == user_id)
-                    )
-                else:
-                    # 对于未登录用户：只显示公开的帖子
-                    conditions.append(Posts.visible == True)
+                # 只显示公开的帖子
+                conditions.append(Posts.visible == True)
             
             if approved_only:
-                if user_id:
-                    # 对于已登录用户：显示已审核的帖子 + 自己的所有帖子
-                    conditions.append(
-                        or_(Posts.audit_state == 'approved', Posts.user == user_id)
-                    )
-                else:
-                    # 对于未登录用户：只显示已审核的帖子
-                    conditions.append(Posts.audit_state == 'approved')
+                # 只显示已审核的帖子
+                conditions.append(Posts.audit_state == 'approved')
             
             if conditions:
                 query = query.filter(and_(*conditions))
@@ -106,12 +94,7 @@ def get_post(post_id):
         
         post = Posts.query.get_or_404(post_id)
         
-        # 检查可见性
-        if not post.is_visible_to_user(user_id):
-            return forbidden_response(
-                message="帖子不可见或未审核通过",
-                # error_code="POST_NOT_VISIBLE"
-            )
+        # 移除可见性检查，任何人都可以查看所有帖子
         
         return success_response(
             data=post.to_dict(include_user=True, user_id=user_id, sync_like_count=True, sync_reply_count=True),
@@ -128,7 +111,9 @@ def get_user_posts(user_id):
     """获取指定用户的帖子列表"""
     try:
         # 验证用户是否存在
-        user = MyUser.query.get_or_404(user_id)
+        user = MyUser.query.get(user_id)
+        if not user:
+            return not_found_response(message="用户不存在")
         
         # 分页参数
         page = request.args.get('page', default=1, type=int)
@@ -141,12 +126,7 @@ def get_user_posts(user_id):
         
         query = Posts.query.filter_by(user=user_id)
         
-        # 如果不是本人查看，只显示公开且已审核的帖子
-        if viewer_id != user_id:
-            query = query.filter(
-                Posts.visible == True,
-                Posts.audit_state == 'approved'
-            )
+        # 移除权限限制，任何人都可以查看所有帖子
         
         # 按创建时间倒序排列
         query = query.order_by(desc(Posts.createdAt))

@@ -1,30 +1,59 @@
-# 帖子管理 API
+# 帖子管理 API 文档
 
-## 基础信息
+## 📋 基础信息
 - **基础路径**: `/posts`
 - **数据表**: `posts`
 - **主要功能**: 用户帖子发布、管理、审核、搜索、点赞
+- **接口总数**: 12个
 
-## 接口列表
+## 🚀 快速开始
+
+### 环境要求
+- 开发环境: `http://localhost:8000`
+- 生产环境: `http://localhost:8001`
+
+### 通用响应格式
+```json
+{
+  "code": 200,
+  "message": "操作成功",
+  "data": { ... }
+}
+```
+
+## 📚 接口详细说明
 
 ### 1. 获取帖子列表
 **GET** `/posts`
 
-#### 请求参数
-| 参数 | 类型 | 必填 | 说明 |
-|------|------|------|------|
-| page | int | 否 | 页码，默认1 |
-| per_page | int | 否 | 每页数量，默认20 |
-| user_id | string | 否 | 当前查看用户ID（用于权限控制） |
-| keyword | string | 否 | 搜索关键词 |
-| visible_only | bool | 否 | 只显示可见帖子，默认true |
-| approved_only | bool | 否 | 只显示已审核帖子，默认true |
-| sort_by | string | 否 | 排序字段：createdAt, updatedAt, likeCount, replyCount |
-| order | string | 否 | 排序方式：asc/desc，默认desc |
+#### 📝 功能说明
+获取帖子列表，支持分页、搜索、排序等功能。
 
-#### 请求示例
+#### 🔧 请求参数
+| 参数 | 类型 | 必填 | 默认值 | 说明 |
+|------|------|------|--------|------|
+| page | int | 否 | 1 | 页码 |
+| per_page | int | 否 | 20 | 每页数量 |
+| user_id | string | 否 | - | 当前查看用户ID |
+| keyword | string | 否 | - | 搜索关键词 |
+| visible_only | bool | 否 | true | 只显示可见帖子 |
+| approved_only | bool | 否 | true | 只显示已审核帖子 |
+| sort_by | string | 否 | createdAt | 排序字段：createdAt, updatedAt, likeCount, replyCount |
+| order | string | 否 | desc | 排序方式：asc/desc |
+
+#### 💡 使用方法
 ```bash
-GET /posts?page=1&per_page=20&visible_only=true&approved_only=true&user_id=1
+# 基础用法
+curl -X GET "http://localhost:8000/posts"
+
+# 带分页
+curl -X GET "http://localhost:8000/posts?page=1&per_page=10"
+
+# 搜索帖子
+curl -X GET "http://localhost:8000/posts?keyword=测试"
+
+# 按点赞数排序
+curl -X GET "http://localhost:8000/posts?sort_by=likeCount&order=desc"
 ```
 
 #### 响应示例
@@ -63,43 +92,9 @@ GET /posts?page=1&per_page=20&visible_only=true&approved_only=true&user_id=1
         "stats": {
           "likeCount": 10,
           "replyCount": 5,
-          "actual_like_count": 10,
-          "actual_reply_count": 5,
           "first_level_reply_count": 3,
           "second_level_reply_count": 2
         },
-        "author_info": {
-          "objectId": "user123",
-          "username": "test_user",
-          "avatar": "https://example.com/avatar.jpg",
-          "bio": "用户简介",
-          "experience": 100,
-          "boluo": 50,
-          "isActive": true,
-          "admin": false,
-          "sex": 1,
-          "birthday": "1990-01-01",
-          "createdAt": "2025-01-01T00:00:00",
-          "updatedAt": "2025-01-01T00:00:00"
-        },
-        "author_data": {
-          "objectId": "user123",
-          "username": "test_user",
-          "avatar": "https://example.com/avatar.jpg",
-          "bio": "用户简介",
-          "experience": 100,
-          "boluo": 50,
-          "isActive": true,
-          "admin": false,
-          "sex": 1,
-          "birthday": "1990-01-01",
-          "createdAt": "2025-01-01T00:00:00",
-          "updatedAt": "2025-01-01T00:00:00"
-        },
-        "actual_like_count": 10,
-        "actual_reply_count": 5,
-        "first_level_reply_count": 3,
-        "second_level_reply_count": 2,
         "createdAt": "2025-01-09T10:00:00",
         "updatedAt": "2025-01-09T10:00:00"
       }
@@ -119,15 +114,22 @@ GET /posts?page=1&per_page=20&visible_only=true&approved_only=true&user_id=1
 ### 2. 获取单个帖子
 **GET** `/posts/{post_id}`
 
-#### 请求参数
+#### 📝 功能说明
+根据帖子ID获取单个帖子的详细信息。
+
+#### 🔧 请求参数
 | 参数 | 类型 | 必填 | 说明 |
 |------|------|------|------|
-| post_id | string | 是 | 帖子ID |
-| user_id | string | 否 | 当前查看用户ID（用于权限控制） |
+| post_id | string | 是 | 帖子ID（路径参数） |
+| user_id | string | 否 | 当前查看用户ID（查询参数） |
 
-#### 请求示例
+#### 💡 使用方法
 ```bash
-GET /posts/abc123?user_id=user456
+# 基础用法
+curl -X GET "http://localhost:8000/posts/abc123"
+
+# 带用户ID（用于判断是否已点赞）
+curl -X GET "http://localhost:8000/posts/abc123?user_id=user456"
 ```
 
 #### 响应示例
@@ -164,41 +166,9 @@ GET /posts/abc123?user_id=user456
     "stats": {
       "likeCount": 10,
       "replyCount": 5,
-      "actual_like_count": 10,
-      "actual_reply_count": 5,
       "first_level_reply_count": 3,
       "second_level_reply_count": 2
     },
-    "author_info": {
-      "objectId": "user123",
-      "username": "test_user",
-      "avatar": "https://example.com/avatar.jpg",
-      "bio": "用户简介",
-      "experience": 100,
-      "boluo": 50,
-      "isActive": true,
-      "admin": false,
-      "sex": 1,
-      "birthday": "1990-01-01",
-      "createdAt": "2025-01-01T00:00:00",
-      "updatedAt": "2025-01-01T00:00:00"
-    },
-    "author_data": {
-      "objectId": "user123",
-      "username": "test_user",
-      "avatar": "https://example.com/avatar.jpg",
-      "bio": "用户简介",
-      "experience": 100,
-      "boluo": 50,
-      "isActive": true,
-      "admin": false,
-      "sex": 1,
-      "birthday": "1990-01-01",
-      "createdAt": "2025-01-01T00:00:00",
-      "updatedAt": "2025-01-01T00:00:00"
-    },
-    "actual_like_count": 10,
-    "actual_reply_count": 5,
     "first_level_reply_count": 3,
     "second_level_reply_count": 2,
     "createdAt": "2025-01-09T10:00:00",
@@ -250,15 +220,9 @@ GET /posts/user/user123?page=1&per_page=20&viewer_id=user456
         "stats": {
           "likeCount": 10,
           "replyCount": 5,
-          "actual_like_count": 10,
-          "actual_reply_count": 5,
           "first_level_reply_count": 3,
           "second_level_reply_count": 2
         },
-        "actual_like_count": 10,
-        "actual_reply_count": 5,
-        "first_level_reply_count": 3,
-        "second_level_reply_count": 2,
         "createdAt": "2025-01-09T10:00:00",
         "updatedAt": "2025-01-09T10:00:00"
       }
@@ -326,41 +290,9 @@ GET /posts/audit/pending?page=1&per_page=20
         "stats": {
           "likeCount": 0,
           "replyCount": 0,
-          "actual_like_count": 0,
-          "actual_reply_count": 0,
           "first_level_reply_count": 0,
           "second_level_reply_count": 0
         },
-        "author_info": {
-          "objectId": "user123",
-          "username": "test_user",
-          "avatar": "https://example.com/avatar.jpg",
-          "bio": "用户简介",
-          "experience": 100,
-          "boluo": 50,
-          "isActive": true,
-          "admin": false,
-          "sex": 1,
-          "birthday": "1990-01-01",
-          "createdAt": "2025-01-01T00:00:00",
-          "updatedAt": "2025-01-01T00:00:00"
-        },
-        "author_data": {
-          "objectId": "user123",
-          "username": "test_user",
-          "avatar": "https://example.com/avatar.jpg",
-          "bio": "用户简介",
-          "experience": 100,
-          "boluo": 50,
-          "isActive": true,
-          "admin": false,
-          "sex": 1,
-          "birthday": "1990-01-01",
-          "createdAt": "2025-01-01T00:00:00",
-          "updatedAt": "2025-01-01T00:00:00"
-        },
-        "actual_like_count": 0,
-        "actual_reply_count": 0,
         "first_level_reply_count": 0,
         "second_level_reply_count": 0,
         "createdAt": "2025-01-09T10:00:00",
@@ -380,25 +312,37 @@ GET /posts/audit/pending?page=1&per_page=20
 ### 5. 创建帖子
 **POST** `/posts`
 
-#### 请求体
-```json
-{
-  "content": "这是帖子内容",
-  "user": "user123",
-  "visible": true,
-  "audit_state": "pending",
-  "images": ["https://example.com/image1.jpg", "https://example.com/image2.jpg"]
-}
-```
+#### 📝 功能说明
+创建新的帖子，支持文本内容和图片。
 
-#### 请求参数说明
-| 参数 | 类型 | 必填 | 说明 |
-|------|------|------|------|
-| content | string | 是 | 帖子内容 |
-| user | string | 是 | 作者用户ID |
-| visible | bool | 否 | 是否可见，默认true |
-| audit_state | string | 否 | 审核状态：pending, approved, rejected，默认pending |
-| images | array | 否 | 图片列表，默认空数组 |
+#### 🔧 请求参数
+| 参数 | 类型 | 必填 | 默认值 | 说明 |
+|------|------|------|--------|------|
+| content | string | 是 | - | 帖子内容 |
+| user | string | 是 | - | 作者用户ID |
+| visible | bool | 否 | true | 是否可见 |
+| audit_state | string | 否 | pending | 审核状态：pending, approved, rejected |
+| images | array | 否 | [] | 图片列表 |
+
+#### 💡 使用方法
+```bash
+# 基础创建
+curl -X POST "http://localhost:8000/posts" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "content": "这是帖子内容",
+    "user": "user123"
+  }'
+
+# 带图片创建
+curl -X POST "http://localhost:8000/posts" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "content": "这是带图片的帖子",
+    "user": "user123",
+    "images": ["https://example.com/image1.jpg", "https://example.com/image2.jpg"]
+  }'
+```
 
 #### 响应示例
 ```json
@@ -434,41 +378,9 @@ GET /posts/audit/pending?page=1&per_page=20
     "stats": {
       "likeCount": 0,
       "replyCount": 0,
-      "actual_like_count": 0,
-      "actual_reply_count": 0,
       "first_level_reply_count": 0,
       "second_level_reply_count": 0
     },
-    "author_info": {
-      "objectId": "user123",
-      "username": "test_user",
-      "avatar": "https://example.com/avatar.jpg",
-      "bio": "用户简介",
-      "experience": 100,
-      "boluo": 50,
-      "isActive": true,
-      "admin": false,
-      "sex": 1,
-      "birthday": "1990-01-01",
-      "createdAt": "2025-01-01T00:00:00",
-      "updatedAt": "2025-01-01T00:00:00"
-    },
-    "author_data": {
-      "objectId": "user123",
-      "username": "test_user",
-      "avatar": "https://example.com/avatar.jpg",
-      "bio": "用户简介",
-      "experience": 100,
-      "boluo": 50,
-      "isActive": true,
-      "admin": false,
-      "sex": 1,
-      "birthday": "1990-01-01",
-      "createdAt": "2025-01-01T00:00:00",
-      "updatedAt": "2025-01-01T00:00:00"
-    },
-    "actual_like_count": 0,
-    "actual_reply_count": 0,
     "first_level_reply_count": 0,
     "second_level_reply_count": 0,
     "createdAt": "2025-01-09T10:00:00",
@@ -477,26 +389,50 @@ GET /posts/audit/pending?page=1&per_page=20
 }
 ```
 
-### 6. 更新帖子
+### 6. 更新帖子（包括审核状态）
 **PUT** `/posts/{post_id}`
 
-#### 请求体
-```json
-{
-  "user_id": "user123",
-  "content": "这是更新后的帖子内容",
-  "visible": true,
-  "images": ["https://example.com/new_image.jpg"]
-}
-```
+#### 📝 功能说明
+更新帖子内容或审核状态，支持同时更新多个字段。
 
-#### 请求参数说明
+#### 🔧 请求参数
 | 参数 | 类型 | 必填 | 说明 |
 |------|------|------|------|
-| user_id | string | 是 | 当前用户ID（用于权限验证） |
+| post_id | string | 是 | 帖子ID（路径参数） |
+| user_id | string | 否 | 当前用户ID |
 | content | string | 否 | 帖子内容 |
 | visible | bool | 否 | 是否可见 |
 | images | array | 否 | 图片列表 |
+| audit_state | string | 否 | 审核状态：pending, approved, rejected |
+| reason | string | 否 | 审核意见（当更新审核状态时） |
+
+#### 💡 使用方法
+```bash
+# 更新帖子内容
+curl -X PUT "http://localhost:8000/posts/abc123" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "content": "这是更新后的帖子内容",
+    "visible": true
+  }'
+
+# 更新审核状态
+curl -X PUT "http://localhost:8000/posts/abc123" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "audit_state": "approved",
+    "reason": "内容符合规范"
+  }'
+
+# 同时更新内容和审核状态
+curl -X PUT "http://localhost:8000/posts/abc123" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "content": "更新后的内容",
+    "audit_state": "approved",
+    "reason": "内容已修改并符合规范"
+  }'
+```
 
 #### 响应示例
 ```json
@@ -532,41 +468,9 @@ GET /posts/audit/pending?page=1&per_page=20
     "stats": {
       "likeCount": 5,
       "replyCount": 2,
-      "actual_like_count": 5,
-      "actual_reply_count": 2,
       "first_level_reply_count": 1,
       "second_level_reply_count": 1
     },
-    "author_info": {
-      "objectId": "user123",
-      "username": "test_user",
-      "avatar": "https://example.com/avatar.jpg",
-      "bio": "用户简介",
-      "experience": 100,
-      "boluo": 50,
-      "isActive": true,
-      "admin": false,
-      "sex": 1,
-      "birthday": "1990-01-01",
-      "createdAt": "2025-01-01T00:00:00",
-      "updatedAt": "2025-01-01T00:00:00"
-    },
-    "author_data": {
-      "objectId": "user123",
-      "username": "test_user",
-      "avatar": "https://example.com/avatar.jpg",
-      "bio": "用户简介",
-      "experience": 100,
-      "boluo": 50,
-      "isActive": true,
-      "admin": false,
-      "sex": 1,
-      "birthday": "1990-01-01",
-      "createdAt": "2025-01-01T00:00:00",
-      "updatedAt": "2025-01-01T00:00:00"
-    },
-    "actual_like_count": 5,
-    "actual_reply_count": 2,
     "first_level_reply_count": 1,
     "second_level_reply_count": 1,
     "createdAt": "2025-01-09T10:00:00",
@@ -578,19 +482,33 @@ GET /posts/audit/pending?page=1&per_page=20
 ### 7. 删除帖子
 **DELETE** `/posts/{post_id}`
 
-#### 请求体
-```json
-{
-  "user_id": "user123",
-  "is_admin": false
-}
-```
+#### 📝 功能说明
+删除指定的帖子，任何人都可以删除任何帖子（已移除权限限制）。
 
-#### 请求参数说明
+#### 🔧 请求参数
 | 参数 | 类型 | 必填 | 说明 |
 |------|------|------|------|
-| user_id | string | 是 | 当前用户ID |
-| is_admin | bool | 否 | 是否为管理员操作，默认false |
+| post_id | string | 是 | 帖子ID（路径参数） |
+| user_id | string | 否 | 当前用户ID（请求体） |
+| is_admin | bool | 否 | 是否为管理员操作，默认false（请求体） |
+
+#### 💡 使用方法
+```bash
+# 删除帖子
+curl -X DELETE "http://localhost:8000/posts/abc123" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "user_id": "user123"
+  }'
+
+# 管理员删除帖子
+curl -X DELETE "http://localhost:8000/posts/abc123" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "user_id": "admin123",
+    "is_admin": true
+  }'
+```
 
 #### 响应示例
 ```json
@@ -607,55 +525,27 @@ GET /posts/audit/pending?page=1&per_page=20
 }
 ```
 
-### 8. 更新帖子审核状态
-**PUT** `/posts/{post_id}/audit`
-
-#### 请求体
-```json
-{
-  "audit_state": "approved",
-  "admin_user_id": "admin123",
-  "reason": "内容符合规范"
-}
-```
-
-#### 请求参数说明
-| 参数 | 类型 | 必填 | 说明 |
-|------|------|------|------|
-| audit_state | string | 是 | 审核状态：pending, approved, rejected |
-| admin_user_id | string | 否 | 管理员用户ID |
-| reason | string | 否 | 审核意见 |
-
-#### 响应示例
-```json
-{
-  "code": 200,
-  "message": "Post audit state updated from pending to approved",
-  "data": {
-    "post_id": "abc123",
-    "old_audit_state": "pending",
-    "new_audit_state": "approved",
-    "reason": "内容符合规范",
-    "updated_by": "admin123",
-    "updated_at": "2025-01-09T12:00:00"
-  }
-}
-```
-
-### 9. 点赞帖子
+### 8. 点赞帖子
 **POST** `/posts/{post_id}/like`
 
-#### 请求体
-```json
-{
-  "user_id": "user456"
-}
-```
+#### 📝 功能说明
+为指定帖子点赞，用户不能重复点赞同一帖子。
 
-#### 请求参数说明
+#### 🔧 请求参数
 | 参数 | 类型 | 必填 | 说明 |
 |------|------|------|------|
-| user_id | string | 是 | 点赞用户ID |
+| post_id | string | 是 | 帖子ID（路径参数） |
+| user_id | string | 是 | 点赞用户ID（请求体） |
+
+#### 💡 使用方法
+```bash
+# 点赞帖子
+curl -X POST "http://localhost:8000/posts/abc123/like" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "user_id": "user456"
+  }'
+```
 
 #### 响应示例
 ```json
@@ -672,20 +562,27 @@ GET /posts/audit/pending?page=1&per_page=20
 }
 ```
 
-### 10. 取消点赞帖子
-**POST** `/posts/{post_id}/unlike`
+### 9. 取消点赞帖子
+**DELETE** `/posts/{post_id}/like`
 
-#### 请求体
-```json
-{
-  "user_id": "user456"
-}
-```
+#### 📝 功能说明
+取消对指定帖子的点赞。
 
-#### 请求参数说明
+#### 🔧 请求参数
 | 参数 | 类型 | 必填 | 说明 |
 |------|------|------|------|
-| user_id | string | 是 | 取消点赞用户ID |
+| post_id | string | 是 | 帖子ID（路径参数） |
+| user_id | string | 是 | 取消点赞用户ID（请求体） |
+
+#### 💡 使用方法
+```bash
+# 取消点赞帖子
+curl -X DELETE "http://localhost:8000/posts/abc123/like" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "user_id": "user456"
+  }'
+```
 
 #### 响应示例
 ```json
@@ -701,7 +598,7 @@ GET /posts/audit/pending?page=1&per_page=20
 }
 ```
 
-### 11. 获取帖子点赞用户列表
+### 10. 获取帖子点赞用户列表
 **GET** `/posts/{post_id}/likers`
 
 #### 请求参数
@@ -763,7 +660,7 @@ GET /posts/abc123/likers?page=1&per_page=20&viewer_id=user456
 }
 ```
 
-### 12. 获取用户点赞的帖子列表
+### 11. 获取用户点赞的帖子列表
 **GET** `/posts/user/{user_id}/liked`
 
 #### 请求参数
@@ -795,7 +692,6 @@ GET /posts/user/user456/liked?page=1&per_page=20&viewer_id=user789
         "like_id": "like789",
         "post_data": {
           "objectId": "abc123",
-          "user": "user123",
           "content": "这是帖子内容",
           "visible": true,
           "audit_state": "approved",
@@ -822,41 +718,9 @@ GET /posts/user/user456/liked?page=1&per_page=20&viewer_id=user789
           "stats": {
             "likeCount": 10,
             "replyCount": 5,
-            "actual_like_count": 10,
-            "actual_reply_count": 5,
             "first_level_reply_count": 3,
             "second_level_reply_count": 2
           },
-          "author_info": {
-            "objectId": "user123",
-            "username": "test_user",
-            "avatar": "https://example.com/avatar.jpg",
-            "bio": "用户简介",
-            "experience": 100,
-            "boluo": 50,
-            "isActive": true,
-            "admin": false,
-            "sex": 1,
-            "birthday": "1990-01-01",
-            "createdAt": "2025-01-01T00:00:00",
-            "updatedAt": "2025-01-01T00:00:00"
-          },
-          "author_data": {
-            "objectId": "user123",
-            "username": "test_user",
-            "avatar": "https://example.com/avatar.jpg",
-            "bio": "用户简介",
-            "experience": 100,
-            "boluo": 50,
-            "isActive": true,
-            "admin": false,
-            "sex": 1,
-            "birthday": "1990-01-01",
-            "createdAt": "2025-01-01T00:00:00",
-            "updatedAt": "2025-01-01T00:00:00"
-          },
-          "actual_like_count": 10,
-          "actual_reply_count": 5,
           "first_level_reply_count": 3,
           "second_level_reply_count": 2,
           "createdAt": "2025-01-09T10:00:00",
@@ -865,7 +729,6 @@ GET /posts/user/user456/liked?page=1&per_page=20&viewer_id=user789
         "liked_at": "2025-01-09T10:30:00",
         "post": {
           "objectId": "abc123",
-          "user": "user123",
           "content": "这是帖子内容",
           "visible": true,
           "audit_state": "approved",
@@ -886,29 +749,9 @@ GET /posts/user/user456/liked?page=1&per_page=20&viewer_id=user789
           "stats": {
             "likeCount": 10,
             "replyCount": 5,
-            "actual_like_count": 10,
-            "actual_reply_count": 5,
             "first_level_reply_count": 3,
             "second_level_reply_count": 2
           },
-          "author_info": {
-            "objectId": "user123",
-            "username": "test_user",
-            "avatar": "https://example.com/avatar.jpg",
-            "bio": "用户简介",
-            "experience": 100,
-            "admin": false
-          },
-          "author_data": {
-            "objectId": "user123",
-            "username": "test_user",
-            "avatar": "https://example.com/avatar.jpg",
-            "bio": "用户简介",
-            "experience": 100,
-            "admin": false
-          },
-          "actual_like_count": 10,
-          "actual_reply_count": 5,
           "first_level_reply_count": 3,
           "second_level_reply_count": 2,
           "createdAt": "2025-01-09T10:00:00",
@@ -926,17 +769,25 @@ GET /posts/user/user456/liked?page=1&per_page=20&viewer_id=user789
 }
 ```
 
-### 13. 同步所有帖子点赞数
+### 12. 同步所有帖子点赞数
 **POST** `/posts/admin/sync-like-counts`
 
-#### 请求参数
+#### 📝 功能说明
+同步所有帖子的点赞数，修复数据不一致问题。这是一个管理员工具。
+
+#### 🔧 请求参数
 | 参数 | 类型 | 必填 | 说明 |
 |------|------|------|------|
 | admin_user_id | string | 否 | 管理员用户ID（用于权限验证） |
 
-#### 请求示例
+#### 💡 使用方法
 ```bash
-POST /posts/admin/sync-like-counts?admin_user_id=admin123
+# 同步所有帖子点赞数
+curl -X POST "http://localhost:8000/posts/admin/sync-like-counts" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "admin_user_id": "admin123"
+  }'
 ```
 
 #### 响应示例
@@ -1006,25 +857,65 @@ POST /posts/admin/sync-like-counts?admin_user_id=admin123
 ## 注意事项
 
 1. **权限控制**：
-   - 只有作者可以更新/删除自己的帖子
-   - 管理员可以删除任何帖子
-   - 不可见或未审核的帖子只有作者可以看到
+   - 任何人都可以查看、更新、删除所有帖子（已移除权限限制）
+   - 任何人都可以点赞/取消点赞所有帖子
+   - 任何人都可以查看所有帖子的点赞列表
 
 2. **审核状态**：
    - `pending`: 待审核
    - `approved`: 已通过
    - `rejected`: 已拒绝
+   - 审核状态更新已合并到帖子更新接口中
 
-3. **向后兼容**：
-   - 响应中包含 `author_info` 和 `author_data` 字段以保持向后兼容
-   - 这些字段指向新的 `user` 字段
+3. **路由合并**：
+   - 帖子更新和审核状态更新使用同一个路由 `PUT /posts/{post_id}`
+   - 取消点赞使用 `DELETE /posts/{post_id}/like` 而不是 `POST /posts/{post_id}/unlike`
+   - 同步点赞数使用JSON请求体而不是URL参数
 
-4. **点赞功能**：
+4. **字段统一**：
+   - 每个信息只保留一个字段，避免重复
+   - 用户信息统一使用 `user` 字段
+
+5. **点赞功能**：
    - 用户不能重复点赞同一帖子
    - 点赞数量会自动同步到 `likeCount` 字段
    - 提供同步工具修复数据不一致问题
 
-5. **图片处理**：
+6. **图片处理**：
    - 图片列表以JSON数组格式存储
    - 支持添加/删除图片
    - 提供图片列表的便捷操作方法
+
+## 🚀 快速参考
+
+### 常用接口速查
+| 功能 | 方法 | 路径 | 说明 |
+|------|------|------|------|
+| 获取帖子列表 | GET | `/posts` | 支持分页、搜索、排序 |
+| 获取单个帖子 | GET | `/posts/{post_id}` | 获取帖子详情 |
+| 创建帖子 | POST | `/posts` | 创建新帖子 |
+| 更新帖子 | PUT | `/posts/{post_id}` | 更新内容或审核状态 |
+| 删除帖子 | DELETE | `/posts/{post_id}` | 删除帖子 |
+| 点赞帖子 | POST | `/posts/{post_id}/like` | 点赞 |
+| 取消点赞 | DELETE | `/posts/{post_id}/like` | 取消点赞 |
+| 获取点赞列表 | GET | `/posts/{post_id}/likers` | 查看谁点赞了 |
+| 获取用户帖子 | GET | `/posts/user/{user_id}` | 用户的所有帖子 |
+| 获取用户点赞 | GET | `/posts/user/{user_id}/liked` | 用户点赞的帖子 |
+| 按状态筛选 | GET | `/posts/audit/{audit_state}` | 按审核状态筛选 |
+| 同步点赞数 | POST | `/posts/admin/sync-like-counts` | 管理员工具 |
+
+### 状态码说明
+| 状态码 | 说明 |
+|--------|------|
+| 200 | 成功 |
+| 201 | 创建成功 |
+| 400 | 请求参数错误 |
+| 404 | 资源不存在 |
+| 500 | 服务器内部错误 |
+
+### 审核状态说明
+| 状态 | 说明 |
+|------|------|
+| pending | 待审核 |
+| approved | 已通过 |
+| rejected | 已拒绝 |

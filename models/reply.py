@@ -92,7 +92,7 @@ class Reply(BaseModel):
                 'likeCount': self.post_ref.likeCount,
                 'replyCount': self.post_ref.replyCount,
                 'createdAt': self.post_ref.createdAt.isoformat() if self.post_ref.createdAt else None,
-                'author_info': {
+                'user': {
                     'objectId': self.post_ref.user_ref.objectId,
                     'username': self.post_ref.user_ref.username,
                     'avatar': self.post_ref.user_ref.avatar
@@ -139,11 +139,7 @@ class Reply(BaseModel):
             result['reply_count'] = 0
             result['child_replies'] = []
         
-        # 兼容旧版本API的字段（保持向后兼容）
-        if include_details:
-            result['user_info'] = result['user_data']
-            result['recipient_info'] = result['recipient_data']
-            result['post_info'] = result['post_data']
+        # 移除向后兼容字段
         
         return result
     
