@@ -17,12 +17,6 @@ def create_banner():
         if not title or not title.strip():
             return internal_error_response(message='Title is required', code=400)
         
-        # 验证管理员权限（可选，根据需求决定）
-        admin_user_id = data.get('admin_user_id')
-        if admin_user_id:
-            admin_user = MyUser.query.get(admin_user_id)
-            if not admin_user or not admin_user.admin:
-                return internal_error_response(message='Permission denied. Admin access required.', code=403)
         
         # 验证动作类型（可选验证）
         action = data.get('action', '').strip() if data.get('action') else None

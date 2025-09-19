@@ -32,7 +32,6 @@ python start_production.py     # 生产环境 - 端口 8001
 |------|------|----------|
 | `my_user` | 用户表 | 用户注册、登录、信息管理 |
 | `charts` | 排行榜表 | 用户成绩记录、排名统计 |
-| `forum` | 论坛表 | 论坛帖子发布、管理 |
 | `image` | 图片表 | 图片上传、管理 |
 | `history` | 历史记录表 | 用户操作历史记录 |
 | `app_releases` | 应用发布表 | APK版本管理、更新控制 |
@@ -96,7 +95,6 @@ python start_production.py     # 生产环境 - 端口 8001
 
 - [用户管理 API](docs/user_api.md)
 - [排行榜 API](docs/charts_api.md)
-- [论坛 API](docs/forum_api.md)
 - [图片管理 API](docs/image_api.md)
 - [历史记录 API](docs/history_api.md)
 - [应用发布 API](docs/releases_api.md)

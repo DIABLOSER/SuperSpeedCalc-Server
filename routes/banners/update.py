@@ -13,12 +13,6 @@ def update_banner(banner_id):
         banner = Banner.query.get_or_404(banner_id)
         data = request.get_json()
         
-        # 验证管理员权限（可选）
-        admin_user_id = data.get('admin_user_id')
-        if admin_user_id:
-            admin_user = MyUser.query.get(admin_user_id)
-            if not admin_user or not admin_user.admin:
-                return internal_error_response(message='Permission denied. Admin access required.', code=403)
         
         # 更新允许的字段
         if 'title' in data:
@@ -48,7 +42,7 @@ def update_banner(banner_id):
         banner.updatedAt = datetime.utcnow()
         db.session.commit()
         
-        return created_response(
+        return updated_response(
             data=banner.to_dict(),
             message='Banner updated successfully'
         )

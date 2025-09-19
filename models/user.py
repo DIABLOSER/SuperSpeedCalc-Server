@@ -40,8 +40,6 @@ class MyUser(BaseModel):
     # 关系定义：用户拥有的图表列表，级联删除（删除用户时删除其所有图表）
     charts = db.relationship('Charts', backref='user_ref', lazy=True, cascade='all, delete-orphan')
     
-    # 关系定义：用户发布的论坛帖子列表，级联删除（删除用户时删除其所有帖子）
-    forum_posts = db.relationship('Forum', backref='user_ref', lazy=True, cascade='all, delete-orphan')
     
     # 关系定义：用户的历史记录列表，级联删除（删除用户时删除其所有历史记录）
     histories = db.relationship('History', backref='user_ref', lazy=True, cascade='all, delete-orphan')

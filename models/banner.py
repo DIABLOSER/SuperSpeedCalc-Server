@@ -18,6 +18,7 @@ class Banner(BaseModel):
     content = db.Column(db.Text, nullable=True)
     
     # 点击动作，字符串类型，存储动作类型或跳转链接等
+    # web网页user用户post帖子
     action = db.Column(db.String(500), nullable=True)
     
     # 图片链接，字符串类型，存储横幅图片的URL

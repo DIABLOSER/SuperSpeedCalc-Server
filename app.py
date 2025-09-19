@@ -79,12 +79,11 @@ def create_app(config_name='default'):
         return response
     
     # 注册蓝图 - 使用新的模块化结构
-    from routes import user_bp, charts_bp, forum_bp, image_bp, history_bp, releases_bp, relationship_bp, posts_bp, replies_bp, banners_bp
+    from routes import user_bp, charts_bp, image_bp, history_bp, releases_bp, relationship_bp, posts_bp, replies_bp, banners_bp
     from routes.sms import sms_bp
     
     app.register_blueprint(user_bp, url_prefix='/users')
     app.register_blueprint(charts_bp, url_prefix='/charts')
-    app.register_blueprint(forum_bp, url_prefix='/forum')
     app.register_blueprint(image_bp, url_prefix='/images')
     app.register_blueprint(history_bp, url_prefix='/history')
     app.register_blueprint(releases_bp, url_prefix='/releases')
@@ -151,7 +150,7 @@ def init_db(app, force=False):
     """智能初始化数据库"""
     with app.app_context():
         # 导入所有模型以确保它们被注册
-        from models import MyUser, Charts, Forum, Image, History, AppRelease, UserRelationship, Posts, Likes, Reply, Banner
+        from models import MyUser, Charts, Image, History, AppRelease, UserRelationship, Posts, Likes, Reply, Banner
         
         db_exists, db_path = check_database_exists(app)
         

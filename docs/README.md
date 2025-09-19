@@ -8,13 +8,11 @@
 |------|----------|------|
 | 用户管理 | [user_api.md](./user_api.md) | 用户注册、登录、信息管理 |
 | 排行榜 | [charts_api.md](./charts_api.md) | 用户成绩记录、排名统计 |
-| 论坛 | [forum_api.md](./forum_api.md) | 论坛帖子发布、管理 |
 | 图片管理 | [image_api.md](./image_api.md) | 图片上传、管理 |
 | 历史记录 | [history_api.md](./history_api.md) | 用户操作历史记录 |
 | 应用发布 | [releases_api.md](./releases_api.md) | APK版本管理、更新控制 |
 | 用户关系 | [relationship_api.md](./relationship_api.md) | 关注/粉丝关系管理 |
 | 帖子管理 | [posts_api.md](./posts_api.md) | 用户帖子发布、管理 |
-| 点赞功能 | [likes_api.md](./likes_api.md) | 帖子点赞功能 |
 | 回复功能 | [replies_api.md](./replies_api.md) | 评论回复功能 |
 | 横幅管理 | [banners_api.md](./banners_api.md) | 轮播图、广告管理 |
 | 短信服务 | [sms_api.md](./sms_api.md) | 短信验证码发送、验证 |

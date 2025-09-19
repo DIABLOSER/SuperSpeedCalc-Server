@@ -7,7 +7,7 @@
 import os
 import sys
 from app import create_app
-from models import db, MyUser, Charts, Forum, Image
+from models import db, MyUser, Charts, Image
 
 def init_database(config_name='development'):
     """初始化数据库"""
@@ -72,14 +72,12 @@ def check_database(config_name='development'):
             try:
                 user_count = MyUser.query.count()
                 charts_count = Charts.query.count()
-                forum_count = Forum.query.count()
                 image_count = Image.query.count()
                 
                 print(f"  👥 用户 (MyUser): {user_count}")
                 print(f"  📊 图表 (Charts): {charts_count}")
-                print(f"  💬 论坛 (Forum): {forum_count}")
                 print(f"  🖼️  图片 (Image): {image_count}")
-                print(f"  📦 总记录数: {user_count + charts_count + forum_count + image_count}")
+                print(f"  📦 总记录数: {user_count + charts_count + image_count}")
                 
             except Exception as e:
                 print(f"⚠️  统计记录数时出错: {e}")
