@@ -36,7 +36,7 @@ def update_post(post_id):
         post.updatedAt = datetime.utcnow()
         db.session.commit()
         
-        return created_response(data=post.to_dict(include_author=True, user_id=user_id), message='Post updated successfully')
+        return updated_response(data=post.to_dict(include_user=True, user_id=user_id), message='Post updated successfully')
         
     except Exception as e:
         db.session.rollback()

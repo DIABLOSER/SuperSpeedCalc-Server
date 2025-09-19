@@ -17,8 +17,7 @@ class Banner(BaseModel):
     # 横幅内容/描述，文本类型，可为空
     content = db.Column(db.Text, nullable=True)
     
-    # 点击动作，字符串类型，存储动作类型或跳转链接等
-    # web网页user用户post帖子
+    # 点击动作，web网页user用户post帖子
     action = db.Column(db.String(500), nullable=True)
     
     # 图片链接，字符串类型，存储横幅图片的URL

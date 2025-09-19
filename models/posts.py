@@ -27,8 +27,6 @@ class Posts(BaseModel):
     # 评论数量，整数类型，默认0
     replyCount = db.Column(db.Integer, default=0, nullable=False)
     
-    # 建立与用户的关联关系 - 使用 'select' 以便获取完整对象信息
-    author = db.relationship('MyUser', backref='user_posts', lazy='select')
     
     def get_images_list(self):
         """获取图片列表（解析JSON）"""
@@ -148,8 +146,8 @@ class Posts(BaseModel):
             return True  # 表示数据被更新
         return False  # 表示数据未变化
     
-    def to_dict(self, include_author=True, user_id=None, sync_like_count=False, sync_reply_count=False, include_full_author=True):
-        """转换为字典 - 返回完整的作者信息"""
+    def to_dict(self, include_user=True, user_id=None, sync_like_count=False, sync_reply_count=False, include_full_user=True):
+        """转换为字典，可选择是否包含用户信息"""
         result = super().to_dict()
         
         # 解析图片列表
@@ -165,21 +163,34 @@ class Posts(BaseModel):
             self.sync_reply_count()
             result['replyCount'] = self.replyCount
         
-        # 包含完整的作者信息
-        if include_author and self.author:
-            if include_full_author:
-                result['author_data'] = self.author.to_dict(include_stats=True)
-            else:
-                result['author_data'] = {
-                    'objectId': self.author.objectId,
-                    'username': self.author.username,
-                    'avatar': self.author.avatar,
-                    'bio': self.author.bio,
-                    'experience': self.author.experience,
-                    'admin': self.author.admin
+        # 包含用户信息，但不包含敏感字段
+        if include_user and hasattr(self, 'user_ref') and self.user_ref:
+            if include_full_user:
+                user_data = {
+                    'objectId': self.user_ref.objectId,
+                    'username': self.user_ref.username,
+                    'avatar': self.user_ref.avatar,
+                    'bio': self.user_ref.bio,
+                    'experience': self.user_ref.experience,
+                    'boluo': self.user_ref.boluo,
+                    'isActive': self.user_ref.isActive,
+                    'admin': self.user_ref.admin,
+                    'sex': self.user_ref.sex,
+                    'birthday': self.user_ref.birthday.isoformat() if self.user_ref.birthday else None,
+                    'createdAt': self.user_ref.createdAt.isoformat(),
+                    'updatedAt': self.user_ref.updatedAt.isoformat()
                 }
-        else:
-            result['author_data'] = None
+            else:
+                user_data = {
+                    'objectId': self.user_ref.objectId,
+                    'username': self.user_ref.username,
+                    'avatar': self.user_ref.avatar,
+                    'bio': self.user_ref.bio,
+                    'experience': self.user_ref.experience,
+                    'admin': self.user_ref.admin
+                }
+            result['user'] = user_data
+        # 如果不包含用户信息，user字段保持为ID字符串
         
         # 添加用户相关的信息
         if user_id:
@@ -202,7 +213,8 @@ class Posts(BaseModel):
         }
         
         # 兼容旧版本API的字段（保持向后兼容）
-        result['author_info'] = result['author_data']
+        result['author_info'] = result.get('user')  # 使用新的user字段
+        result['author_data'] = result.get('user')  # 保持向后兼容
         result['actual_like_count'] = result['stats']['actual_like_count']
         result['actual_reply_count'] = result['stats']['actual_reply_count']
         result['first_level_reply_count'] = result['stats']['first_level_reply_count']

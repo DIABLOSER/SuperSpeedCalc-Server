@@ -89,7 +89,7 @@ def get_posts():
             "has_prev": page > 1
         }
         return paginated_response(
-            items=[post.to_dict(include_author=True, user_id=user_id, sync_like_count=True, sync_reply_count=True) for post in posts],
+            items=[post.to_dict(include_user=True, user_id=user_id, sync_like_count=True, sync_reply_count=True) for post in posts],
             pagination=pagination_info,
             message="获取帖子列表成功"
         )
@@ -114,7 +114,7 @@ def get_post(post_id):
             )
         
         return success_response(
-            data=post.to_dict(include_author=True, user_id=user_id, sync_like_count=True, sync_reply_count=True),
+            data=post.to_dict(include_user=True, user_id=user_id, sync_like_count=True, sync_reply_count=True),
             message="获取帖子详情成功"
         )
         
@@ -162,7 +162,7 @@ def get_user_posts(user_id):
                     'username': user.username,
                     'avatar': user.avatar
                 },
-                'posts': [post.to_dict(include_author=False, user_id=viewer_id, sync_like_count=True, sync_reply_count=True) for post in posts],
+                'posts': [post.to_dict(include_user=False, user_id=viewer_id, sync_like_count=True, sync_reply_count=True) for post in posts],
                 'pagination': {
                     'page': page,
                     'per_page': per_page,
@@ -210,7 +210,7 @@ def get_posts_by_audit_state(audit_state):
             data={
                 'audit_state': audit_state,
                 'audit_state_name': valid_states[audit_state],
-                'posts': [post.to_dict(include_author=True, sync_like_count=True, sync_reply_count=True) for post in posts],
+                'posts': [post.to_dict(include_user=True, sync_like_count=True, sync_reply_count=True) for post in posts],
                 'pagination': {
                     'page': page,
                     'per_page': per_page,

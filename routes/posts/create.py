@@ -53,7 +53,7 @@ def create_post():
         db.session.commit()
         
         return created_response(
-            data=post.to_dict(include_author=True, user_id=user_id),
+            data=post.to_dict(include_user=True, user_id=user_id),
             message='帖子创建成功'
         )
         

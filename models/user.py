@@ -44,6 +44,9 @@ class MyUser(BaseModel):
     # 关系定义：用户的历史记录列表，级联删除（删除用户时删除其所有历史记录）
     histories = db.relationship('History', backref='user_ref', lazy=True, cascade='all, delete-orphan')
     
+    # 关系定义：用户发布的帖子列表，级联删除（删除用户时删除其所有帖子）
+    posts = db.relationship('Posts', backref='user_ref', lazy=True, cascade='all, delete-orphan')
+    
     def get_followers(self):
         """获取关注此用户的用户列表"""
         from .relationship import UserRelationship

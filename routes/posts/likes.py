@@ -108,10 +108,10 @@ def get_user_liked_posts(user_id):
                 'liked_posts': [
                     {
                         'like_id': like.objectId,
-                        'post_data': like.post_ref.to_dict(include_author=True, user_id=viewer_id, include_full_author=True),
+                        'post_data': like.post_ref.to_dict(include_user=True, user_id=viewer_id, include_full_user=True),
                         'liked_at': like.createdAt.isoformat(),
                         # 兼容旧版本
-                        'post': like.post_ref.to_dict(include_author=True, user_id=viewer_id, include_full_author=False)
+                        'post': like.post_ref.to_dict(include_user=True, user_id=viewer_id, include_full_user=False)
                     }
                     for like in likes
                 ],

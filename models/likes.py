@@ -39,7 +39,7 @@ class Likes(BaseModel):
         # 包含帖子信息
         if include_full_post and self.post_ref:
             # 返回完整帖子信息
-            result['post_data'] = self.post_ref.to_dict(include_author=True, sync_like_count=False, sync_reply_count=False)
+            result['post_data'] = self.post_ref.to_dict(include_user=True, sync_like_count=False, sync_reply_count=False)
         elif self.post_ref:
             # 返回帖子摘要信息
             result['post_data'] = {
@@ -53,10 +53,10 @@ class Likes(BaseModel):
                 'images': self.post_ref.get_images_list(),
                 'createdAt': self.post_ref.createdAt.isoformat() if self.post_ref.createdAt else None,
                 'author_info': {
-                    'objectId': self.post_ref.author.objectId,
-                    'username': self.post_ref.author.username,
-                    'avatar': self.post_ref.author.avatar
-                } if self.post_ref.author else None
+                    'objectId': self.post_ref.user_ref.objectId,
+                    'username': self.post_ref.user_ref.username,
+                    'avatar': self.post_ref.user_ref.avatar
+                } if self.post_ref.user_ref else None
             }
         else:
             result['post_data'] = None
