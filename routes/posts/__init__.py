@@ -1,6 +1,6 @@
 from flask import Blueprint
 from .create import create_post
-from .read import get_posts, get_post, get_user_posts, get_posts_by_audit_state
+from .read import get_posts, get_post, get_user_posts, get_posts_by_audit_state, get_following_posts
 from .update import update_post, like_post, unlike_post
 from .delete import delete_post
 from .likes import get_post_likers, get_user_liked_posts, sync_all_post_like_counts
@@ -15,6 +15,7 @@ posts_bp.route('/', methods=['POST'])(create_post)
 posts_bp.route('/', methods=['GET'])(get_posts)
 posts_bp.route('/<string:post_id>', methods=['GET'])(get_post)
 posts_bp.route('/user/<string:user_id>', methods=['GET'])(get_user_posts)
+posts_bp.route('/user/<string:user_id>/following', methods=['GET'])(get_following_posts)
 posts_bp.route('/audit/<string:audit_state>', methods=['GET'])(get_posts_by_audit_state)
 
 # 注册路由 - 更新操作

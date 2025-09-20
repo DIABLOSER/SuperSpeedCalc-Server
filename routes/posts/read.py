@@ -1,5 +1,5 @@
 from flask import jsonify, request
-from models import Posts, MyUser
+from models import Posts, MyUser, UserRelationship
 from sqlalchemy import desc, and_, or_
 from utils.response import (
     success_response, paginated_response, internal_error_response,
@@ -205,4 +205,93 @@ def get_posts_by_audit_state(audit_state):
         return internal_error_response(
             message="获取审核状态帖子列表失败",
             # error_code="GET_POSTS_BY_AUDIT_STATE_FAILED"
+        )
+#获取关注用户帖子列表
+def get_following_posts(user_id):
+    """获取指定用户关注的用户发布的帖子"""
+    try:
+        # 验证用户是否存在
+        user = MyUser.query.get(user_id)
+        if not user:
+            return not_found_response(message="用户不存在")
+        
+        # 分页参数
+        page = request.args.get('page', default=1, type=int)
+        per_page = request.args.get('per_page', default=20, type=int)
+        page = max(page or 1, 1)
+        per_page = min(max(per_page or 20, 1), 100)
+        
+        # 当前查看用户ID（用于判断是否已点赞等）
+        viewer_id = request.args.get('viewer_id')
+        
+        # 获取用户关注的所有用户ID
+        following_relationships = UserRelationship.query.filter_by(follower=user_id).all()
+        following_user_ids = [rel.followed for rel in following_relationships]
+        
+        if not following_user_ids:
+            # 如果用户没有关注任何人，返回空列表
+            return success_response(
+                data={
+                    'user': {
+                        'objectId': user.objectId,
+                        'username': user.username,
+                        'avatar': user.avatar
+                    },
+                    'following_count': 0,
+                    'posts': [],
+                    'pagination': {
+                        'page': page,
+                        'per_page': per_page,
+                        'total': 0,
+                        'pages': 0,
+                        'has_next': False,
+                        'has_prev': False
+                    }
+                },
+                message="获取关注用户帖子成功"
+            )
+        
+        # 查询关注用户发布的帖子
+        query = Posts.query.filter(Posts.user.in_(following_user_ids))
+        
+        # 只显示公开且已审核的帖子
+        query = query.filter(and_(
+            Posts.visible == True,
+            Posts.audit_state == 'approved'
+        ))
+        
+        # 按创建时间倒序排列
+        query = query.order_by(desc(Posts.createdAt))
+        
+        # 预加载作者信息
+        query = query.join(MyUser, Posts.user == MyUser.objectId)
+        
+        total = query.count()
+        posts = query.limit(per_page).offset((page - 1) * per_page).all()
+        pages = (total + per_page - 1) // per_page if per_page else 1
+        
+        return success_response(
+            data={
+                'user': {
+                    'objectId': user.objectId,
+                    'username': user.username,
+                    'avatar': user.avatar
+                },
+                'following_count': len(following_user_ids),
+                'posts': [post.to_dict(include_user=True, user_id=viewer_id, sync_like_count=True, sync_reply_count=True) for post in posts],
+                'pagination': {
+                    'page': page,
+                    'per_page': per_page,
+                    'total': total,
+                    'pages': pages,
+                    'has_next': page < pages,
+                    'has_prev': page > 1
+                }
+            },
+            message="获取关注用户帖子成功"
+        )
+        
+    except Exception as e:
+        return internal_error_response(
+            message="获取关注用户帖子失败"
         )

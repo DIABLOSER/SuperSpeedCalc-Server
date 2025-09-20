@@ -4,7 +4,7 @@
 - **基础路径**: `/posts`
 - **数据表**: `posts`
 - **主要功能**: 用户帖子发布、管理、审核、搜索、点赞
-- **接口总数**: 12个
+- **接口总数**: 13个
 
 ## 🚀 快速开始
 
@@ -683,7 +683,101 @@ GET /posts/abc123/likers?page=1&per_page=20&viewer_id=user456
 }
 ```
 
-### 11. 获取用户点赞的帖子列表
+### 11. 获取用户关注的用户发布的帖子列表
+**GET** `/posts/user/{user_id}/following`
+
+#### 📝 功能说明
+获取指定用户关注的用户发布的所有帖子，按时间倒序排列。
+
+#### 🔧 请求参数
+| 参数 | 类型 | 必填 | 说明 |
+|------|------|------|------|
+| user_id | string | 是 | 用户ID（路径参数） |
+| page | int | 否 | 页码，默认1 |
+| per_page | int | 否 | 每页数量，默认20 |
+| viewer_id | string | 否 | 当前查看用户ID（用于判断是否已点赞等） |
+
+#### 💡 使用方法
+```bash
+# 基础用法
+curl "http://localhost:8000/posts/user/user123/following"
+
+# 带分页参数
+curl "http://localhost:8000/posts/user/user123/following?page=1&per_page=10"
+
+# 带viewer_id参数
+curl "http://localhost:8000/posts/user/user123/following?viewer_id=user456"
+```
+
+#### 响应示例
+```json
+{
+  "code": 200,
+  "message": "获取关注用户帖子成功",
+  "data": {
+    "user": {
+      "objectId": "user123",
+      "username": "test_user",
+      "avatar": "https://example.com/avatar.jpg"
+    },
+    "following_count": 5,
+    "posts": [
+      {
+        "objectId": "post456",
+        "content": "这是关注用户发布的帖子内容",
+        "visible": true,
+        "audit_state": "approved",
+        "images": [],
+        "likeCount": 10,
+        "replyCount": 5,
+        "user": {
+          "objectId": "user789",
+          "username": "followed_user",
+          "avatar": "https://example.com/avatar2.jpg",
+          "bio": "被关注用户简介",
+          "experience": 200,
+          "boluo": 100,
+          "isActive": true,
+          "admin": false,
+          "sex": 1,
+          "birthday": "1995-05-15",
+          "createdAt": "2025-01-02T00:00:00",
+          "updatedAt": "2025-01-02T00:00:00"
+        },
+        "is_liked_by_user": false,
+        "is_visible": true,
+        "is_approved": true,
+        "stats": {
+          "likeCount": 10,
+          "replyCount": 5,
+          "first_level_reply_count": 3,
+          "second_level_reply_count": 2
+        },
+        "createdAt": "2025-01-09T10:00:00",
+        "updatedAt": "2025-01-09T10:00:00"
+      }
+    ],
+    "pagination": {
+      "page": 1,
+      "per_page": 20,
+      "total": 1,
+      "pages": 1,
+      "has_next": false,
+      "has_prev": false
+    }
+  }
+}
+```
+
+#### 错误响应
+```json
+{
+  "code": 404,
+  "message": "用户不存在"
+}
+```
+
+### 12. 获取用户点赞的帖子列表
 **GET** `/posts/user/{user_id}/liked`
 
 #### 请求参数
@@ -923,6 +1017,7 @@ curl -X POST "http://localhost:8000/posts/admin/sync-like-counts" \
 | 取消点赞 | DELETE | `/posts/{post_id}/like` | 取消点赞 |
 | 获取点赞列表 | GET | `/posts/{post_id}/likers` | 查看谁点赞了 |
 | 获取用户帖子 | GET | `/posts/user/{user_id}` | 用户的所有帖子 |
+| 获取关注用户帖子 | GET | `/posts/user/{user_id}/following` | 用户关注的用户发布的帖子 |
 | 获取用户点赞 | GET | `/posts/user/{user_id}/liked` | 用户点赞的帖子 |
 | 按状态筛选 | GET | `/posts/audit/{audit_state}` | 按审核状态筛选 |
 | 同步点赞数 | POST | `/posts/admin/sync-like-counts` | 管理员工具 |
