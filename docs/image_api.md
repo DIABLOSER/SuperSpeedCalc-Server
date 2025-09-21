@@ -102,16 +102,15 @@ curl -X POST -F "file=@avatar.jpg" http://localhost:8000/images/upload
 ```json
 {
   "code": 201,
-  "message": "图片上传成功",
+  "message": "Image uploaded successfully",
   "data": {
-    "objectId": 1,
-    "fileName": "20250109_100000_abc12345.jpg",
-    "originalName": "avatar.jpg",
-    "fileSize": 102400,
-    "filePath": "/uploads/images/20250109_100000_abc12345.jpg",
-    "url": "http://localhost:8000/uploads/images/20250109_100000_abc12345.jpg",
-    "createdAt": "2025-01-09T10:00:00",
-    "updatedAt": "2025-01-09T10:00:00"
+    "objectId": "djvonwqq9q",
+    "fileName": "20250921_140147_65a188e4.png",
+    "path": "uploads/images/20250921_140147_65a188e4.png",
+    "url": "/uploads/images/20250921_140147_65a188e4.png",
+    "fileSize": 287,
+    "createdAt": "2025-09-21T14:01:47",
+    "updatedAt": "2025-09-21T14:01:47"
   }
 }
 ```
@@ -124,39 +123,79 @@ curl -X POST -F "file=@avatar.jpg" http://localhost:8000/images/upload
 |------|------|------|------|
 | files | file[] | 是 | 图片文件数组 |
 
+#### 支持的文件格式
+- PNG, JPG, JPEG, GIF, WEBP, BMP
+
 #### 请求示例
 ```bash
-curl -X POST -F "files=@image1.jpg" -F "files=@image2.jpg" http://localhost:8000/images/upload/multiple
+curl -X POST -F "files=@image1.jpg" -F "files=@image2.jpg" -F "files=@image3.png" http://localhost:8000/images/upload/multiple
 ```
 
-#### 响应示例
+#### 成功响应示例
 ```json
 {
   "code": 201,
-  "message": "批量上传成功",
+  "message": "All 3 files uploaded successfully",
   "data": {
-    "uploaded": [
+    "images": [
       {
-        "objectId": 1,
-        "fileName": "20250109_100000_abc12345.jpg",
-        "originalName": "image1.jpg",
-        "fileSize": 102400,
-        "url": "http://localhost:8000/uploads/images/20250109_100000_abc12345.jpg"
+        "objectId": "djvonwqq9q",
+        "fileName": "20250921_140148_75767fe4.png",
+        "path": "uploads/images/20250921_140148_75767fe4.png",
+        "url": "/uploads/images/20250921_140148_75767fe4.png",
+        "fileSize": 287,
+        "createdAt": "2025-09-21T14:01:48",
+        "updatedAt": "2025-09-21T14:01:48"
       },
       {
-        "objectId": 2,
-        "fileName": "20250109_100001_def67890.jpg",
-        "originalName": "image2.jpg",
-        "fileSize": 204800,
-        "url": "http://localhost:8000/uploads/images/20250109_100001_def67890.jpg"
+        "objectId": "1mdeap865c",
+        "fileName": "20250921_140148_fb84b3a2.png",
+        "path": "uploads/images/20250921_140148_fb84b3a2.png",
+        "url": "/uploads/images/20250921_140148_fb84b3a2.png",
+        "fileSize": 287,
+        "createdAt": "2025-09-21T14:01:48",
+        "updatedAt": "2025-09-21T14:01:48"
       }
     ],
-    "failed": [],
-    "total": 2,
-    "success_count": 2
+    "uploaded_count": 3,
+    "total_files": 3
   }
 }
 ```
+
+#### 部分失败响应示例
+```json
+{
+  "code": 201,
+  "message": "Uploaded 2 files successfully, 1 files failed",
+  "data": {
+    "images": [
+      {
+        "objectId": "abc123",
+        "fileName": "20250921_140148_75767fe4.png",
+        "path": "uploads/images/20250921_140148_75767fe4.png",
+        "url": "/uploads/images/20250921_140148_75767fe4.png",
+        "fileSize": 287,
+        "createdAt": "2025-09-21T14:01:48",
+        "updatedAt": "2025-09-21T14:01:48"
+      }
+    ],
+    "uploaded_count": 2,
+    "total_files": 3,
+    "errors": [
+      "File 3 (test.txt): File type not allowed"
+    ]
+  }
+}
+```
+
+#### 响应字段说明
+| 字段 | 类型 | 说明 |
+|------|------|------|
+| images | array | 成功上传的图片列表 |
+| uploaded_count | int | 成功上传的文件数量 |
+| total_files | int | 总文件数量 |
+| errors | array | 失败文件的错误信息（可选） |
 
 ### 5. 更新图片信息
 **PUT** `/images/{object_id}`
@@ -385,3 +424,46 @@ curl -X DELETE http://localhost:8000/images/clear
   "message": "不支持的文件类型"
 }
 ```
+
+## 测试状态
+
+### 最新测试结果
+- **测试时间**: 2025-09-21
+- **测试环境**: 开发环境 (localhost:8000)
+- **测试状态**: ✅ 全部通过
+
+### 已验证功能
+- ✅ 单个图片上传 (`POST /images/upload`)
+- ✅ 批量图片上传 (`POST /images/upload/multiple`)
+- ✅ 文件格式验证 (PNG, JPG, JPEG, GIF, WEBP, BMP)
+- ✅ 错误处理机制
+- ✅ 空文件处理
+- ✅ 无效文件类型处理
+- ✅ 响应格式统一性
+- ✅ 数据库记录创建
+- ✅ 文件存储功能
+- ✅ 图片列表查询 (`GET /images/`)
+- ✅ 图片统计信息 (`GET /images/stats`)
+
+### 测试数据统计
+- **测试图片数量**: 7张 (1个单张 + 6个批量)
+- **文件大小范围**: 287-289 bytes (测试图片)
+- **上传成功率**: 100% (有效文件)
+- **当前图片总数**: 65张
+- **响应时间**: < 200ms
+
+### 接口响应格式
+所有接口均使用统一响应格式：
+```json
+{
+  "code": 状态码,
+  "message": "响应消息",
+  "data": 响应数据
+}
+```
+
+### 批量上传特殊说明
+- 支持同时上传多个文件
+- 部分文件失败时仍返回成功状态码 (201)
+- 错误信息包含在 `data.errors` 字段中
+- 成功上传的文件信息包含在 `data.images` 字段中

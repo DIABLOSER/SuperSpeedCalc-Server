@@ -143,6 +143,8 @@ SuperSpeedCalc-Server/
 - ✅ **点赞功能测试通过** - 点赞/取消点赞功能完全正常
 - ✅ **评论功能测试通过** - 一级评论和二级回复功能完全正常
 - ✅ **社交功能验证** - 用户关系、帖子管理、互动功能全部测试通过
+- ✅ **图片上传功能** - 单个和批量图片上传功能完全正常
+- ✅ **响应格式统一** - 所有接口使用统一的响应格式
 
 ### 快速测试
 ```bash
@@ -172,6 +174,23 @@ curl -X POST "http://localhost:8000/replies/" \
 
 # 获取帖子评论
 curl "http://localhost:8000/replies/post/{post_id}"
+
+# 图片上传功能测试
+# 单个图片上传
+curl -X POST "http://localhost:8000/images/upload" \
+  -F "file=@image.jpg"
+
+# 批量图片上传
+curl -X POST "http://localhost:8000/images/upload/multiple" \
+  -F "files=@image1.jpg" \
+  -F "files=@image2.png" \
+  -F "files=@image3.gif"
+
+# 获取图片列表
+curl "http://localhost:8000/images/?page=1&per_page=10"
+
+# 获取图片统计
+curl "http://localhost:8000/images/stats"
 
 # 预期响应格式
 {

@@ -164,19 +164,18 @@ def upload_multiple_images():
             db.session.commit()
         
         result = {
-            'success': True,
-            'data': [img.to_dict() for img in uploaded_images],
+            'images': [img.to_dict() for img in uploaded_images],
             'uploaded_count': len(uploaded_images),
             'total_files': len(files)
         }
         
         if errors:
             result['errors'] = errors
-            result['message'] = f"Uploaded {len(uploaded_images)} files successfully, {len(errors)} files failed"
+            message = f"Uploaded {len(uploaded_images)} files successfully, {len(errors)} files failed"
         else:
-            result['message'] = f"All {len(uploaded_images)} files uploaded successfully"
+            message = f"All {len(uploaded_images)} files uploaded successfully"
         
-        return created_response(data=result, message=result['message'])
+        return created_response(data=result, message=message)
         
     except Exception as e:
         db.session.rollback()

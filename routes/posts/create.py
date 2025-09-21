@@ -12,7 +12,7 @@ def create_post():
         data = request.get_json()
         
         # 检查必需的参数
-        user_id = data.get('user')
+        user_id = data.get('userId')
         content = data.get('content')
         
         if not user_id or not content:
@@ -41,7 +41,7 @@ def create_post():
             user=user_id,
             content=content.strip(),
             visible=data.get('visible', True),
-            audit_state=data.get('audit_state', 'pending')
+            audit_state=data.get('audit_state', 'approved')
         )
         
         # 处理图片列表
