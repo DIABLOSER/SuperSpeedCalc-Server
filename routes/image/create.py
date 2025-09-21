@@ -164,7 +164,7 @@ def upload_multiple_images():
             db.session.commit()
         
         result = {
-            'images': [img.to_dict() for img in uploaded_images],
+            'items': [img.to_dict() for img in uploaded_images],
             'uploaded_count': len(uploaded_images),
             'total_files': len(files)
         }

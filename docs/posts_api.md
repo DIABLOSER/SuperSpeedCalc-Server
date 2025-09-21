@@ -90,10 +90,12 @@ curl -X GET "http://localhost:8000/posts?sort_by=likeCount&order=desc"
         "is_visible": true,
         "is_approved": true,
         "stats": {
-          "likeCount": 10,
-          "replyCount": 5,
+          "actual_like_count": 10,
+          "actual_reply_count": 5,
           "first_level_reply_count": 3,
-          "second_level_reply_count": 2
+          "second_level_reply_count": 2,
+          "likeCount": 10,
+          "replyCount": 5
         },
         "createdAt": "2025-01-09T10:00:00",
         "updatedAt": "2025-01-09T10:00:00"
@@ -164,10 +166,12 @@ curl -X GET "http://localhost:8000/posts/abc123?user_id=user456"
     "is_visible": true,
     "is_approved": true,
     "stats": {
-      "likeCount": 10,
-      "replyCount": 5,
+      "actual_like_count": 10,
+      "actual_reply_count": 5,
       "first_level_reply_count": 3,
-      "second_level_reply_count": 2
+      "second_level_reply_count": 2,
+      "likeCount": 10,
+      "replyCount": 5
     },
     "first_level_reply_count": 3,
     "second_level_reply_count": 2,
@@ -180,17 +184,23 @@ curl -X GET "http://localhost:8000/posts/abc123?user_id=user456"
 ### 3. 获取用户帖子列表
 **GET** `/posts/user/{user_id}`
 
-#### 请求参数
-| 参数 | 类型 | 必填 | 说明 |
-|------|------|------|------|
-| user_id | string | 是 | 用户ID |
-| page | int | 否 | 页码，默认1 |
-| per_page | int | 否 | 每页数量，默认20 |
-| viewer_id | string | 否 | 当前查看用户ID（用于权限控制） |
+#### 📝 功能说明
+获取指定用户发布的所有帖子列表，支持分页查询。
 
-#### 请求示例
+#### 🔧 请求参数
+| 参数 | 类型 | 必填 | 默认值 | 说明 |
+|------|------|------|--------|------|
+| user_id | string | 是 | - | 用户ID（路径参数） |
+| page | int | 否 | 1 | 页码 |
+| per_page | int | 否 | 20 | 每页数量 |
+
+#### 💡 使用方法
 ```bash
-GET /posts/user/user123?page=1&per_page=20&viewer_id=user456
+# 基础用法
+curl -X GET "http://localhost:8000/posts/user/user123"
+
+# 带分页参数
+curl -X GET "http://localhost:8000/posts/user/user123?page=1&per_page=10"
 ```
 
 #### 响应示例
@@ -214,14 +224,15 @@ GET /posts/user/user123?page=1&per_page=20&viewer_id=user456
         "images": [],
         "likeCount": 10,
         "replyCount": 5,
-        "is_liked_by_user": false,
         "is_visible": true,
         "is_approved": true,
         "stats": {
-          "likeCount": 10,
-          "replyCount": 5,
+          "actual_like_count": 10,
+          "actual_reply_count": 5,
           "first_level_reply_count": 3,
-          "second_level_reply_count": 2
+          "second_level_reply_count": 2,
+          "likeCount": 10,
+          "replyCount": 5
         },
         "createdAt": "2025-01-09T10:00:00",
         "updatedAt": "2025-01-09T10:00:00"
@@ -288,10 +299,12 @@ GET /posts/audit/pending?page=1&per_page=20
         "is_visible": true,
         "is_approved": false,
         "stats": {
-          "likeCount": 0,
-          "replyCount": 0,
+          "actual_like_count": 0,
+          "actual_reply_count": 0,
           "first_level_reply_count": 0,
-          "second_level_reply_count": 0
+          "second_level_reply_count": 0,
+          "likeCount": 0,
+          "replyCount": 0
         },
         "first_level_reply_count": 0,
         "second_level_reply_count": 0,
@@ -376,10 +389,12 @@ curl -X POST "http://localhost:8000/posts" \
     "is_visible": true,
     "is_approved": false,
     "stats": {
-      "likeCount": 0,
-      "replyCount": 0,
+      "actual_like_count": 0,
+      "actual_reply_count": 0,
       "first_level_reply_count": 0,
-      "second_level_reply_count": 0
+      "second_level_reply_count": 0,
+      "likeCount": 0,
+      "replyCount": 0
     },
     "first_level_reply_count": 0,
     "second_level_reply_count": 0,
@@ -466,10 +481,12 @@ curl -X PUT "http://localhost:8000/posts/abc123" \
     "is_visible": true,
     "is_approved": false,
     "stats": {
-      "likeCount": 5,
-      "replyCount": 2,
+      "actual_like_count": 5,
+      "actual_reply_count": 2,
       "first_level_reply_count": 1,
-      "second_level_reply_count": 1
+      "second_level_reply_count": 1,
+      "likeCount": 5,
+      "replyCount": 2
     },
     "first_level_reply_count": 1,
     "second_level_reply_count": 1,
@@ -624,17 +641,23 @@ curl -X DELETE "http://localhost:8000/posts/abc123/like" \
 ### 10. 获取帖子点赞用户列表
 **GET** `/posts/{post_id}/likers`
 
-#### 请求参数
-| 参数 | 类型 | 必填 | 说明 |
-|------|------|------|------|
-| post_id | string | 是 | 帖子ID |
-| page | int | 否 | 页码，默认1 |
-| per_page | int | 否 | 每页数量，默认20 |
-| viewer_id | string | 否 | 当前查看用户ID（用于权限控制） |
+#### 📝 功能说明
+获取指定帖子的点赞用户列表，支持分页查询。
 
-#### 请求示例
+#### 🔧 请求参数
+| 参数 | 类型 | 必填 | 默认值 | 说明 |
+|------|------|------|--------|------|
+| post_id | string | 是 | - | 帖子ID（路径参数） |
+| page | int | 否 | 1 | 页码 |
+| per_page | int | 否 | 20 | 每页数量 |
+
+#### 💡 使用方法
 ```bash
-GET /posts/abc123/likers?page=1&per_page=20&viewer_id=user456
+# 基础用法
+curl -X GET "http://localhost:8000/posts/abc123/likers"
+
+# 带分页参数
+curl -X GET "http://localhost:8000/posts/abc123/likers?page=1&per_page=10"
 ```
 
 #### 响应示例
@@ -690,23 +713,19 @@ GET /posts/abc123/likers?page=1&per_page=20&viewer_id=user456
 获取指定用户关注的用户发布的所有帖子，按时间倒序排列。
 
 #### 🔧 请求参数
-| 参数 | 类型 | 必填 | 说明 |
-|------|------|------|------|
-| user_id | string | 是 | 用户ID（路径参数） |
-| page | int | 否 | 页码，默认1 |
-| per_page | int | 否 | 每页数量，默认20 |
-| viewer_id | string | 否 | 当前查看用户ID（用于判断是否已点赞等） |
+| 参数 | 类型 | 必填 | 默认值 | 说明 |
+|------|------|------|--------|------|
+| user_id | string | 是 | - | 用户ID（路径参数） |
+| page | int | 否 | 1 | 页码 |
+| per_page | int | 否 | 20 | 每页数量 |
 
 #### 💡 使用方法
 ```bash
 # 基础用法
-curl "http://localhost:8000/posts/user/user123/following"
+curl -X GET "http://localhost:8000/posts/user/user123/following"
 
 # 带分页参数
-curl "http://localhost:8000/posts/user/user123/following?page=1&per_page=10"
-
-# 带viewer_id参数
-curl "http://localhost:8000/posts/user/user123/following?viewer_id=user456"
+curl -X GET "http://localhost:8000/posts/user/user123/following?page=1&per_page=10"
 ```
 
 #### 响应示例
@@ -748,10 +767,12 @@ curl "http://localhost:8000/posts/user/user123/following?viewer_id=user456"
         "is_visible": true,
         "is_approved": true,
         "stats": {
-          "likeCount": 10,
-          "replyCount": 5,
+          "actual_like_count": 10,
+          "actual_reply_count": 5,
           "first_level_reply_count": 3,
-          "second_level_reply_count": 2
+          "second_level_reply_count": 2,
+          "likeCount": 10,
+          "replyCount": 5
         },
         "createdAt": "2025-01-09T10:00:00",
         "updatedAt": "2025-01-09T10:00:00"
@@ -780,17 +801,23 @@ curl "http://localhost:8000/posts/user/user123/following?viewer_id=user456"
 ### 12. 获取用户点赞的帖子列表
 **GET** `/posts/user/{user_id}/liked`
 
-#### 请求参数
-| 参数 | 类型 | 必填 | 说明 |
-|------|------|------|------|
-| user_id | string | 是 | 用户ID |
-| page | int | 否 | 页码，默认1 |
-| per_page | int | 否 | 每页数量，默认20 |
-| viewer_id | string | 否 | 当前查看用户ID（用于权限控制） |
+#### 📝 功能说明
+获取指定用户点赞的所有帖子列表，支持分页查询。
 
-#### 请求示例
+#### 🔧 请求参数
+| 参数 | 类型 | 必填 | 默认值 | 说明 |
+|------|------|------|--------|------|
+| user_id | string | 是 | - | 用户ID（路径参数） |
+| page | int | 否 | 1 | 页码 |
+| per_page | int | 否 | 20 | 每页数量 |
+
+#### 💡 使用方法
 ```bash
-GET /posts/user/user456/liked?page=1&per_page=20&viewer_id=user789
+# 基础用法
+curl -X GET "http://localhost:8000/posts/user/user456/liked"
+
+# 带分页参数
+curl -X GET "http://localhost:8000/posts/user/user456/liked?page=1&per_page=10"
 ```
 
 #### 响应示例
@@ -833,10 +860,12 @@ GET /posts/user/user456/liked?page=1&per_page=20&viewer_id=user789
           "is_visible": true,
           "is_approved": true,
           "stats": {
-            "likeCount": 10,
-            "replyCount": 5,
+            "actual_like_count": 10,
+            "actual_reply_count": 5,
             "first_level_reply_count": 3,
-            "second_level_reply_count": 2
+            "second_level_reply_count": 2,
+            "likeCount": 10,
+            "replyCount": 5
           },
           "first_level_reply_count": 3,
           "second_level_reply_count": 2,
@@ -864,10 +893,12 @@ GET /posts/user/user456/liked?page=1&per_page=20&viewer_id=user789
           "is_visible": true,
           "is_approved": true,
           "stats": {
-            "likeCount": 10,
-            "replyCount": 5,
+            "actual_like_count": 10,
+            "actual_reply_count": 5,
             "first_level_reply_count": 3,
-            "second_level_reply_count": 2
+            "second_level_reply_count": 2,
+            "likeCount": 10,
+            "replyCount": 5
           },
           "first_level_reply_count": 3,
           "second_level_reply_count": 2,
@@ -977,6 +1008,7 @@ curl -X POST "http://localhost:8000/posts/admin/sync-like-counts" \
    - 任何人都可以查看、更新、删除所有帖子（已移除权限限制）
    - 任何人都可以点赞/取消点赞所有帖子
    - 任何人都可以查看所有帖子的点赞列表
+   - 获取用户帖子列表无需权限验证，只需传入用户ID即可
 
 2. **审核状态**：
    - `pending`: 待审核
@@ -1002,6 +1034,15 @@ curl -X POST "http://localhost:8000/posts/admin/sync-like-counts" \
    - 图片列表以JSON数组格式存储
    - 支持添加/删除图片
    - 提供图片列表的便捷操作方法
+
+7. **统计数据字段**：
+   - `stats` 字段包含详细的统计信息
+   - `actual_like_count`: 实际点赞数量（从likes表统计）
+   - `actual_reply_count`: 实际回复数量（从replies表统计）
+   - `first_level_reply_count`: 一级回复数量
+   - `second_level_reply_count`: 二级回复数量
+   - `likeCount`: 帖子表中的点赞数量字段
+   - `replyCount`: 帖子表中的回复数量字段
 
 ## 🚀 快速参考
 

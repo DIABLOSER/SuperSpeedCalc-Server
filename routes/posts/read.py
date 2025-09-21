@@ -121,12 +121,8 @@ def get_user_posts(user_id):
         page = max(page or 1, 1)
         per_page = min(max(per_page or 20, 1), 100)
         
-        # 当前查看用户ID（用于权限控制）
-        viewer_id = request.args.get('viewer_id')
-        
+        # 查询该用户的所有帖子
         query = Posts.query.filter_by(user=user_id)
-        
-        # 移除权限限制，任何人都可以查看所有帖子
         
         # 按创建时间倒序排列
         query = query.order_by(desc(Posts.createdAt))
@@ -142,7 +138,7 @@ def get_user_posts(user_id):
                     'username': user.username,
                     'avatar': user.avatar
                 },
-                'posts': [post.to_dict(include_user=False, user_id=viewer_id, sync_like_count=True, sync_reply_count=True) for post in posts],
+                'posts': [post.to_dict(include_user=False, sync_like_count=True, sync_reply_count=True) for post in posts],
                 'pagination': {
                     'page': page,
                     'per_page': per_page,
