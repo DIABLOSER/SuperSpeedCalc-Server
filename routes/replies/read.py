@@ -58,7 +58,7 @@ def get_post_replies(post_id):
                     'replyCount': post.replyCount,
                     'actual_reply_count': post.get_actual_reply_count()
                 },
-                'itmes': [
+                'items': [
                     reply.to_dict(include_details=True, include_children=include_children, include_full_post=False) 
                     for reply in replies
                 ],

@@ -41,7 +41,7 @@ GET /replies?post=turq0o5jtt&page=1&per_page=20
       "replyCount": 5,
       "actual_reply_count": 4
     },
-    "itmes": [
+    "items": [
       {
         "objectId": "rz3hyw91fm",
         "content": "1",
@@ -265,7 +265,7 @@ GET /replies/user/rgng24sqyi?page=1&per_page=20&viewer_id=rgng24sqyi
       "username": "可爱小猫728782",
       "avatar": "https://q.qlogo.cn/headimg_dl?dst_uin=765618041&spec=640&img_type=jpg"
     },
-    "itmes": [
+    "items": [
       {
         "objectId": "rz3hyw91fm",
         "content": "1",
@@ -816,7 +816,7 @@ GET /replies?post=turq0o5jtt&page=1&per_page=20
 - 获取评论成功返回200状态码
 - 删除评论成功返回200状态码
 - 一级评论接口返回 `first_level_replies` 字段
-- 普通评论接口返回 `itmes` 字段
+- 普通评论接口返回 `items` 字段
 - 响应体包含完整的用户信息、帖子信息和关联数据
 
 ### 📊 测试数据统计
