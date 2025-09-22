@@ -11,26 +11,6 @@ def delete_reply(reply_id):
     """删除评论"""
     try:
         reply = Reply.query.get_or_404(reply_id)
-        data = request.get_json() or {}
-        
-        user_id = data.get('user_id')  # 当前用户ID
-        is_admin = data.get('is_admin', False)  # 是否为管理员操作
-        
-        if not user_id:
-            return internal_error_response(message='User ID is required', code=400)
-        
-        # 权限检查：作者或管理员可以删除评论
-        if user_id == reply.user:
-            # 作者删除自己的评论
-            delete_reason = 'Deleted by author'
-        elif is_admin:
-            # 验证管理员权限
-            admin_user = MyUser.query.get(user_id)
-            if not admin_user or not admin_user.admin:
-                return internal_error_response(message='Permission denied. Admin access required.', code=403)
-            delete_reason = f'Deleted by admin: {admin_user.username}'
-        else:
-            return internal_error_response(message='Permission denied. Only the author or admin can delete this reply.', code=403)
         
         # 收集要删除的评论信息
         reply_info = {
@@ -38,9 +18,7 @@ def delete_reply(reply_id):
             'post_id': reply.post,
             'user_id': reply.user,
             'content_preview': reply.content[:50] + '...' if len(reply.content) > 50 else reply.content,
-            'level': 1 if reply.is_first_level() else 2,
-            'delete_reason': delete_reason,
-            'deleted_by': user_id
+            'level': 1 if reply.is_first_level() else 2
         }
         
         # 如果删除的是一级评论，需要同时删除所有子回复

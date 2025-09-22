@@ -624,29 +624,19 @@ GET /replies/post/turq0o5jtt/first-level?page=1&per_page=10&include_children=tru
 ### 7. 删除回复
 **DELETE** `/replies/{reply_id}`
 
-#### 请求体
-```json
-{
-  "user_id": "rgng24sqyi",
-  "is_admin": false
-}
-```
-
-#### 请求参数说明
+#### 请求参数
 | 参数 | 类型 | 必填 | 说明 |
 |------|------|------|------|
-| user_id | string | 是 | 当前用户ID（用于权限验证） |
-| is_admin | bool | 否 | 是否为管理员操作，默认false |
+| reply_id | string | 是 | 回复ID（路径参数） |
 
 #### 请求示例
 ```bash
+# 删除评论（只需要评论ID）
+DELETE /replies/rz3hyw91fm
+
+# 或者使用带Content-Type的请求
 DELETE /replies/rz3hyw91fm
 Content-Type: application/json
-
-{
-  "user_id": "rgng24sqyi",
-  "is_admin": false
-}
 ```
 
 #### 响应示例
@@ -660,8 +650,6 @@ Content-Type: application/json
     "user_id": "rgng24sqyi",
     "content_preview": "1",
     "level": 1,
-    "delete_reason": "Deleted by author",
-    "deleted_by": "rgng24sqyi",
     "child_replies_deleted": 0
   }
 }
@@ -670,15 +658,15 @@ Content-Type: application/json
 #### 错误响应
 ```json
 {
-  "code": 403,
-  "message": "Permission denied. Only the author or admin can delete this reply."
+  "code": 404,
+  "message": "The requested URL was not found on the server"
 }
 ```
 
 ```json
 {
-  "code": 400,
-  "message": "User ID is required"
+  "code": 500,
+  "message": "服务器内部错误"
 }
 ```
 
@@ -771,7 +759,7 @@ Content-Type: application/json
 ### 操作权限
 - **创建评论**: 任何用户都可以在可见帖子上创建评论
 - **更新评论**: 只有评论作者可以更新自己的评论
-- **删除评论**: 评论作者或管理员可以删除评论
+- **删除评论**: 任何人都可以删除任何评论（已移除权限限制）
 
 ## 错误码说明
 
@@ -833,5 +821,5 @@ GET /replies?post=turq0o5jtt&page=1&per_page=20
 - ✅ **获取用户评论**: 状态码200，支持分页和权限控制
 - ✅ **获取一级评论**: 状态码200，返回带子评论的树形结构
 - ✅ **更新评论**: 状态码201，支持内容更新和@用户功能
-- ✅ **删除评论**: 状态码200，支持级联删除子评论
+- ✅ **删除评论**: 状态码200，支持级联删除子评论，无需权限验证
 - ⚠️ **错误处理**: 不存在的资源返回500而非404（需要优化）
