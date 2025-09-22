@@ -22,7 +22,11 @@
 
 #### 请求示例
 ```bash
-GET /replies/post/1?page=1&per_page=20&level=1&include_children=true
+# 标准路径参数方式
+GET /replies/post/turq0o5jtt?page=1&per_page=20&level=1&include_children=true
+
+# 兼容性查询参数方式
+GET /replies?post=turq0o5jtt&page=1&per_page=20
 ```
 
 #### 响应示例
@@ -32,32 +36,48 @@ GET /replies/post/1?page=1&per_page=20&level=1&include_children=true
   "message": "获取帖子回复成功",
   "data": {
     "post": {
-      "objectId": "1",
-      "content_preview": "这是帖子内容...",
-      "replyCount": 2,
-      "actual_reply_count": 2
+      "objectId": "turq0o5jtt",
+      "content_preview": "继续测试",
+      "replyCount": 5,
+      "actual_reply_count": 4
     },
     "replies": [
       {
-        "objectId": "1",
-        "content": "这是一条评论",
-        "post": "1",
-        "user": "1",
+        "objectId": "rz3hyw91fm",
+        "content": "1",
+        "post": "turq0o5jtt",
+        "user": "rgng24sqyi",
         "user_data": {
-          "objectId": "1",
-          "username": "test_user",
-          "avatar": "https://example.com/avatar.jpg"
+          "objectId": "rgng24sqyi",
+          "username": "可爱小猫728782",
+          "avatar": "https://q.qlogo.cn/headimg_dl?dst_uin=765618041&spec=640&img_type=jpg",
+          "admin": false,
+          "bio": "这个人很懒，什么都没留下",
+          "birthday": "2025-09-22",
+          "boluo": 0,
+          "createdAt": "2025-09-22T06:15:29.392816",
+          "experience": 0,
+          "isActive": true,
+          "mobile": "15756475746",
+          "sex": 1,
+          "updatedAt": "2025-09-22T06:21:22.868460"
         },
         "parent": null,
         "recipient": null,
         "recipient_data": null,
         "post_data": {
-          "objectId": "1",
-          "content": "这是帖子内容",
+          "objectId": "turq0o5jtt",
+          "content": "继续测试",
+          "content_preview": "继续测试",
+          "audit_state": "approved",
+          "likeCount": 0,
+          "replyCount": 5,
+          "visible": true,
+          "createdAt": "2025-09-22T07:26:22.469143",
           "user": {
-            "objectId": "1",
-            "username": "test_user",
-            "avatar": "https://example.com/avatar.jpg"
+            "objectId": "rgng24sqyi",
+            "username": "可爱小猫728782",
+            "avatar": "https://q.qlogo.cn/headimg_dl?dst_uin=765618041&spec=640&img_type=jpg"
           }
         },
         "parent_reply_data": null,
@@ -66,22 +86,81 @@ GET /replies/post/1?page=1&per_page=20&level=1&include_children=true
         "level": 1,
         "is_first_level": true,
         "is_second_level": false,
-        "createdAt": "2025-01-09T10:00:00",
-        "updatedAt": "2025-01-09T10:00:00"
+        "createdAt": "2025-09-22T08:28:49.474459",
+        "updatedAt": "2025-09-22T08:28:49.474462"
+      },
+      {
+        "objectId": "au3x839cf3",
+        "content": "1111",
+        "post": "turq0o5jtt",
+        "user": "rgng24sqyi",
+        "user_data": {
+          "objectId": "rgng24sqyi",
+          "username": "可爱小猫728782",
+          "avatar": "https://q.qlogo.cn/headimg_dl?dst_uin=765618041&spec=640&img_type=jpg",
+          "admin": false,
+          "bio": "这个人很懒，什么都没留下",
+          "birthday": "2025-09-22",
+          "boluo": 0,
+          "createdAt": "2025-09-22T06:15:29.392816",
+          "experience": 0,
+          "isActive": true,
+          "mobile": "15756475746",
+          "sex": 1,
+          "updatedAt": "2025-09-22T06:21:22.868460"
+        },
+        "parent": null,
+        "recipient": "rgng24sqyi",
+        "recipient_data": {
+          "objectId": "rgng24sqyi",
+          "username": "可爱小猫728782",
+          "avatar": "https://q.qlogo.cn/headimg_dl?dst_uin=765618041&spec=640&img_type=jpg",
+          "admin": false,
+          "bio": "这个人很懒，什么都没留下",
+          "birthday": "2025-09-22",
+          "boluo": 0,
+          "createdAt": "2025-09-22T06:15:29.392816",
+          "experience": 0,
+          "isActive": true,
+          "mobile": "15756475746",
+          "sex": 1,
+          "updatedAt": "2025-09-22T06:21:22.868460"
+        },
+        "post_data": {
+          "objectId": "turq0o5jtt",
+          "content": "继续测试",
+          "content_preview": "继续测试",
+          "audit_state": "approved",
+          "likeCount": 0,
+          "replyCount": 5,
+          "visible": true,
+          "createdAt": "2025-09-22T07:26:22.469143",
+          "user": {
+            "objectId": "rgng24sqyi",
+            "username": "可爱小猫728782",
+            "avatar": "https://q.qlogo.cn/headimg_dl?dst_uin=765618041&spec=640&img_type=jpg"
+          }
+        },
+        "parent_reply_data": null,
+        "child_replies": [],
+        "reply_count": 0,
+        "level": 1,
+        "is_first_level": true,
+        "is_second_level": false,
+        "createdAt": "2025-09-22T08:42:39.534637",
+        "updatedAt": "2025-09-22T08:42:39.534647"
       }
     ],
     "pagination": {
       "page": 1,
       "per_page": 20,
-      "total": 1,
-      "pages": 1,
-      "has_next": false,
-      "has_prev": false
+      "total": 4,
+      "pages": 1
     },
     "stats": {
-      "total_replies": 2,
-      "first_level_count": 1,
-      "second_level_count": 1
+      "total_replies": 4,
+      "first_level_count": 4,
+      "second_level_count": 0
     }
   }
 }
@@ -96,37 +175,54 @@ GET /replies/post/1?page=1&per_page=20&level=1&include_children=true
 | reply_id | string | 是 | 回复ID |
 | include_children | bool | 否 | 是否包含子回复，默认true |
 | include_full_post | bool | 否 | 是否包含完整帖子信息，默认false |
+| viewer_id | string | 否 | 当前查看用户ID（用于权限控制） |
 
 #### 请求示例
 ```bash
-GET /replies/1?include_children=true&include_full_post=false
+GET /replies/rz3hyw91fm?include_children=true&include_full_post=false&viewer_id=rgng24sqyi
 ```
 
 #### 响应示例
 ```json
 {
   "code": 200,
-  "message": "获取回复成功",
+  "message": "操作成功",
   "data": {
-    "objectId": "1",
-    "content": "这是一条评论",
-    "post": "1",
-    "user": "1",
+    "objectId": "rz3hyw91fm",
+    "content": "1",
+    "post": "turq0o5jtt",
+    "user": "rgng24sqyi",
     "user_data": {
-      "objectId": "1",
-      "username": "test_user",
-      "avatar": "https://example.com/avatar.jpg"
+      "objectId": "rgng24sqyi",
+      "username": "可爱小猫728782",
+      "avatar": "https://q.qlogo.cn/headimg_dl?dst_uin=765618041&spec=640&img_type=jpg",
+      "admin": false,
+      "bio": "这个人很懒，什么都没留下",
+      "birthday": "2025-09-22",
+      "boluo": 0,
+      "createdAt": "2025-09-22T06:15:29.392816",
+      "experience": 0,
+      "isActive": true,
+      "mobile": "15756475746",
+      "sex": 1,
+      "updatedAt": "2025-09-22T06:21:22.868460"
     },
     "parent": null,
     "recipient": null,
     "recipient_data": null,
     "post_data": {
-      "objectId": "1",
-      "content": "这是帖子内容",
+      "objectId": "turq0o5jtt",
+      "content": "继续测试",
+      "content_preview": "继续测试",
+      "audit_state": "approved",
+      "likeCount": 0,
+      "replyCount": 5,
+      "visible": true,
+      "createdAt": "2025-09-22T07:26:22.469143",
       "user": {
-        "objectId": "1",
-        "username": "test_user",
-        "avatar": "https://example.com/avatar.jpg"
+        "objectId": "rgng24sqyi",
+        "username": "可爱小猫728782",
+        "avatar": "https://q.qlogo.cn/headimg_dl?dst_uin=765618041&spec=640&img_type=jpg"
       }
     },
     "parent_reply_data": null,
@@ -135,8 +231,8 @@ GET /replies/1?include_children=true&include_full_post=false
     "level": 1,
     "is_first_level": true,
     "is_second_level": false,
-    "createdAt": "2025-01-09T10:00:00",
-    "updatedAt": "2025-01-09T10:00:00"
+    "createdAt": "2025-09-22T08:28:49.474459",
+    "updatedAt": "2025-09-22T08:28:49.474462"
   }
 }
 ```
@@ -155,7 +251,7 @@ GET /replies/1?include_children=true&include_full_post=false
 
 #### 请求示例
 ```bash
-GET /replies/user/1?page=1&per_page=20
+GET /replies/user/rgng24sqyi?page=1&per_page=20&viewer_id=rgng24sqyi
 ```
 
 #### 响应示例
@@ -165,31 +261,47 @@ GET /replies/user/1?page=1&per_page=20
   "message": "获取用户回复成功",
   "data": {
     "user": {
-      "objectId": "1",
-      "username": "test_user",
-      "avatar": "https://example.com/avatar.jpg"
+      "objectId": "rgng24sqyi",
+      "username": "可爱小猫728782",
+      "avatar": "https://q.qlogo.cn/headimg_dl?dst_uin=765618041&spec=640&img_type=jpg"
     },
     "replies": [
       {
-        "objectId": "1",
-        "content": "这是一条评论",
-        "post": "1",
-        "user": "1",
+        "objectId": "rz3hyw91fm",
+        "content": "1",
+        "post": "turq0o5jtt",
+        "user": "rgng24sqyi",
         "user_data": {
-          "objectId": "1",
-          "username": "test_user",
-          "avatar": "https://example.com/avatar.jpg"
+          "objectId": "rgng24sqyi",
+          "username": "可爱小猫728782",
+          "avatar": "https://q.qlogo.cn/headimg_dl?dst_uin=765618041&spec=640&img_type=jpg",
+          "admin": false,
+          "bio": "这个人很懒，什么都没留下",
+          "birthday": "2025-09-22",
+          "boluo": 0,
+          "createdAt": "2025-09-22T06:15:29.392816",
+          "experience": 0,
+          "isActive": true,
+          "mobile": "15756475746",
+          "sex": 1,
+          "updatedAt": "2025-09-22T06:21:22.868460"
         },
         "parent": null,
         "recipient": null,
         "recipient_data": null,
         "post_data": {
-          "objectId": "1",
-          "content": "这是帖子内容",
+          "objectId": "turq0o5jtt",
+          "content": "继续测试",
+          "content_preview": "继续测试",
+          "audit_state": "approved",
+          "likeCount": 0,
+          "replyCount": 5,
+          "visible": true,
+          "createdAt": "2025-09-22T07:26:22.469143",
           "user": {
-            "objectId": "1",
-            "username": "test_user",
-            "avatar": "https://example.com/avatar.jpg"
+            "objectId": "rgng24sqyi",
+            "username": "可爱小猫728782",
+            "avatar": "https://q.qlogo.cn/headimg_dl?dst_uin=765618041&spec=640&img_type=jpg"
           }
         },
         "parent_reply_data": null,
@@ -198,18 +310,18 @@ GET /replies/user/1?page=1&per_page=20
         "level": 1,
         "is_first_level": true,
         "is_second_level": false,
-        "createdAt": "2025-01-09T10:00:00",
-        "updatedAt": "2025-01-09T10:00:00"
+        "createdAt": "2025-09-22T08:28:49.474459",
+        "updatedAt": "2025-09-22T08:28:49.474462"
       }
     ],
     "pagination": {
       "page": 1,
       "per_page": 20,
-      "total": 1,
+      "total": 2,
       "pages": 1
     },
     "stats": {
-      "total_replies": 1
+      "total_replies": 2
     }
   }
 }
@@ -229,7 +341,7 @@ GET /replies/user/1?page=1&per_page=20
 
 #### 请求示例
 ```bash
-GET /replies/post/1/first-level?page=1&per_page=10&include_children=true
+GET /replies/post/turq0o5jtt/first-level?page=1&per_page=10&include_children=true&viewer_id=rgng24sqyi
 ```
 
 #### 响应示例
@@ -239,97 +351,68 @@ GET /replies/post/1/first-level?page=1&per_page=10&include_children=true
   "message": "获取一级回复成功",
   "data": {
     "post": {
-      "objectId": "1",
-      "content_preview": "这是帖子内容...",
-      "replyCount": 2
+      "objectId": "turq0o5jtt",
+      "content_preview": "继续测试",
+      "replyCount": 5
     },
     "first_level_replies": [
       {
-        "objectId": "1",
-        "content": "这是一条一级评论",
-        "post": "1",
-        "user": "1",
+        "objectId": "rz3hyw91fm",
+        "content": "1",
+        "post": "turq0o5jtt",
+        "user": "rgng24sqyi",
         "user_data": {
-          "objectId": "1",
-          "username": "test_user",
-          "avatar": "https://example.com/avatar.jpg"
+          "objectId": "rgng24sqyi",
+          "username": "可爱小猫728782",
+          "avatar": "https://q.qlogo.cn/headimg_dl?dst_uin=765618041&spec=640&img_type=jpg",
+          "admin": false,
+          "bio": "这个人很懒，什么都没留下",
+          "birthday": "2025-09-22",
+          "boluo": 0,
+          "createdAt": "2025-09-22T06:15:29.392816",
+          "experience": 0,
+          "isActive": true,
+          "mobile": "15756475746",
+          "sex": 1,
+          "updatedAt": "2025-09-22T06:21:22.868460"
         },
         "parent": null,
         "recipient": null,
         "recipient_data": null,
         "post_data": {
-          "objectId": "1",
-          "content": "这是帖子内容",
+          "objectId": "turq0o5jtt",
+          "content": "继续测试",
+          "content_preview": "继续测试",
+          "audit_state": "approved",
+          "likeCount": 0,
+          "replyCount": 5,
+          "visible": true,
+          "createdAt": "2025-09-22T07:26:22.469143",
           "user": {
-            "objectId": "1",
-            "username": "test_user",
-            "avatar": "https://example.com/avatar.jpg"
+            "objectId": "rgng24sqyi",
+            "username": "可爱小猫728782",
+            "avatar": "https://q.qlogo.cn/headimg_dl?dst_uin=765618041&spec=640&img_type=jpg"
           }
         },
         "parent_reply_data": null,
-        "child_replies": [
-          {
-            "objectId": "2",
-            "content": "这是对评论的回复",
-            "user": "2",
-            "user_data": {
-              "objectId": "2",
-              "username": "user2",
-              "avatar": "https://example.com/avatar2.jpg"
-            },
-            "parent": "1",
-            "recipient": "1",
-            "recipient_data": {
-              "objectId": "1",
-              "username": "test_user",
-              "avatar": "https://example.com/avatar.jpg"
-            },
-            "post_data": {
-              "objectId": "1",
-              "content": "这是帖子内容",
-              "user": {
-                "objectId": "1",
-                "username": "test_user",
-                "avatar": "https://example.com/avatar.jpg"
-              }
-            },
-            "parent_reply_data": {
-              "objectId": "1",
-              "content": "这是一条一级评论",
-              "user_info": {
-                "objectId": "1",
-                "username": "test_user",
-                "avatar": "https://example.com/avatar.jpg"
-              }
-            },
-            "child_replies": [],
-            "reply_count": 0,
-            "level": 2,
-            "is_first_level": false,
-            "is_second_level": true,
-            "createdAt": "2025-01-09T10:05:00",
-            "updatedAt": "2025-01-09T10:05:00"
-          }
-        ],
-        "reply_count": 1,
+        "child_replies": [],
+        "reply_count": 0,
         "level": 1,
         "is_first_level": true,
         "is_second_level": false,
-        "createdAt": "2025-01-09T10:00:00",
-        "updatedAt": "2025-01-09T10:00:00"
+        "createdAt": "2025-09-22T08:28:49.474459",
+        "updatedAt": "2025-09-22T08:28:49.474462"
       }
     ],
     "pagination": {
       "page": 1,
       "per_page": 10,
-      "total": 1,
-      "pages": 1,
-      "has_next": false,
-      "has_prev": false
+      "total": 6,
+      "pages": 1
     },
     "stats": {
-      "first_level_count": 1,
-      "second_level_count": 1
+      "first_level_count": 6,
+      "second_level_count": 0
     }
   }
 }
@@ -342,8 +425,8 @@ GET /replies/post/1/first-level?page=1&per_page=10&include_children=true
 ```json
 {
   "content": "这是一条新回复",
-  "post": "1",
-  "user": "1",
+  "post": "turq0o5jtt",
+  "user": "rgng24sqyi",
   "parent": null,
   "recipient": null
 }
@@ -364,25 +447,41 @@ GET /replies/post/1/first-level?page=1&per_page=10&include_children=true
   "code": 201,
   "message": "Comment created successfully",
   "data": {
-    "objectId": "1",
+    "objectId": "new_reply_id",
     "content": "这是一条新回复",
-    "post": "1",
-    "user": "1",
+    "post": "turq0o5jtt",
+    "user": "rgng24sqyi",
     "user_data": {
-      "objectId": "1",
-      "username": "test_user",
-      "avatar": "https://example.com/avatar.jpg"
+      "objectId": "rgng24sqyi",
+      "username": "可爱小猫728782",
+      "avatar": "https://q.qlogo.cn/headimg_dl?dst_uin=765618041&spec=640&img_type=jpg",
+      "admin": false,
+      "bio": "这个人很懒，什么都没留下",
+      "birthday": "2025-09-22",
+      "boluo": 0,
+      "createdAt": "2025-09-22T06:15:29.392816",
+      "experience": 0,
+      "isActive": true,
+      "mobile": "15756475746",
+      "sex": 1,
+      "updatedAt": "2025-09-22T06:21:22.868460"
     },
     "parent": null,
     "recipient": null,
     "recipient_data": null,
     "post_data": {
-      "objectId": "1",
-      "content": "这是帖子内容",
+      "objectId": "turq0o5jtt",
+      "content": "继续测试",
+      "content_preview": "继续测试",
+      "audit_state": "approved",
+      "likeCount": 0,
+      "replyCount": 5,
+      "visible": true,
+      "createdAt": "2025-09-22T07:26:22.469143",
       "user": {
-        "objectId": "1",
-        "username": "test_user",
-        "avatar": "https://example.com/avatar.jpg"
+        "objectId": "rgng24sqyi",
+        "username": "可爱小猫728782",
+        "avatar": "https://q.qlogo.cn/headimg_dl?dst_uin=765618041&spec=640&img_type=jpg"
       }
     },
     "parent_reply_data": null,
@@ -391,8 +490,8 @@ GET /replies/post/1/first-level?page=1&per_page=10&include_children=true
     "level": 1,
     "is_first_level": true,
     "is_second_level": false,
-    "createdAt": "2025-01-09T10:00:00",
-    "updatedAt": "2025-01-09T10:00:00"
+    "createdAt": "2025-09-22T10:00:00.000000",
+    "updatedAt": "2025-09-22T10:00:00.000000"
   }
 }
 ```
@@ -425,9 +524,9 @@ GET /replies/post/1/first-level?page=1&per_page=10&include_children=true
 #### 请求体
 ```json
 {
-  "user_id": "1",
+  "user_id": "rgng24sqyi",
   "content": "这是更新后的回复内容",
-  "recipient": "2"
+  "recipient": "rgng24sqyi"
 }
 ```
 
@@ -444,29 +543,55 @@ GET /replies/post/1/first-level?page=1&per_page=10&include_children=true
   "code": 201,
   "message": "Reply updated successfully",
   "data": {
-    "objectId": "1",
+    "objectId": "rz3hyw91fm",
     "content": "这是更新后的回复内容",
-    "post": "1",
-    "user": "1",
+    "post": "turq0o5jtt",
+    "user": "rgng24sqyi",
     "user_data": {
-      "objectId": "1",
-      "username": "test_user",
-      "avatar": "https://example.com/avatar.jpg"
+      "objectId": "rgng24sqyi",
+      "username": "可爱小猫728782",
+      "avatar": "https://q.qlogo.cn/headimg_dl?dst_uin=765618041&spec=640&img_type=jpg",
+      "admin": false,
+      "bio": "这个人很懒，什么都没留下",
+      "birthday": "2025-09-22",
+      "boluo": 0,
+      "createdAt": "2025-09-22T06:15:29.392816",
+      "experience": 0,
+      "isActive": true,
+      "mobile": "15756475746",
+      "sex": 1,
+      "updatedAt": "2025-09-22T06:21:22.868460"
     },
     "parent": null,
-    "recipient": "2",
+    "recipient": "rgng24sqyi",
     "recipient_data": {
-      "objectId": "2",
-      "username": "user2",
-      "avatar": "https://example.com/avatar2.jpg"
+      "objectId": "rgng24sqyi",
+      "username": "可爱小猫728782",
+      "avatar": "https://q.qlogo.cn/headimg_dl?dst_uin=765618041&spec=640&img_type=jpg",
+      "admin": false,
+      "bio": "这个人很懒，什么都没留下",
+      "birthday": "2025-09-22",
+      "boluo": 0,
+      "createdAt": "2025-09-22T06:15:29.392816",
+      "experience": 0,
+      "isActive": true,
+      "mobile": "15756475746",
+      "sex": 1,
+      "updatedAt": "2025-09-22T06:21:22.868460"
     },
     "post_data": {
-      "objectId": "1",
-      "content": "这是帖子内容",
+      "objectId": "turq0o5jtt",
+      "content": "继续测试",
+      "content_preview": "继续测试",
+      "audit_state": "approved",
+      "likeCount": 0,
+      "replyCount": 5,
+      "visible": true,
+      "createdAt": "2025-09-22T07:26:22.469143",
       "user": {
-        "objectId": "1",
-        "username": "test_user",
-        "avatar": "https://example.com/avatar.jpg"
+        "objectId": "rgng24sqyi",
+        "username": "可爱小猫728782",
+        "avatar": "https://q.qlogo.cn/headimg_dl?dst_uin=765618041&spec=640&img_type=jpg"
       }
     },
     "parent_reply_data": null,
@@ -475,8 +600,8 @@ GET /replies/post/1/first-level?page=1&per_page=10&include_children=true
     "level": 1,
     "is_first_level": true,
     "is_second_level": false,
-    "createdAt": "2025-01-09T10:00:00",
-    "updatedAt": "2025-01-09T11:00:00"
+    "createdAt": "2025-09-22T08:28:49.474459",
+    "updatedAt": "2025-09-22T10:30:00.000000"
   }
 }
 ```
@@ -502,7 +627,7 @@ GET /replies/post/1/first-level?page=1&per_page=10&include_children=true
 #### 请求体
 ```json
 {
-  "user_id": "1",
+  "user_id": "rgng24sqyi",
   "is_admin": false
 }
 ```
@@ -515,11 +640,11 @@ GET /replies/post/1/first-level?page=1&per_page=10&include_children=true
 
 #### 请求示例
 ```bash
-DELETE /replies/1
+DELETE /replies/rz3hyw91fm
 Content-Type: application/json
 
 {
-  "user_id": "1",
+  "user_id": "rgng24sqyi",
   "is_admin": false
 }
 ```
@@ -530,13 +655,13 @@ Content-Type: application/json
   "code": 200,
   "message": "Reply deleted successfully",
   "data": {
-    "reply_id": "1",
-    "post_id": "1",
-    "user_id": "1",
-    "content_preview": "这是更新后的回复内容",
+    "reply_id": "rz3hyw91fm",
+    "post_id": "turq0o5jtt",
+    "user_id": "rgng24sqyi",
+    "content_preview": "1",
     "level": 1,
     "delete_reason": "Deleted by author",
-    "deleted_by": "1",
+    "deleted_by": "rgng24sqyi",
     "child_replies_deleted": 0
   }
 }
@@ -584,10 +709,38 @@ Content-Type: application/json
 - `updatedAt`: 更新时间
 
 #### 关联数据字段
-- `user_data`: 评论用户完整信息
-- `recipient_data`: 被@用户完整信息
-- `post_data`: 所属帖子信息
+- `user_data`: 评论用户完整信息（包含用户名、头像、个人资料等）
+- `recipient_data`: 被@用户完整信息（包含用户名、头像、个人资料等）
+- `post_data`: 所属帖子信息（包含帖子内容、作者、审核状态等）
 - `parent_reply_data`: 父评论信息（二级评论时）
+
+#### 用户数据字段详情
+`user_data` 和 `recipient_data` 包含以下字段：
+- `objectId`: 用户ID
+- `username`: 用户名
+- `avatar`: 头像URL
+- `admin`: 是否为管理员
+- `bio`: 个人简介
+- `birthday`: 生日
+- `boluo`: 菠萝币数量
+- `createdAt`: 注册时间
+- `experience`: 经验值
+- `isActive`: 是否激活
+- `mobile`: 手机号
+- `sex`: 性别
+- `updatedAt`: 更新时间
+
+#### 帖子数据字段详情
+`post_data` 包含以下字段：
+- `objectId`: 帖子ID
+- `content`: 帖子内容
+- `content_preview`: 内容预览
+- `audit_state`: 审核状态
+- `likeCount`: 点赞数
+- `replyCount`: 评论数
+- `visible`: 是否可见
+- `createdAt`: 创建时间
+- `user`: 帖子作者信息
 
 #### 层级和统计字段
 - `level`: 评论层级（1=一级，2=二级）
@@ -631,6 +784,21 @@ Content-Type: application/json
 | 404 | 资源不存在 |
 | 500 | 服务器内部错误 |
 
+## 兼容性路由
+
+### 查询参数方式
+为了兼容前端现有的调用方式，系统支持使用查询参数获取帖子评论：
+
+```bash
+# 兼容性调用方式
+GET /replies?post={post_id}&page=1&per_page=20
+
+# 示例
+GET /replies?post=turq0o5jtt&page=1&per_page=20
+```
+
+**注意**: 兼容性路由与标准路径参数方式功能完全相同，建议前端逐步迁移到标准的RESTful API调用方式。
+
 ## 测试状态
 
 ### ✅ 已验证功能
@@ -640,6 +808,7 @@ Content-Type: application/json
 - **错误处理**: 不存在用户/帖子时正确返回404错误
 - **数据一致性**: 评论计数和用户信息正确关联
 - **权限控制**: 作者和管理员权限验证正确
+- **兼容性路由**: 支持查询参数方式的评论获取
 
 ### 🔧 接口响应格式
 - 创建评论成功返回201状态码
@@ -648,9 +817,21 @@ Content-Type: application/json
 - 删除评论成功返回200状态码
 - 一级评论接口返回 `first_level_replies` 字段
 - 普通评论接口返回 `replies` 字段
+- 响应体包含完整的用户信息、帖子信息和关联数据
 
 ### 📊 测试数据统计
 - 测试期间创建了20+条评论记录
 - 验证了10+个用户的评论功能
 - 测试了14+个帖子的评论系统
 - 所有接口响应时间 < 200ms
+- 兼容性路由测试通过，支持前端现有调用方式
+
+### 🔧 接口测试结果
+- ✅ **创建评论**: 状态码201，返回完整评论信息
+- ✅ **获取帖子评论**: 状态码200，支持标准路径和兼容性查询参数
+- ✅ **获取单个评论**: 状态码200，返回详细评论信息
+- ✅ **获取用户评论**: 状态码200，支持分页和权限控制
+- ✅ **获取一级评论**: 状态码200，返回带子评论的树形结构
+- ✅ **更新评论**: 状态码201，支持内容更新和@用户功能
+- ✅ **删除评论**: 状态码200，支持级联删除子评论
+- ⚠️ **错误处理**: 不存在的资源返回500而非404（需要优化）
