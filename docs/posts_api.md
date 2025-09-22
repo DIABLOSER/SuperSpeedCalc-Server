@@ -512,30 +512,15 @@ curl -X PUT "http://localhost:8000/posts/abc123" \
 | 参数 | 类型 | 必填 | 说明 |
 |------|------|------|------|
 | post_id | string | 是 | 帖子ID（路径参数） |
-| user_id | string | 否 | 当前用户ID（请求体），默认为'anonymous' |
-| is_admin | bool | 否 | 是否为管理员操作，默认false（请求体） |
 
 #### 💡 使用方法
 ```bash
-# 删除帖子
-curl -X DELETE "http://localhost:8000/posts/abc123" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "user_id": "user123"
-  }'
+# 删除帖子（只需要帖子ID）
+curl -X DELETE "http://localhost:8000/posts/abc123"
 
-# 管理员删除帖子
+# 或者使用带Content-Type的请求
 curl -X DELETE "http://localhost:8000/posts/abc123" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "user_id": "admin123",
-    "is_admin": true
-  }'
-
-# 不提供用户ID（使用默认值）
-curl -X DELETE "http://localhost:8000/posts/abc123" \
-  -H "Content-Type: application/json" \
-  -d '{}'
+  -H "Content-Type: application/json"
 ```
 
 #### 响应示例
@@ -546,9 +531,7 @@ curl -X DELETE "http://localhost:8000/posts/abc123" \
   "data": {
     "post_id": "abc123",
     "author_id": "user123",
-    "content_preview": "这是帖子内容的前50个字符...",
-    "delete_reason": "Deleted by user: user123",
-    "deleted_by": "user123"
+    "content_preview": "这是帖子内容的前50个字符..."
   }
 }
 ```
@@ -573,6 +556,11 @@ curl -X DELETE "http://localhost:8000/posts/abc123" \
 - **评论数据**：相关评论被保留，但post字段设置为null
 - **点赞数据**：相关点赞记录被删除
 - **统计数据**：帖子的likeCount和replyCount不再更新
+
+#### 接口特点
+- **极简设计**：只需要帖子ID即可删除，无需其他参数
+- **无权限限制**：任何人都可以删除任何帖子
+- **数据安全**：删除帖子时保留相关评论数据
 
 ### 8. 点赞帖子
 **POST** `/posts/{post_id}/like`
