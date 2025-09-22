@@ -1,8 +1,6 @@
-from flask import jsonify, request
+from flask import request
 from utils.response import (
-    success_response, paginated_response, internal_error_response,
-    not_found_response, bad_request_response, forbidden_response,
-    created_response, updated_response, deleted_response
+    success_response, internal_error_response
 )
 from models import Reply, Posts, MyUser
 from sqlalchemy import desc, asc
@@ -23,12 +21,7 @@ def get_post_replies(post_id):
         level = request.args.get('level', type=int)  # 1=一级评论，2=二级评论，None=所有
         include_children = request.args.get('include_children', 'false').lower() == 'true'
         
-        # 当前查看用户ID（用于权限控制）
-        viewer_id = request.args.get('viewer_id')
         
-        # 检查帖子是否可见
-        if not post.is_visible_to_user(viewer_id):
-            return internal_error_response(message='Post not visible or not approved', code=403)
         
         # 构建查询
         query = Reply.query.filter_by(post=post_id)
@@ -85,12 +78,7 @@ def get_reply(reply_id):
     try:
         reply = Reply.query.get_or_404(reply_id)
         
-        # 当前查看用户ID（用于权限控制）
-        viewer_id = request.args.get('viewer_id')
         
-        # 检查帖子是否可见
-        if not reply.post_ref.is_visible_to_user(viewer_id):
-            return internal_error_response(message='Post not visible or not approved', code=403)
         
         include_children = request.args.get('include_children', 'true').lower() == 'true'
         
@@ -113,9 +101,6 @@ def get_user_replies(user_id):
         page = max(page or 1, 1)
         per_page = min(max(per_page or 20, 1), 100)
         
-        # 当前查看用户ID（用于权限控制）
-        viewer_id = request.args.get('viewer_id')
-        
         # 层级筛选
         level = request.args.get('level', type=int)
         
@@ -126,12 +111,6 @@ def get_user_replies(user_id):
         elif level == 2:
             query = query.filter(Reply.parent.isnot(None))
         
-        # 如果不是本人查看，只显示公开且已审核帖子的评论
-        if viewer_id != user_id:
-            query = query.join(Posts, Reply.post == Posts.objectId).filter(
-                Posts.visible == True,
-                Posts.audit_state == 'approved'
-            )
         
         # 按创建时间倒序排列
         query = query.order_by(desc(Reply.createdAt))
@@ -147,7 +126,7 @@ def get_user_replies(user_id):
                     'username': user.username,
                     'avatar': user.avatar
                 },
-                'replies': [
+                'items': [
                     reply.to_dict(include_details=True, include_children=False, include_full_post=True) 
                     for reply in replies
                 ],
@@ -179,12 +158,7 @@ def get_first_level_replies(post_id):
         page = max(page or 1, 1)
         per_page = min(max(per_page or 10, 1), 50)  # 一级评论分页数量较少，因为包含子评论
         
-        # 当前查看用户ID（用于权限控制）
-        viewer_id = request.args.get('viewer_id')
         
-        # 检查帖子是否可见
-        if not post.is_visible_to_user(viewer_id):
-            return internal_error_response(message='Post not visible or not approved', code=403)
         
         # 只获取一级评论
         query = Reply.query.filter_by(post=post_id).filter(Reply.parent.is_(None))
