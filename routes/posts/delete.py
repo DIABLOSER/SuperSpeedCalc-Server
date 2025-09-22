@@ -9,7 +9,10 @@ from models import db, Posts, MyUser
 def delete_post(post_id):
     """删除帖子"""
     try:
-        post = Posts.query.get_or_404(post_id)
+        post = Posts.query.get(post_id)
+        if not post:
+            return not_found_response(message='Post not found')
+        
         data = request.get_json() or {}
         
         user_id = data.get('user_id', 'anonymous')  # 当前用户ID，默认为匿名
@@ -30,8 +33,7 @@ def delete_post(post_id):
         db.session.delete(post)
         db.session.commit()
         
-        return created_response(data=post_info
-        , message='Post deleted successfully')
+        return created_response(data=post_info, message='Post deleted successfully')
         
     except Exception as e:
         db.session.rollback()

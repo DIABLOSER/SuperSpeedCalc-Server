@@ -4,8 +4,8 @@ class Reply(BaseModel):
     """评论表 - 存储帖子的评论和回复信息"""
     __tablename__ = 'replies'
     
-    # 帖子ID，外键关联到帖子表
-    post = db.Column(db.String(20), db.ForeignKey('posts.objectId'), nullable=False)
+    # 帖子ID，外键关联到帖子表，可为空（支持帖子删除后评论独立存在）
+    post = db.Column(db.String(20), db.ForeignKey('posts.objectId'), nullable=True)
     
     # 评论用户ID，外键关联到用户表
     user = db.Column(db.String(20), db.ForeignKey('my_user.objectId'), nullable=False)

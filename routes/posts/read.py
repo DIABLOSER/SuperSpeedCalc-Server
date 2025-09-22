@@ -92,7 +92,9 @@ def get_post(post_id):
     try:
         user_id = request.args.get('user_id')  # 当前查看用户的ID
         
-        post = Posts.query.get_or_404(post_id)
+        post = Posts.query.get(post_id)
+        if not post:
+            return not_found_response(message="Post not found")
         
         # 移除可见性检查，任何人都可以查看所有帖子
         

@@ -500,13 +500,19 @@ curl -X PUT "http://localhost:8000/posts/abc123" \
 **DELETE** `/posts/{post_id}`
 
 #### 📝 功能说明
-删除指定的帖子，任何人都可以删除任何帖子（已移除权限限制）。
+删除指定的帖子。任何人都可以删除任何帖子（已移除权限限制）。
+
+**重要设计理念**：
+- 删除帖子时，相关的评论数据会被保留
+- 评论可以独立存在，即使关联的帖子不存在
+- 这确保了数据的完整性和历史记录的保留
+- 支持数据恢复和审计功能
 
 #### 🔧 请求参数
 | 参数 | 类型 | 必填 | 说明 |
 |------|------|------|------|
 | post_id | string | 是 | 帖子ID（路径参数） |
-| user_id | string | 否 | 当前用户ID（请求体） |
+| user_id | string | 否 | 当前用户ID（请求体），默认为'anonymous' |
 | is_admin | bool | 否 | 是否为管理员操作，默认false（请求体） |
 
 #### 💡 使用方法
@@ -525,6 +531,11 @@ curl -X DELETE "http://localhost:8000/posts/abc123" \
     "user_id": "admin123",
     "is_admin": true
   }'
+
+# 不提供用户ID（使用默认值）
+curl -X DELETE "http://localhost:8000/posts/abc123" \
+  -H "Content-Type: application/json" \
+  -d '{}'
 ```
 
 #### 响应示例
@@ -535,12 +546,33 @@ curl -X DELETE "http://localhost:8000/posts/abc123" \
   "data": {
     "post_id": "abc123",
     "author_id": "user123",
-    "content_preview": "这是更新后的帖子内容",
-    "delete_reason": "Deleted by author",
+    "content_preview": "这是帖子内容的前50个字符...",
+    "delete_reason": "Deleted by user: user123",
     "deleted_by": "user123"
   }
 }
 ```
+
+#### 错误响应
+```json
+{
+  "code": 404,
+  "message": "Post not found"
+}
+```
+
+```json
+{
+  "code": 500,
+  "message": "服务器内部错误"
+}
+```
+
+#### 数据影响说明
+- **帖子数据**：帖子记录被完全删除
+- **评论数据**：相关评论被保留，但post字段设置为null
+- **点赞数据**：相关点赞记录被删除
+- **统计数据**：帖子的likeCount和replyCount不再更新
 
 ### 8. 点赞帖子
 **POST** `/posts/{post_id}/like`
@@ -1044,6 +1076,14 @@ curl -X POST "http://localhost:8000/posts/admin/sync-like-counts" \
    - `likeCount`: 帖子表中的点赞数量字段
    - `replyCount`: 帖子表中的回复数量字段
 
+8. **删除帖子设计理念**：
+   - **数据完整性**：删除帖子时，相关评论数据被保留
+   - **评论独立性**：评论可以独立存在，即使关联的帖子不存在
+   - **历史记录保留**：确保用户的历史评论记录不会丢失
+   - **数据恢复支持**：如果帖子被误删，评论数据仍然可以恢复
+   - **审计功能**：支持数据审计和追踪功能
+   - **外键约束**：replies表的post字段允许为空，支持软删除模式
+
 ## 🚀 快速参考
 
 ### 常用接口速查
@@ -1053,7 +1093,7 @@ curl -X POST "http://localhost:8000/posts/admin/sync-like-counts" \
 | 获取单个帖子 | GET | `/posts/{post_id}` | 获取帖子详情 |
 | 创建帖子 | POST | `/posts` | 创建新帖子 |
 | 更新帖子 | PUT | `/posts/{post_id}` | 更新内容或审核状态 |
-| 删除帖子 | DELETE | `/posts/{post_id}` | 删除帖子 |
+| 删除帖子 | DELETE | `/posts/{post_id}` | 删除帖子（保留评论数据） |
 | 点赞帖子 | POST | `/posts/{post_id}/like` | 点赞 |
 | 取消点赞 | DELETE | `/posts/{post_id}/like` | 取消点赞 |
 | 获取点赞列表 | GET | `/posts/{post_id}/likers` | 查看谁点赞了 |
