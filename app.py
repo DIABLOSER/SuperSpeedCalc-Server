@@ -79,7 +79,7 @@ def create_app(config_name='default'):
         return response
     
     # 注册蓝图 - 使用新的模块化结构
-    from routes import user_bp, charts_bp, image_bp, history_bp, releases_bp, relationship_bp, posts_bp, replies_bp, banners_bp
+    from routes import user_bp, charts_bp, image_bp, history_bp, releases_bp, relationship_bp, posts_bp, replies_bp, banners_bp, likes_bp
     from routes.sms import sms_bp
     
     app.register_blueprint(user_bp, url_prefix='/users')
@@ -91,6 +91,7 @@ def create_app(config_name='default'):
     app.register_blueprint(posts_bp, url_prefix='/posts')
     app.register_blueprint(replies_bp, url_prefix='/replies')
     app.register_blueprint(banners_bp, url_prefix='/banners')
+    app.register_blueprint(likes_bp, url_prefix='/likes')
     app.register_blueprint(sms_bp, url_prefix='/sms')
     
     # 静态文件：uploads/images 与 /uploads/apk

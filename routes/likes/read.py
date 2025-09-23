@@ -20,9 +20,6 @@ def get_post_likers(post_id):
         page = max(page or 1, 1)
         per_page = min(max(per_page or 20, 1), 100)
         
-        # 当前查看用户ID（用于权限控制）
-        viewer_id = request.args.get('viewer_id')
-        
         # 获取点赞记录
         query = Likes.query.filter_by(post=post_id)
         query = query.order_by(desc(Likes.createdAt))
@@ -70,9 +67,6 @@ def get_user_liked_posts(user_id):
         page = max(page or 1, 1)
         per_page = min(max(per_page or 20, 1), 100)
         
-        # 当前查看用户ID（用于权限控制）
-        viewer_id = request.args.get('viewer_id')
-        
         # 获取用户点赞的帖子
         query = Likes.query.filter_by(user=user_id)
         query = query.order_by(desc(Likes.createdAt))
@@ -104,6 +98,37 @@ def get_user_liked_posts(user_id):
     except Exception as e:
         return internal_error_response(
             message="获取用户点赞帖子列表失败"
+        )
+
+def get_like_status(post_id, user_id):
+    """检查用户是否点赞了指定帖子"""
+    try:
+        # 验证帖子是否存在
+        post = Posts.query.get(post_id)
+        if not post:
+            return not_found_response(message="帖子不存在")
+        
+        # 验证用户是否存在
+        user = MyUser.query.get(user_id)
+        if not user:
+            return not_found_response(message="用户不存在")
+        
+        # 检查点赞状态
+        is_liked = Likes.is_user_liked_post(post_id, user_id)
+        
+        return success_response(
+            data={
+                'post_id': post_id,
+                'user_id': user_id,
+                'is_liked': is_liked,
+                'like_count': post.get_actual_like_count()
+            },
+            message="获取点赞状态成功"
+        )
+        
+    except Exception as e:
+        return internal_error_response(
+            message="获取点赞状态失败"
         )
 
 def sync_all_post_like_counts():
