@@ -100,7 +100,7 @@ def get_user_liked_posts(user_id):
             message="获取用户点赞帖子列表失败"
         )
 
-def get_like_status(post_id, user_id):
+def get_like_status(user_id, post_id):
     """检查用户是否点赞了指定帖子"""
     try:
         # 验证帖子是否存在
