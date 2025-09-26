@@ -1,17 +1,63 @@
-from flask import jsonify, request
+from flask import request
 from utils.response import (
-    success_response, paginated_response, internal_error_response,
-    not_found_response, bad_request_response, forbidden_response,
-    created_response, updated_response, deleted_response
+    success_response, internal_error_response,
+    not_found_response, bad_request_response
 )
 from models import db, MyUser, UserRelationship
 from sqlalchemy import or_
 
+def check_follow_relationship():
+    """检查用户之间的关注关系 - 新的路由设计"""
+    try:
+        # 从查询参数获取参数
+        user_id = request.args.get('user_id')
+        target_user_id = request.args.get('target_user_id')
+        
+        if not user_id or not target_user_id:
+            return bad_request_response(message='user_id and target_user_id are required')
+        
+        # 检查用户是否存在
+        user = MyUser.query.get(user_id)
+        if not user:
+            return not_found_response(message="用户不存在")
+            
+        target_user = MyUser.query.get(target_user_id)
+        if not target_user:
+            return not_found_response(message="目标用户不存在")
+        
+        # 检查是否关注
+        is_following = user.is_following(target_user_id)
+        is_followed_by = target_user.is_following(user_id)
+        
+        return success_response(
+            data={
+                'user': {
+                    'objectId': user.objectId,
+                    'username': user.username
+                },
+                'target_user': {
+                    'objectId': target_user.objectId,
+                    'username': target_user.username
+                },
+                'relationship': {
+                    'is_following': is_following,  # 当前用户是否关注目标用户
+                    'is_followed_by': is_followed_by,  # 当前用户是否被目标用户关注
+                    'mutual': is_following and is_followed_by  # 是否互相关注
+                }
+            },
+            message='获取关注关系成功'
+        )
+        
+    except Exception as e:
+        return internal_error_response(message=str(e), code=500)
+
 def get_user_followers(user_id):
-    """获取用户的粉丝列表"""
+    """获取用户的粉丝列表 - 新的路由设计"""
     try:
         # 检查用户是否存在
-        user = MyUser.query.get_or_404(user_id)
+        user = MyUser.query.get(user_id)
+        if not user:
+            return not_found_response(message="用户不存在")
         
         # 分页参数
         page = request.args.get('page', default=1, type=int)
@@ -58,10 +104,12 @@ def get_user_followers(user_id):
         return internal_error_response(message=str(e), code=500)
 
 def get_user_following(user_id):
-    """获取用户关注的用户列表"""
+    """获取用户关注的用户列表 - 新的路由设计"""
     try:
         # 检查用户是否存在
-        user = MyUser.query.get_or_404(user_id)
+        user = MyUser.query.get(user_id)
+        if not user:
+            return not_found_response(message="用户不存在")
         
         # 分页参数
         page = request.args.get('page', default=1, type=int)
@@ -107,44 +155,13 @@ def get_user_following(user_id):
     except Exception as e:
         return internal_error_response(message=str(e), code=500)
 
-def check_follow_relationship(user_id, target_user_id):
-    """检查用户之间的关注关系"""
-    try:
-        # 检查用户是否存在
-        user = MyUser.query.get_or_404(user_id)
-        target_user = MyUser.query.get_or_404(target_user_id)
-        
-        # 检查是否关注
-        is_following = user.is_following(target_user_id)
-        is_followed_by = target_user.is_following(user_id)
-        
-        return success_response(
-            data={
-                'user': {
-                    'objectId': user.objectId,
-                    'username': user.username
-                },
-                'target_user': {
-                    'objectId': target_user.objectId,
-                    'username': target_user.username
-                },
-                'relationship': {
-                    'is_following': is_following,  # 当前用户是否关注目标用户
-                    'is_followed_by': is_followed_by,  # 当前用户是否被目标用户关注
-                    'mutual': is_following and is_followed_by  # 是否互相关注
-                }
-            },
-            message='获取关注关系成功'
-        )
-        
-    except Exception as e:
-        return internal_error_response(message=str(e), code=500)
-
 def get_mutual_followers(user_id):
-    """获取用户的互关列表（相互关注的用户）"""
+    """获取用户的互关列表（相互关注的用户） - 新的路由设计"""
     try:
         # 检查用户是否存在
-        user = MyUser.query.get_or_404(user_id)
+        user = MyUser.query.get(user_id)
+        if not user:
+            return not_found_response(message="用户不存在")
         
         # 分页参数
         page = request.args.get('page', default=1, type=int)
