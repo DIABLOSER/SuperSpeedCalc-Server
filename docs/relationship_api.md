@@ -1,14 +1,14 @@
 # 用户关系管理 API
 
 ## 基础信息
-- **基础路径**: `/relationship`
+- **基础路径**: `/users`
 - **数据表**: `user_relationships`
 - **主要功能**: 用户关注/取消关注、粉丝管理、互相关注查询
 
 ## 接口列表
 
 ### 1. 关注用户
-**POST** `/relationship/{user_id}/follow/{target_user_id}`
+**POST** `/users/{user_id}/follow/{target_user_id}`
 
 #### 请求参数
 | 参数 | 类型 | 必填 | 说明 |
@@ -18,51 +18,63 @@
 
 #### 请求示例
 ```bash
-POST /relationship/user123/follow/user456
-```
-
-#### 响应示例
-```json
-{
-  "code": 201,
-  "message": "关注成功",
-  "data": {
-    "follower_id": "user123",
-    "following_id": "user456",
-    "followed_at": "2025-01-09T10:00:00"
-  }
-}
-```
-
-### 2. 取消关注用户
-**DELETE** `/relationship/{user_id}/follow/{target_user_id}`
-
-#### 请求参数
-| 参数 | 类型 | 必填 | 说明 |
-|------|------|------|------|
-| user_id | string | 是 | 关注者用户ID |
-| target_user_id | string | 是 | 被关注者用户ID |
-
-#### 请求示例
-```bash
-DELETE /relationship/user123/follow/user456
+POST /users/user123/follow/user456
 ```
 
 #### 响应示例
 ```json
 {
   "code": 200,
-  "message": "取消关注成功",
+  "message": "user123 is now following user456",
   "data": {
-    "follower_id": "user123",
-    "following_id": "user456",
-    "unfollowed_at": "2025-01-09T10:00:00"
+    "follower": {
+      "objectId": "user123",
+      "username": "user123"
+    },
+    "followed": {
+      "objectId": "user456",
+      "username": "user456"
+    },
+    "relationship_id": "rel_789",
+    "createdAt": "2025-01-09T10:00:00"
+  }
+}
+```
+
+### 2. 取消关注用户
+**DELETE** `/users/{user_id}/follow/{target_user_id}`
+
+#### 请求参数
+| 参数 | 类型 | 必填 | 说明 |
+|------|------|------|------|
+| user_id | string | 是 | 关注者用户ID |
+| target_user_id | string | 是 | 被关注者用户ID |
+
+#### 请求示例
+```bash
+DELETE /users/user123/follow/user456
+```
+
+#### 响应示例
+```json
+{
+  "code": 200,
+  "message": "user123 has unfollowed user456",
+  "data": {
+    "follower": {
+      "objectId": "user123",
+      "username": "user123"
+    },
+    "unfollowed": {
+      "objectId": "user456",
+      "username": "user456"
+    }
   }
 }
 ```
 
 ### 3. 获取用户粉丝列表
-**GET** `/relationship/{user_id}/followers`
+**GET** `/users/{user_id}/followers`
 
 #### 请求参数
 | 参数 | 类型 | 必填 | 说明 |
@@ -73,7 +85,7 @@ DELETE /relationship/user123/follow/user456
 
 #### 请求示例
 ```bash
-GET /relationship/user123/followers?page=1&per_page=20
+GET /users/user123/followers?page=1&per_page=20
 ```
 
 #### 响应示例
@@ -92,7 +104,7 @@ GET /relationship/user123/followers?page=1&per_page=20
         "objectId": "follower1",
         "username": "follower_user1",
         "avatar": "https://example.com/avatar1.jpg",
-        "followed_at": "2025-01-09T10:00:00"
+        "bio": "用户简介"
       }
     ],
     "pagination": {
@@ -106,7 +118,7 @@ GET /relationship/user123/followers?page=1&per_page=20
 ```
 
 ### 4. 获取用户关注列表
-**GET** `/relationship/{user_id}/following`
+**GET** `/users/{user_id}/following`
 
 #### 请求参数
 | 参数 | 类型 | 必填 | 说明 |
@@ -117,7 +129,7 @@ GET /relationship/user123/followers?page=1&per_page=20
 
 #### 请求示例
 ```bash
-GET /relationship/user123/following?page=1&per_page=20
+GET /users/user123/following?page=1&per_page=20
 ```
 
 #### 响应示例
@@ -136,7 +148,7 @@ GET /relationship/user123/following?page=1&per_page=20
         "objectId": "following1",
         "username": "following_user1",
         "avatar": "https://example.com/avatar1.jpg",
-        "followed_at": "2025-01-09T10:00:00"
+        "bio": "用户简介"
       }
     ],
     "pagination": {
@@ -150,7 +162,7 @@ GET /relationship/user123/following?page=1&per_page=20
 ```
 
 ### 5. 获取互相关注列表
-**GET** `/relationship/{user_id}/mutual`
+**GET** `/users/{user_id}/mutual`
 
 #### 请求参数
 | 参数 | 类型 | 必填 | 说明 |
@@ -161,7 +173,7 @@ GET /relationship/user123/following?page=1&per_page=20
 
 #### 请求示例
 ```bash
-GET /relationship/user123/mutual?page=1&per_page=20
+GET /users/user123/mutual?page=1&per_page=20
 ```
 
 #### 响应示例
@@ -180,7 +192,8 @@ GET /relationship/user123/mutual?page=1&per_page=20
         "objectId": "mutual1",
         "username": "mutual_user1",
         "avatar": "https://example.com/avatar1.jpg",
-        "followed_at": "2025-01-09T10:00:00"
+        "bio": "用户简介",
+        "experience": 100
       }
     ],
     "pagination": {
@@ -188,13 +201,18 @@ GET /relationship/user123/mutual?page=1&per_page=20
       "per_page": 20,
       "total": 1,
       "pages": 1
+    },
+    "stats": {
+      "mutual_count": 1,
+      "followers_count": 5,
+      "following_count": 3
     }
   }
 }
 ```
 
 ### 6. 检查关注关系
-**GET** `/relationship/{user_id}/follow/{target_user_id}`
+**GET** `/users/{user_id}/follow/{target_user_id}`
 
 #### 请求参数
 | 参数 | 类型 | 必填 | 说明 |
@@ -204,7 +222,7 @@ GET /relationship/user123/mutual?page=1&per_page=20
 
 #### 请求示例
 ```bash
-GET /relationship/user123/follow/user456
+GET /users/user123/follow/user456
 ```
 
 #### 响应示例
@@ -213,13 +231,18 @@ GET /relationship/user123/follow/user456
   "code": 200,
   "message": "获取关注关系成功",
   "data": {
-    "is_following": true,
-    "is_followed_by": false,
-    "is_mutual": false,
+    "user": {
+      "objectId": "user123",
+      "username": "user123"
+    },
+    "target_user": {
+      "objectId": "user456",
+      "username": "user456"
+    },
     "relationship": {
-      "follower_id": "user123",
-      "following_id": "user456",
-      "created_at": "2025-01-09T10:00:00"
+      "is_following": true,
+      "is_followed_by": false,
+      "mutual": false
     }
   }
 }
@@ -239,16 +262,38 @@ GET /relationship/user123/follow/user456
 ## 错误响应
 
 ### 常见错误码
-- `USER_NOT_FOUND`: 用户不存在
-- `ALREADY_FOLLOWING`: 已经关注该用户
-- `NOT_FOLLOWING`: 未关注该用户
-- `CANNOT_FOLLOW_SELF`: 不能关注自己
+- `404`: 用户不存在
+- `400`: 已经关注该用户
+- `400`: 未关注该用户
+- `400`: 不能关注自己
+- `400`: 不能取消关注自己
 
 ### 错误响应示例
 ```json
 {
   "code": 404,
-  "message": "User not found"
+  "message": "Not found"
+}
+```
+
+```json
+{
+  "code": 400,
+  "message": "Cannot follow yourself"
+}
+```
+
+```json
+{
+  "code": 400,
+  "message": "Already following this user"
+}
+```
+
+```json
+{
+  "code": 400,
+  "message": "Not following this user"
 }
 ```
 
