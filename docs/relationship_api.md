@@ -55,18 +55,18 @@ Content-Type: application/json
 ```json
 {
   "code": 200,
-  "message": "user123 is now following user456",
+  "message": "大菠萝 is now following 安静糖果741438",
   "data": {
     "follower": {
-      "objectId": "user123",
-      "username": "user123"
+      "objectId": "dkko95nt3p",
+      "username": "大菠萝"
     },
     "followed": {
-      "objectId": "user456",
-      "username": "user456"
+      "objectId": "fb0q6bn7af",
+      "username": "安静糖果741438"
     },
-    "relationship_id": "rel_789",
-    "createdAt": "2025-01-09T10:00:00"
+    "relationship_id": "68pltkh91f",
+    "createdAt": "2025-09-27T06:03:54.604684"
   }
 }
 ```
@@ -173,16 +173,16 @@ GET /relationships/followers/user123?page=1&per_page=20
   "message": "获取粉丝列表成功",
   "data": {
     "user": {
-      "objectId": "user123",
-      "username": "test_user",
-      "avatar": "https://example.com/avatar.jpg"
+      "objectId": "fb0q6bn7af",
+      "username": "安静糖果741438",
+      "avatar": "https://q.qlogo.cn/headimg_dl?dst_uin=765618041&spec=640&img_type=jpg"
     },
     "followers": [
       {
-        "objectId": "follower1",
-        "username": "follower_user1",
-        "avatar": "https://example.com/avatar1.jpg",
-        "bio": "用户简介"
+        "objectId": "dkko95nt3p",
+        "username": "大菠萝",
+        "avatar": "",
+        "bio": ""
       }
     ],
     "pagination": {
@@ -218,16 +218,16 @@ GET /relationships/following/user123?page=1&per_page=20
   "message": "获取关注列表成功",
   "data": {
     "user": {
-      "objectId": "user123",
-      "username": "test_user",
-      "avatar": "https://example.com/avatar.jpg"
+      "objectId": "dkko95nt3p",
+      "username": "大菠萝",
+      "avatar": ""
     },
     "following": [
       {
-        "objectId": "following1",
-        "username": "following_user1",
-        "avatar": "https://example.com/avatar1.jpg",
-        "bio": "用户简介"
+        "objectId": "fb0q6bn7af",
+        "username": "安静糖果741438",
+        "avatar": "https://q.qlogo.cn/headimg_dl?dst_uin=765618041&spec=640&img_type=jpg",
+        "bio": "这个人很懒，什么都没留下"
       }
     ],
     "pagination": {
