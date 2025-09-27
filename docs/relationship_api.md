@@ -65,8 +65,8 @@ Content-Type: application/json
       "objectId": "fb0q6bn7af",
       "username": "安静糖果741438"
     },
-    "relationship_id": "68pltkh91f",
-    "createdAt": "2025-09-27T06:03:54.604684"
+    "relationship_id": "ooovxyk17z",
+    "createdAt": "2025-09-27T06:34:49.565438"
   }
 }
 ```
@@ -98,15 +98,15 @@ Content-Type: application/json
 ```json
 {
   "code": 200,
-  "message": "user123 has unfollowed user456",
+  "message": "大菠萝 has unfollowed 安静糖果741438",
   "data": {
     "follower": {
-      "objectId": "user123",
-      "username": "user123"
+      "objectId": "dkko95nt3p",
+      "username": "大菠萝"
     },
     "unfollowed": {
-      "objectId": "user456",
-      "username": "user456"
+      "objectId": "fb0q6bn7af",
+      "username": "安静糖果741438"
     }
   }
 }
@@ -134,12 +134,12 @@ GET /relationships/status?user_id=user123&target_user_id=user456
   "message": "获取关注关系成功",
   "data": {
     "user": {
-      "objectId": "user123",
-      "username": "user123"
+      "objectId": "dkko95nt3p",
+      "username": "大菠萝"
     },
     "target_user": {
-      "objectId": "user456",
-      "username": "user456"
+      "objectId": "fb0q6bn7af",
+      "username": "安静糖果741438"
     },
     "relationship": {
       "is_following": true,
