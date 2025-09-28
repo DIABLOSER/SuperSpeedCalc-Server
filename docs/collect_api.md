@@ -35,7 +35,7 @@
 **响应示例**:
 ```json
 {
-    "success": true,
+    "code": 200,
     "message": "收藏成功",
     "data": {
         "post_id": "帖子ID",
@@ -62,7 +62,7 @@
 **响应示例**:
 ```json
 {
-    "success": true,
+    "code": 200,
     "message": "获取用户收藏帖子列表成功",
     "data": {
         "user": {
@@ -112,7 +112,7 @@
 **响应示例**:
 ```json
 {
-    "success": true,
+    "code": 200,
     "message": "获取帖子收藏用户列表成功",
     "data": {
         "post": {
@@ -161,7 +161,7 @@
 **响应示例**:
 ```json
 {
-    "success": true,
+    "code": 200,
     "message": "获取收藏状态成功",
     "data": {
         "post_id": "帖子ID",
@@ -179,7 +179,7 @@
 **响应示例**:
 ```json
 {
-    "success": true,
+    "code": 200,
     "message": "获取用户收藏统计成功",
     "data": {
         "user": {
@@ -199,7 +199,7 @@
 **响应示例**:
 ```json
 {
-    "success": true,
+    "code": 200,
     "message": "删除收藏记录成功",
     "data": {
         "collect_id": "收藏记录ID",
