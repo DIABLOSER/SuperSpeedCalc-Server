@@ -9,6 +9,8 @@ from .posts import Posts
 from .likes import Likes
 from .reply import Reply
 from .banner import Banner
+from .coolect import Collect
+from .feedback import Feedback
 
 # 导出所有模型，方便其他文件导入
-__all__ = ['db', 'BaseModel', 'MyUser', 'Charts', 'Image', 'History', 'AppRelease', 'UserRelationship', 'Posts', 'Likes', 'Reply', 'Banner']
+__all__ = ['db', 'BaseModel', 'MyUser', 'Charts', 'Image', 'History', 'AppRelease', 'UserRelationship', 'Posts', 'Likes', 'Reply', 'Banner', 'Collect', 'Feedback']

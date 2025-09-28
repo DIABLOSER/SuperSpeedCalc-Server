@@ -82,6 +82,8 @@ def create_app(config_name='default'):
     from routes import user_bp, charts_bp, image_bp, history_bp, releases_bp, posts_bp, replies_bp, banners_bp, likes_bp
     from routes.sms import sms_bp
     from routes.relationships import relationships_bp
+    from routes.collect import collect_bp
+    from routes.feedback import feedback_bp
     
     app.register_blueprint(user_bp, url_prefix='/users')
     app.register_blueprint(charts_bp, url_prefix='/charts')
@@ -93,6 +95,8 @@ def create_app(config_name='default'):
     app.register_blueprint(replies_bp, url_prefix='/replies')
     app.register_blueprint(banners_bp, url_prefix='/banners')
     app.register_blueprint(likes_bp, url_prefix='/likes')
+    app.register_blueprint(collect_bp, url_prefix='/collect')
+    app.register_blueprint(feedback_bp)  # 反馈路由，URL前缀已在蓝图中定义
     app.register_blueprint(sms_bp, url_prefix='/sms')
     
     # 静态文件：uploads/images 与 /uploads/apk
@@ -152,7 +156,7 @@ def init_db(app, force=False):
     """智能初始化数据库"""
     with app.app_context():
         # 导入所有模型以确保它们被注册
-        from models import MyUser, Charts, Image, History, AppRelease, UserRelationship, Posts, Likes, Reply, Banner
+        from models import MyUser, Charts, Image, History, AppRelease, UserRelationship, Posts, Likes, Reply, Banner, Feedback
         
         db_exists, db_path = check_database_exists(app)
         
