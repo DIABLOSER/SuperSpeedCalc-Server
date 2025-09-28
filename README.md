@@ -4,6 +4,27 @@
 
 > ✅ **API响应格式已完全标准化** - 所有接口统一使用 `code + message + data` 格式
 
+## ✨ 核心功能
+
+### 🎯 主要特性
+- **用户系统** - 完整的用户注册、登录、信息管理
+- **社交功能** - 用户关注、帖子发布、点赞评论
+- **排行榜系统** - 用户成绩记录和排名统计
+- **意见反馈系统** - 完整的反馈管理、状态跟踪、管理员处理
+- **收藏功能** - 用户收藏管理
+- **图片管理** - 单个和批量图片上传
+- **应用发布** - APK版本管理和更新控制
+- **短信服务** - 验证码发送和验证
+- **横幅管理** - 轮播图和广告管理
+
+### 🔧 技术特性
+- **双环境支持** - 开发环境(8000) + 生产环境(8001)
+- **标准化API** - 统一的响应格式和错误处理
+- **权限控制** - 用户和管理员权限分离
+- **数据完整性** - 外键约束和数据验证
+- **搜索分页** - 支持搜索、过滤、分页功能
+- **日志记录** - 完整的操作日志和错误追踪
+
 ## 🚀 快速开始
 
 ### 环境要求
@@ -40,6 +61,8 @@ python start_production.py     # 生产环境 - 端口 8001
 | `likes` | 点赞表 | 帖子点赞功能 |
 | `replies` | 回复表 | 评论回复功能（支持独立存在） |
 | `banners` | 横幅表 | 轮播图、广告管理 |
+| `feedback` | 意见反馈表 | 用户反馈管理、问题跟踪 |
+| `collect` | 收藏表 | 用户收藏功能 |
 
 ## 🔧 API 响应格式
 
@@ -103,6 +126,8 @@ python start_production.py     # 生产环境 - 端口 8001
 - [点赞功能 API](docs/likes_api.md)
 - [回复功能 API](docs/replies_api.md)
 - [横幅管理 API](docs/banners_api.md)
+- [意见反馈 API](docs/feedback_api.md)
+- [收藏功能 API](docs/collect_api.md)
 - [短信服务 API](docs/sms_api.md)
 
 ## 🛠️ 项目结构
@@ -113,13 +138,30 @@ SuperSpeedCalc-Server/
 ├── config.py             # 配置文件
 ├── start_production.py     # 生产环境启动脚本 (端口 8001)
 ├── start_development.py    # 开发环境启动脚本 (端口 8000)
+├── manage_db.py           # 数据库管理工具
+├── test_feedback_api.py   # 意见反馈API测试脚本
 ├── models/               # 数据模型
+│   ├── __init__.py       # 模型导出
+│   ├── base.py           # 基础模型类
+│   ├── user.py           # 用户模型
+│   ├── feedback.py       # 意见反馈模型
+│   ├── collect.py        # 收藏模型
+│   └── ...               # 其他模型
 ├── routes/               # API路由
+│   ├── feedback/         # 意见反馈路由
+│   ├── collect/          # 收藏功能路由
+│   └── ...               # 其他路由
+├── scripts/              # 数据库迁移脚本
+│   ├── migrate_add_feedback_table.py
+│   └── ...               # 其他迁移脚本
 ├── utils/                # 工具函数
 │   └── response.py       # 标准化响应工具类
 ├── uploads/              # 文件上传目录
 ├── logs/                 # 日志文件
 └── docs/                 # API文档
+    ├── feedback_api.md   # 意见反馈API文档
+    ├── collect_api.md    # 收藏功能API文档
+    └── ...               # 其他API文档
 ```
 
 ## 🔍 健康检查
@@ -144,6 +186,8 @@ SuperSpeedCalc-Server/
 - ✅ **评论功能测试通过** - 一级评论和二级回复功能完全正常
 - ✅ **社交功能验证** - 用户关系、帖子管理、互动功能全部测试通过
 - ✅ **图片上传功能** - 单个和批量图片上传功能完全正常
+- ✅ **意见反馈系统** - 完整的反馈管理、状态跟踪、管理员处理功能
+- ✅ **收藏功能** - 用户收藏管理功能完全正常
 - ✅ **响应格式统一** - 所有接口使用统一的响应格式
 
 ### 快速测试
@@ -192,6 +236,37 @@ curl "http://localhost:8000/images/?page=1&per_page=10"
 # 获取图片统计
 curl "http://localhost:8000/images/stats"
 
+# 意见反馈功能测试
+# 创建反馈
+curl -X POST "http://localhost:8000/api/feedback/create" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "user_id": "user123",
+    "feedback_type": "bug",
+    "title": "登录页面显示异常",
+    "content": "在登录时页面出现白屏",
+    "priority": "high",
+    "contact": "user@example.com"
+  }'
+
+# 获取反馈列表
+curl "http://localhost:8000/api/feedback/list?page=1&per_page=10"
+
+# 获取反馈统计
+curl "http://localhost:8000/api/feedback/stats"
+
+# 收藏功能测试
+# 创建收藏
+curl -X POST "http://localhost:8000/collect/create" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "user": "user123",
+    "post": "post123"
+  }'
+
+# 获取我的收藏
+curl "http://localhost:8000/collect/my?user_id=user123"
+
 # 预期响应格式
 {
   "code": 200,
@@ -228,6 +303,8 @@ curl "http://localhost:8000/images/stats"
 6. **500错误**：已修复所有跨行return语句问题，确保所有接口正常返回
 7. **用户名字段**：现在可以为空，注册时不需要提供用户名
 8. **删除帖子**：删除帖子时评论数据会被保留，这是设计特性而非错误
+9. **意见反馈**：支持匿名反馈，管理员可以处理反馈和回复用户
+10. **收藏功能**：用户可以收藏帖子，支持收藏管理
 
 ### 调试模式
 
