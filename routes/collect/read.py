@@ -116,11 +116,19 @@ def get_collect_status(user_id, post_id):
         # 检查收藏状态
         is_collected = Collect.is_user_collected_post(post_id, user_id)
         
+        # 如果已收藏，获取收藏记录ID
+        collect_id = None
+        if is_collected:
+            collect_record = Collect.query.filter_by(post=post_id, user=user_id).first()
+            if collect_record:
+                collect_id = collect_record.objectId
+        
         return success_response(
             data={
                 'post_id': post_id,
                 'user_id': user_id,
                 'is_collected': is_collected,
+                'collect_id': collect_id,
                 'collect_count': Collect.get_post_collect_count(post_id)
             },
             message="获取收藏状态成功"

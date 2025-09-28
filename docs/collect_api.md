@@ -167,6 +167,7 @@
         "post_id": "帖子ID",
         "user_id": "用户ID",
         "is_collected": true,
+        "collect_id": "收藏记录ID",
         "collect_count": 25
     }
 }
