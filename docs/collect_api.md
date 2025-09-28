@@ -2,7 +2,7 @@
 
 ## 概述
 
-收藏功能允许用户收藏和取消收藏帖子，提供完整的收藏管理功能。
+收藏功能允许用户收藏帖子，提供完整的收藏管理功能。
 
 ## 数据模型
 
@@ -192,32 +192,7 @@
 }
 ```
 
-### 6. 取消收藏
-
-**POST** `/collect/delete`
-
-**请求体**:
-```json
-{
-    "user_id": "用户ID",
-    "post_id": "帖子ID"
-}
-```
-
-**响应示例**:
-```json
-{
-    "success": true,
-    "message": "取消收藏成功",
-    "data": {
-        "post_id": "帖子ID",
-        "user_id": "用户ID",
-        "is_collected_by_user": false
-    }
-}
-```
-
-### 7. 通过收藏ID删除
+### 6. 通过收藏ID删除收藏
 
 **DELETE** `/collect/{collect_id}`
 
@@ -231,22 +206,6 @@
         "post_id": "帖子ID",
         "user_id": "用户ID",
         "is_collected_by_user": false
-    }
-}
-```
-
-### 8. 清空用户所有收藏
-
-**DELETE** `/collect/user/{user_id}/clear`
-
-**响应示例**:
-```json
-{
-    "success": true,
-    "message": "成功清空用户收藏，删除了 50 条记录",
-    "data": {
-        "user_id": "用户ID",
-        "deleted_count": 50
     }
 }
 ```
@@ -285,17 +244,10 @@ async function getUserCollects(userId, page = 1, perPage = 20) {
     return await response.json();
 }
 
-// 取消收藏
-async function uncollectPost(userId, postId) {
-        const response = await fetch('/collect/delete', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            user_id: userId,
-            post_id: postId
-        })
+// 通过收藏ID删除收藏
+async function deleteCollect(collectId) {
+        const response = await fetch(`/collect/${collectId}`, {
+        method: 'DELETE'
     });
     return await response.json();
 }
@@ -309,3 +261,4 @@ async function uncollectPost(userId, postId) {
 4. 删除用户时会自动删除该用户的所有收藏记录
 5. 分页查询支持最大100条每页的限制
 6. 所有时间字段使用ISO格式返回
+7. 只能通过收藏ID删除收藏记录，不支持通过用户ID和帖子ID删除
