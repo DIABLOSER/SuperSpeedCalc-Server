@@ -15,6 +15,10 @@ class Collect(BaseModel):
         db.UniqueConstraint('user', 'post', name='unique_user_post_collect'),
     )
     
+    # 关系定义
+    user_ref = db.relationship('MyUser', backref='user_collects', lazy='select')
+    post_ref = db.relationship('Posts', backref='post_collects', lazy='select')
+    
     def to_dict(self, include_full_user=True, include_full_post=True):
         """转换为字典，可选择是否包含完整的用户和帖子信息"""
         result = super().to_dict()
