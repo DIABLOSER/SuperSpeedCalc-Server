@@ -55,6 +55,26 @@ class Collect(BaseModel):
                 'createdAt': self.post_ref.createdAt.isoformat(),
                 'updatedAt': self.post_ref.updatedAt.isoformat()
             }
+            
+            # 通过查询获取帖子作者信息
+            from .user import MyUser
+            author = MyUser.query.get(self.post_ref.user)
+            if author:
+                post_data['author'] = {
+                    'objectId': author.objectId,
+                    'username': author.username,
+                    'avatar': author.avatar,
+                    'bio': author.bio,
+                    'experience': author.experience,
+                    'boluo': author.boluo,
+                    'isActive': author.isActive,
+                    'admin': author.admin,
+                    'sex': author.sex,
+                    'birthday': author.birthday.isoformat() if author.birthday else None,
+                    'createdAt': author.createdAt.isoformat(),
+                    'updatedAt': author.updatedAt.isoformat()
+                }
+            
             result['post'] = post_data
         # 如果不包含完整帖子信息，post字段保持为ID字符串
         

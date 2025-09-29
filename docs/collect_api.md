@@ -83,7 +83,21 @@
                     "likeCount": 10,
                     "replyCount": 5,
                     "createdAt": "2024-01-01T00:00:00",
-                    "updatedAt": "2024-01-01T00:00:00"
+                    "updatedAt": "2024-01-01T00:00:00",
+                    "author": {
+                        "objectId": "作者ID",
+                        "username": "作者用户名",
+                        "avatar": "作者头像URL",
+                        "bio": "作者个人简介",
+                        "experience": 100,
+                        "boluo": 50,
+                        "isActive": true,
+                        "admin": false,
+                        "sex": 1,
+                        "birthday": "1990-01-01",
+                        "createdAt": "2024-01-01T00:00:00",
+                        "updatedAt": "2024-01-01T00:00:00"
+                    }
                 },
                 "createdAt": "2024-01-01T00:00:00",
                 "updatedAt": "2024-01-01T00:00:00"
