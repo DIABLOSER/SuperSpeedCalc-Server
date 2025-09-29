@@ -140,7 +140,7 @@ def get_user_posts(user_id):
                     'username': user.username,
                     'avatar': user.avatar
                 },
-                'items': [post.to_dict(include_user=False, sync_like_count=True, sync_reply_count=True) for post in posts],
+                'items': [post.to_dict(include_user=True, sync_like_count=True, sync_reply_count=True) for post in posts],
                 'pagination': {
                     'page': page,
                     'per_page': per_page,

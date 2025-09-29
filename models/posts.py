@@ -164,32 +164,36 @@ class Posts(BaseModel):
             result['replyCount'] = self.replyCount
         
         # 包含用户信息，但不包含敏感字段
-        if include_user and hasattr(self, 'user_ref') and self.user_ref:
-            if include_full_user:
-                user_data = {
-                    'objectId': self.user_ref.objectId,
-                    'username': self.user_ref.username,
-                    'avatar': self.user_ref.avatar,
-                    'bio': self.user_ref.bio,
-                    'experience': self.user_ref.experience,
-                    'boluo': self.user_ref.boluo,
-                    'isActive': self.user_ref.isActive,
-                    'admin': self.user_ref.admin,
-                    'sex': self.user_ref.sex,
-                    'birthday': self.user_ref.birthday.isoformat() if self.user_ref.birthday else None,
-                    'createdAt': self.user_ref.createdAt.isoformat(),
-                    'updatedAt': self.user_ref.updatedAt.isoformat()
-                }
-            else:
-                user_data = {
-                    'objectId': self.user_ref.objectId,
-                    'username': self.user_ref.username,
-                    'avatar': self.user_ref.avatar,
-                    'bio': self.user_ref.bio,
-                    'experience': self.user_ref.experience,
-                    'admin': self.user_ref.admin
-                }
-            result['user'] = user_data
+        if include_user:
+            # 通过查询获取用户信息
+            from .user import MyUser
+            user_obj = MyUser.query.get(self.user)
+            if user_obj:
+                if include_full_user:
+                    user_data = {
+                        'objectId': user_obj.objectId,
+                        'username': user_obj.username,
+                        'avatar': user_obj.avatar,
+                        'bio': user_obj.bio,
+                        'experience': user_obj.experience,
+                        'boluo': user_obj.boluo,
+                        'isActive': user_obj.isActive,
+                        'admin': user_obj.admin,
+                        'sex': user_obj.sex,
+                        'birthday': user_obj.birthday.isoformat() if user_obj.birthday else None,
+                        'createdAt': user_obj.createdAt.isoformat(),
+                        'updatedAt': user_obj.updatedAt.isoformat()
+                    }
+                else:
+                    user_data = {
+                        'objectId': user_obj.objectId,
+                        'username': user_obj.username,
+                        'avatar': user_obj.avatar,
+                        'bio': user_obj.bio,
+                        'experience': user_obj.experience,
+                        'admin': user_obj.admin
+                    }
+                result['user'] = user_data
         # 如果不包含用户信息，user字段保持为ID字符串
         
         # 添加用户相关的信息
