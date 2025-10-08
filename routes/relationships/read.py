@@ -199,7 +199,7 @@ def get_mutual_followers(user_id):
                     'username': user.username,
                     'avatar': user.avatar
                 },
-                'items': [
+                'mutual_followers': [
                     {
                         'objectId': mutual_user.objectId,
                         'username': mutual_user.username,
