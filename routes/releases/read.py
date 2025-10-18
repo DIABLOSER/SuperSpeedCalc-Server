@@ -84,4 +84,55 @@ def get_releases_count():
             message='获取失败',
         )
 
-
+def get_latest_release():
+    """
+    根据环境和是否更新获取最新版本
+    
+    查询参数:
+        environment: 发布环境（例如：测试、taptap、正式）
+        is_update: 是否更新（true/false）
+    """
+    try:
+        # 获取查询参数
+        environment = request.args.get('environment')
+        is_update = request.args.get('is_update')
+        
+        # 参数验证
+        if not environment:
+            return bad_request_response(message='缺少必需参数：environment')
+        
+        if is_update is None:
+            return bad_request_response(message='缺少必需参数：is_update')
+        
+        # 转换 is_update 参数为布尔值
+        try:
+            is_update_bool = is_update.lower() in ['true', '1', 'yes', 'on']
+        except AttributeError:
+            return bad_request_response(message='is_update 参数格式错误，应为 true/false')
+        
+        # 构建查询
+        query = AppRelease.query.filter(
+            AppRelease.environment == environment,
+            AppRelease.is_update == is_update_bool
+        ).order_by(desc(AppRelease.createdAt))
+        
+        # 获取最新记录
+        item = query.first()
+        
+        # 检查是否找到数据
+        if not item:
+            return not_found_response(
+                message=f'未找到环境为 {environment} 且更新状态为 {is_update} 的发布记录'
+            )
+        
+        return success_response(
+            data=item.to_dict(),
+            message='获取最新版本成功'
+        )
+        
+    except Exception as e:
+        # 记录详细错误信息用于调试
+        print(f"获取最新版本失败: {str(e)}")
+        return internal_error_response(
+            message='获取最新版本失败，请稍后重试'
+        )

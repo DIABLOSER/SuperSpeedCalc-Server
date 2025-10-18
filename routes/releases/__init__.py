@@ -1,6 +1,6 @@
 from flask import Blueprint
 from .create import create_release
-from .read import get_releases, get_release, get_releases_count
+from .read import get_releases, get_release, get_releases_count, get_latest_release
 from .update import update_release
 from .delete import delete_release
 from .upload import upload_apk
@@ -14,6 +14,7 @@ releases_bp.route('/', methods=['POST'])(create_release)
 # 注册路由 - 查询操作
 releases_bp.route('/', methods=['GET'])(get_releases)
 releases_bp.route('/count', methods=['GET'])(get_releases_count)
+releases_bp.route('/latest', methods=['GET'])(get_latest_release)
 releases_bp.route('/<string:object_id>', methods=['GET'])(get_release)
 
 # 注册路由 - 更新操作

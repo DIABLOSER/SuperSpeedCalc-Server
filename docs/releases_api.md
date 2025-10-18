@@ -57,7 +57,58 @@ GET /releases?page=1&per_page=10&title=SuperSpeedCalc&environment=production
 }
 ```
 
-### 2. 获取单个发布记录
+### 2. 获取最新版本
+**GET** `/releases/latest`
+
+#### 请求参数
+| 参数 | 类型 | 必填 | 说明 |
+|------|------|------|------|
+| environment | string | 是 | 发布环境（例如：测试、taptap、正式） |
+| is_update | string | 是 | 是否更新（true/false/1/0/yes/no/on/off） |
+
+#### 请求示例
+```bash
+GET /releases/latest?environment=正式&is_update=true
+```
+
+#### 响应示例
+```json
+{
+  "code": 200,
+  "message": "获取最新版本成功",
+  "data": {
+    "objectId": 1,
+    "title": "SuperSpeedCalc",
+    "version_name": "1.2.3",
+    "version_code": 123,
+    "content": "修复已知问题，优化用户体验",
+    "download_url": "https://example.com/app-v1.2.3.apk",
+    "environment": "正式",
+    "is_test": false,
+    "is_update": true,
+    "force_update": false,
+    "createdAt": "2025-01-09T12:00:00",
+    "updatedAt": "2025-01-09T12:00:00"
+  }
+}
+```
+
+#### 错误响应示例
+```json
+{
+  "code": 400,
+  "message": "缺少必需参数：environment"
+}
+```
+
+```json
+{
+  "code": 404,
+  "message": "未找到环境为 正式 且更新状态为 true 的发布记录"
+}
+```
+
+### 3. 获取单个发布记录
 **GET** `/releases/{object_id}`
 
 #### 请求参数
@@ -92,7 +143,7 @@ GET /releases/1
 }
 ```
 
-### 3. 创建发布记录
+### 4. 创建发布记录
 **POST** `/releases`
 
 #### 请求体
@@ -147,7 +198,7 @@ GET /releases/1
 }
 ```
 
-### 4. 更新发布记录
+### 5. 更新发布记录
 **PUT** `/releases/{object_id}`
 
 #### 请求体
@@ -198,7 +249,7 @@ GET /releases/1
 }
 ```
 
-### 5. 删除发布记录
+### 6. 删除发布记录
 **DELETE** `/releases/{object_id}`
 
 #### 请求参数
@@ -220,7 +271,7 @@ DELETE /releases/1
 }
 ```
 
-### 6. 获取发布记录数量
+### 7. 获取发布记录数量
 **GET** `/releases/count`
 
 #### 请求参数
@@ -245,7 +296,7 @@ GET /releases/count?title=SuperSpeedCalc&environment=production
 }
 ```
 
-### 7. 上传APK文件
+### 8. 上传APK文件
 **POST** `/releases/upload-apk`
 
 #### 请求参数
@@ -281,8 +332,10 @@ curl -X POST -F "file=@app-v1.0.1.apk" http://localhost:8000/releases/upload-apk
 
 ### 常见错误码
 - `RELEASE_NOT_FOUND`: 发布记录不存在
+- `LATEST_RELEASE_NOT_FOUND`: 未找到符合条件的最新版本
 - `MISSING_REQUIRED_FIELD`: 缺少必填字段
 - `INVALID_VERSION_CODE`: 无效的版本代码
+- `INVALID_UPDATE_PARAMETER`: 无效的更新参数格式
 - `DUPLICATE_VERSION`: 版本已存在
 - `INVALID_FILE_TYPE`: 不支持的文件类型
 - `RELEASE_CREATE_FAILED`: 发布记录创建失败
